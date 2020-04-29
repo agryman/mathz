@@ -1,0 +1,1425 @@
+%
+% fuzzlib.x
+%
+% This file is part of fuzz2000
+% Copyright (c) 1982--2006 J. M. Spivey
+% All rights reserved
+%
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are met:
+%
+% 1. Redistributions of source code must retain the above copyright notice,
+%    this list of conditions and the following disclaimer.
+% 2. Redistributions in binary form must reproduce the above copyright notice,
+%    this list of conditions and the following disclaimer in the documentation
+%    and/or other materials provided with the distribution.
+% 3. The name of the author may not be used to endorse or promote products
+%    derived from this software without specific prior written permission.
+%
+% THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+% IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+% OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+% IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+% SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+% OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+% 
+% $Id: fuzzlib.x,v 1.2 2007-02-16 12:45:13 mike Exp $
+%
+
+%%token $"\bind" 335
+%%token $"\bsup" 262
+%%token $"\cross" 266
+%%token $"\defs" 268
+%%token $"\ELSE" 333
+%%token $"\esup" 275
+%%token $"\exists" 277
+%%token $"\exists_1" 278
+%%token $"false" 280
+%%token $"\forall" 282
+%%token $"\hide" 284
+%%token $"\iff" 273
+%%token $"\IF" 331
+%%token $"\implies" 285
+%%token $"\in" 286
+%%token $"\inrel" 329
+%%token $"\lambda" 289
+%%token $"\land" 258
+%%token $"\langle" 334
+%%token $"\lbag" 290
+%%token $"\ldata" 291
+%%token $"\LET" 292
+%%token $"\limg" 293
+%%token $"\lnot" 296
+%%token $"\lor" 298
+%%token $"\mid" 124
+%%token $"\mu" 294
+%%token $"\pipe" 299
+%%token $"\power" 300
+%%token $"\pre" 301
+%%token $"\project" 302
+%%token $"\rangle" 336
+%%token $"\rbag" 303
+%%token $"\rdata" 304
+%%token $"\rimg" 305
+%%token $"\semi" 281
+%%token $"\spot" 64
+%%token $"\THEN" 332
+%%token $"\theta" 306
+%%token $"true" 307
+%%token $"\vdash" 309
+%%token $"\where" 310
+%%token $"==" 272
+%%token $"%%ingen" 312
+%%token $"%%inop" 313
+%%token $"%%inrel" 314
+%%token $"%%pregen" 316
+%%token $"%%prerel" 317
+%%token $"%%postop" 315
+%%token $"%%type" 318
+%%token $"%%tame" 319
+%%token $"%%pname" 320
+%%token $"%%ignore" 338
+%%token $"%%debug" 340
+%%token $"%%line" 341
+%%token $"\begin{axdef}" 259
+%%token $"\begin{gendef}" 260
+%%token $"\begin{schema}" 261
+%%token $"\begin{zed}" 264
+%%token $"\begin{syntax}" 263
+%%token $"\end{axdef}" 270
+%%token $"\end{gendef}" 271
+%%token $"\end{schema}" 274
+%%token $"\end{zed}" 279
+%%token $"\end{syntax}" 276
+
+%%inop \mapsto							1
+%%inop \upto							2
+%%inop + - \cup \setminus \cat \uplus \uminus			3
+%%inop * \div \mod \cap \circ \comp \filter \extract \otimes	4
+%%inop \oplus \bcount						5
+%%inop \dres \rres \ndres \nrres				6
+%%postop \plus \star \inv
+%%inrel \neq \notin \subseteq \subset < \leq \geq > \inbag \partition
+%%inrel \prefix \subbageq \suffix \inseq
+%%prerel \disjoint
+%%ingen \rel \fun \pinj \inj \psurj \surj \bij \ffun \finj
+%%pregen \power_1 \id \finset \iseq
+%%ignore \quad \qquad
+
+%%type \pfun \nat \seq \bag
+\begin{gendef}[X]
+	\finset \_: \power (\power X)
+\end{gendef}
+\begin{gendef}[X,Y]
+	\_ \rel \_, \_ \ffun \_: \power (\power (X \cross Y)) \\
+	\_ \fun \_: \power (X \pfun Y)
+\end{gendef}
+%%type \rel \ffun \finset
+
+\begin{axdef}
+	-: \num \fun \num \\
+        \_ + \_ , \_ - \_ , \_ * \_: \num \cross \num \fun \num \\
+        \_ \div \_ , \_ \mod \_: 
+		\num \cross \num \pfun \num \\
+        \_ < \_ , \_ \leq \_ , \_ \geq \_ , \_ > \_: 
+		\num \rel \num \\
+	\nat_1: \power \nat \\
+        succ: \nat \fun \nat \\
+	\_ \upto \_: \num \cross \num \fun \power \num \\
+        min: \power \num \pfun \num \\
+        max: \power \num \pfun \num
+\end{axdef}
+
+\begin{gendef}[X]
+        \_ \neq \_: X \rel X \\
+        \_ \notin \_: X \rel \power X \\
+	\empty, \emptyset: \power X \\
+	\_ \subseteq \_ , \_ \subset \_: \power X \rel \power X \\
+	\power_1 \_: \power (\power X) \\
+        \_  \cup \_ , \_ \cap \_ , \_ \setminus \_:
+                \power X \cross \power X \fun \power X \\
+        \bigcup, \bigcap: \power (\power X) \fun \power X \\
+	\id \_: X \rel X \\
+        \_\plus, \_\star: (X \rel X) \fun (X \rel X) \\
+        iter: \num \fun (X \rel X) \fun (X \rel X) \\
+	\finset_1 \_: \power (\finset X) \\
+        \#: \finset X \fun \nat \\
+	\seq_1 \_, \iseq \_: \power (\seq X) \\
+        \_ \cat \_ :  \seq X \cross \seq X \fun \seq X \\
+        head, last: \seq X \pfun X \\
+        tail, front: \seq X \pfun \seq X \\
+        rev: \seq X \fun \seq X \\
+        \_ \filter \_: \seq X \cross \power X \fun \seq X \\
+        \_ \extract \_: \power \nat \cross \seq X \pfun \seq X \\
+	squash: (\nat \ffun X) \pfun \seq X \\
+	\_\prefix\_, \_\suffix\_, \_\inseq\_: \seq X \rel \seq X \\
+        \dcat: \seq (\seq X) \fun \seq X \\
+        count: \bag X \fun (X \fun \nat) \\
+	\_\bcount\_: \bag X \cross X \fun \nat \\
+        \_ \inbag \_: X \rel \bag X \\
+	\_ \subbageq \_: \bag X \rel \bag X \\
+        \_ \uplus \_, \_ \uminus \_: \bag X \cross \bag X \fun \bag X \\
+	\_ \otimes \_: \nat \cross \bag X \fun \bag X \\
+        items: \seq X \fun \bag X
+\end{gendef}
+
+\begin{gendef}[X,Y]
+        first: X \cross Y \fun X \\
+        second: X \cross Y \fun Y \\
+        \_ \mapsto \_: X \cross Y \fun X \cross Y \\
+        \dom: (X \rel Y) \fun \power X \\
+        \ran: (X \rel Y) \fun \power Y \\
+        \_ \dres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \rres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_ \ndres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \nrres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_\inv: (X \rel Y) \fun (Y \rel X) \\
+        \_\limg\_\rimg: (X \rel Y) \cross \power X \fun \power Y \\
+        \_ \oplus \_: (X \rel Y) \cross (X \rel Y) \fun (X \rel Y) \\
+	\_ \pinj \_, \_ \inj \_, \_ \psurj \_, 
+	\_ \surj \_, \_ \bij \_, \_ \finj \_: \power(X \pfun Y) \\
+        \disjoint \_: \power (X \pfun \power Y) \\
+        \_ \partition \_: (X \pfun \power Y) \rel \power Y
+\end{gendef}
+
+\begin{gendef}[X,Y,Z]
+        \_ \comp \_: (X \rel Y) \cross (Y \rel Z) \fun (X \rel Z) \\
+	\_ \circ \_: (Y \rel Z) \cross (X \rel Y) \fun (X \rel Z)
+\end{gendef}
+
+%%pname \pfun $"-+>"
+%%pname \ffun $"-++>"
+%%pname \rel $"<->"
+%%pname \seq $"seq"
+%%pname \bag $"bag"
+%%pname \finset $"F"
+%%pname \nat $"NN"
+%%pname \num $"ZZ"
+%%pname \upto $".."
+%%pname \# $"#"
+%%pname \power_1 $"P_1"
+%%pname \id $"id"
+%%pname \mapsto $"|->"
+%%pname \dom $"dom"
+%%pname \ran $"ran"
+%%pname \fun $"-->"
+%%pname \pinj $">+>"
+%%pname \inj $">->"
+%%pname \psurj $"-+>>"
+%%pname \surj $"-->>"
+%%pname \bij $">->>"
+%%pname \finj $">++>"
+%%pname \disjoint $"disjoint"
+%%pname \partition $"partition"
+
+%%tame \cup \cap \setminus \bigcup \bigcap count \uplus items
+%%tame \plus \cat head last tail front rev \filter \dcat
+%%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
+%%tame \inv \limg\rimg \oplus \comp \circ
+% arbitrary sets
+\newcommand{\setX}{\mathsf{X}}
+\newcommand{\setY}{\mathsf{Y}}
+\newcommand{\setZ}{\mathsf{Z}}
+
+% families of sets
+\newcommand{\family}{\mathcal{F}}
+%%pregen \family
+
+% the induced family infix operator
+\newcommand{\inducedFam}{\mathbin{|_\family}}
+%%inop \inducedFam 6
+
+% the product family infix operator
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
+%%inop \prodFam 5
+
+% the constant function
+\DeclareMathOperator{\const}{const}
+
+% the function restriction infix operator
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
+%%inop \restrictU 6
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{sets}
+
+\title{Sets}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for concepts related to sets.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Typed set theory forms the mathematical foundation of Z Notation
+and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
+The articles augments the tool-kit with some additional concepts.
+
+\section{Arbitrary Sets}
+
+\subsection{\zcmd{setX}, \zcmd{setY}, and \zcmd{setZ}}
+
+Let $\setX$, $\setY$, and $\setZ$ denote arbitrary sets.
+These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
+by arbitrary sets.
+
+\begin{zed}
+	[\setX, \setY, \setZ]
+\end{zed}
+
+\section{Families}
+
+\subsection{\zcmd{family}}
+
+Let $X$ be a set.
+A {\it family} of subsets of $X$ is a set of subsets of $X$.
+Let $\family X$ denote the set of all families of subsets of $X$.
+
+\begin{zed}
+	\family X == \power(\power X)
+\end{zed}
+
+\section{Functions}
+
+
+\subsection{\zcmd{const}}
+
+Let $X$ and $Y$ be sets and let $c \in Y$ be some given point.
+The mapping that sends every point of $X$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\const(c)$ denote the constant mapping.
+
+\begin{gendef}[X,Y]
+	\const: Y \fun (X \fun Y)
+\where
+	\forall c: Y @ \\
+	\t1	\const(c) = (\lambda x: X @ c)
+\end{gendef}
+
+
+\subsection{\zcmd{restrictU}}
+
+Let $f: X \fun Y$ and let $U \subseteq X$.
+Let $f \restrictU U$ denote the restriction of $f$ to $U$.
+
+\begin{gendef}[X,Y]
+	\_ \restrictU \_: (X \fun Y) \cross \power X \fun (X \pfun Y)
+\where
+	\forall f: X \fun Y; U: \power X @ \\
+	\t1	f \restrictU U = U \dres f
+\end{gendef}
+
+\printbibliography
+
+\end{document}% continuous mappings between topological spaces
+\DeclareMathOperator{\CzeroTT}{C^0}
+
+% topological decoration on operators
+\newcommand{\topology}{\mathsf{top}}
+
+% the induced topological space infix operator
+\newcommand{\inducedTopSp}{\mathbin{|_\topology}}
+%%inop \inducedTopSp 6
+
+% the product topology infix operator
+\newcommand{\prodTop}{\mathbin{\cross_\topology}}
+%%inop \prodTop 5
+
+% the product topological space infix operator
+\newcommand{\prodTopSp}{\mathbin{\cross_\topology}}
+%%inop \prodTopSp 5
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{topological-spaces}
+
+\title{Topological Spaces}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article defines topological spaces and related concepts.
+\end{abstract}
+
+\section{Topological Spaces}
+
+\subsection{$Topology$}
+
+A {\it topology} $\tau$ on $X$ is a family of subsets of $X$, referred to as the {\it open} subsets of $X$, that satisfy the following axioms.
+
+\begin{schema}{Topology}[X]
+	\tau: \family X
+\where
+	\emptyset \in \tau
+\also
+	X \in \tau
+\also
+	\forall F: \finset \tau @ \bigcap F \in \tau
+\also
+	\forall F: \power \tau @ \bigcup F \in \tau
+\end{schema}
+
+\begin{itemize}
+\item The empty set is open.
+\item The whole set is open.
+\item The intersection of a finite family of open sets is open.
+\item The union of any family of open sets is open. 
+\end{itemize}
+
+\subsection{$top$ and $tops$}
+
+Let $top[X]$ denote the set of all topologies on $X$.
+
+\begin{gendef}[X]
+	top: \power(\family X)
+\where
+	top = \{~ Topology[X] @ \tau ~\}
+\end{gendef}
+
+Let $tops[X]$ denote the set of all topologies on subsets $U \subseteq X$.
+
+\begin{gendef}[X]
+	tops: \power(\family X)
+\where
+	tops = \bigcup \{~ U: \power X @ top[U] ~\}
+\end{gendef}
+
+\subsection{$discrete$ and $indiscrete$}
+
+The {\it discrete} topology on $X$ consists of all subsets of $X$.
+The {\it indiscrete} topology on $X$ consists of just $X$ and $\emptyset$.
+Let $discrete[X]$ and $indiscrete[X]$ denote the discrete and indiscrete topologies on $X$.
+
+\begin{gendef}[X]
+	discrete, indiscrete: \family X
+\where
+	discrete = \power X
+\also
+	indiscrete =  \{ \emptyset, X \}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+Then $discrete[\setX]$ and $indiscrete[\setX]$ are topologies on $\setX$.
+
+\begin{zed}
+	discrete[\setX] \in top[\setX] 
+\also
+	indiscrete[\setX] \in top[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topGen$}
+
+\begin{remark}
+
+The intersection of a set of topologies on $X$ is also a topology on $X$.
+
+\end{remark}
+
+Given a family $B$ of subsets of $X$, the topology {\it generated by} $B$ is the intersection of all
+topologies that contain $B$.
+The set $B$ is referred to as a {\it basis} for the topology it generates.
+Let $topGen[X]~B$ denote the topology on $X$ generated by the basis $B$.
+
+\begin{gendef}[X]
+	topGen: \family X \fun top[X]
+\where
+	\forall B: \family X @ \\
+	\t1	topGen~B = \bigcap \{~ \tau: top[X] | B \subseteq \tau ~\}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	topGen[\setX] \emptyset = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \emptyset \} = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \setX \} = indiscrete[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topSpace$}
+
+Let $X$ be a set.
+A {\it topological space} is a pair $(X, \tau)$ where $\tau$ is a topology on $X$.
+Let $topSpace[X]$ denote the set of all topological spaces $(X,\tau)$.
+
+\begin{zed}
+	topSpace[X] == \{~ \tau: top[X] @ (X, \tau) ~\}
+\end{zed}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	(\setX, indiscrete[\setX]) \in topSpace[\setX]
+\also
+	(\setX, discrete[\setX]) \in topSpace[\setX]
+\end{zed}
+
+
+\end{example}
+
+\subsection{$topSpaces$}
+
+Let $topSpaces[t]$ dentote the set of all topological spaces $(X,\tau)$ where $X$ is a subset of $t$.
+
+\begin{gendef}[t]
+	topSpaces: \power t \rel \family t
+\where
+	topSpaces = \{~ X: \power t; \tau: \family t | \tau \in top[X] ~\}
+\end{gendef}
+
+\begin{remark}
+
+\begin{zed}
+	topSpace[\setX] \subseteq topSpaces[\setX]
+\end{zed}
+
+\end{remark}
+
+\section{Continuous Mappings}
+
+Let $(X,\tau)$ and $(Y,\sigma)$ be topological spaces.
+
+\subsection{$Continuous$}
+
+A mapping $f \in X \fun Y$ is said to be {\it continuous} if the inverse image of every open set is open.
+
+\begin{schema}{Continuous}[X,Y]
+	f: X \fun Y \\
+	\tau: top[X] \\
+	\sigma: top[Y]
+\where
+	\forall U: \sigma @ \\
+	\t1	f\inv\limg U \rimg \in \tau
+\end{schema}
+
+\subsection{\zcmd{CzeroTT}}
+
+Let $A$ and $B$ be topological spaces, and
+let $\CzeroTT(A,B)$ denote the set of continuous mappings from $A$ to $B$.
+
+\begin{gendef}[X,Y]
+	\CzeroTT: topSpace[X] \cross topSpace[Y] \fun \power (X \fun Y)
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\LET A == (X, \tau); B == (Y, \sigma) @ \\
+	\t2		\CzeroTT(A,B) = \{~ f: X \fun Y | Continuous[X,Y] ~\}
+\end{gendef}
+
+\subsection{The Identity Mapping}
+
+\begin{remark}
+The identity mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX] @ \\
+	\t1	\LET A == (\setX, \tau) @ \\
+	\t2		\id \setX \in \CzeroTT(A, A)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The constant mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX]; \sigma: top[\setY]; c: \setY @ \\
+	\t1	\LET A == (\setX, \tau); B == (\setY, \sigma) @ \\
+	\t2		\const[\setX,\setY] c \in \CzeroTT(A,B)
+\end{zed}
+
+\end{remark}
+
+\subsection{Composition of Continuous Mapping}
+
+\begin{remark}
+Let $\setX$, $\setY$, and $\setZ$ be arbitrary sets.
+The composition of continuous mappings is a continuous mapping.
+
+\begin{zed}
+	\forall A: topSpace[\setX]; B: topSpace[\setY]; C: topSpace[\setZ] @ \\
+	\t1	\forall f: \CzeroTT(A, B); g: \CzeroTT(B, C) @ \\
+	\t2		g \circ f \in \CzeroTT(A, C)
+\end{zed}
+
+\end{remark}
+
+\section{Induced Topology}
+
+Let $A = (X, \tau)$ be a topological space and let $U \subseteq X$ be a subset.
+The topology on $X$ {\it induces} a topology on $U$.
+This topology is variously referred to as the {\it induced}, {\it relative}, or {\it subspace} topology on $U$.
+
+\subsection{\zcmd{inducedFam}}
+
+Let $\phi$ be a family of subsets of $X$ and let $U$ be a subset of $X$.
+The family of subsets of $U$ {\it induced} by $\phi$ is the set of intersections of the members of $\phi$ with $U$.
+Let $\phi \inducedFam U$ denote the family on $U$ induced by $\phi$.
+
+\begin{gendef}[X]
+	\_ \inducedFam \_:  \family X \cross \power X \fun \family X
+\where
+	\forall \phi: \family X; U: \power X @ \\
+	\t1	\phi \inducedFam U = \{~ Y: \phi @ Y \cap U ~\}
+\end{gendef}
+
+\begin{remark}
+If $\tau$ is a topology on $X$ then $\tau \inducedFam U$ is a topology on $U$.
+
+\begin{zed}
+	\forall \tau: top[\setX]; U: \power \setX @ \\
+	\t1	\tau \inducedFam U \in top[U]
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{inducedTopSp}}
+
+Let $(X, \tau) \inducedTopSp U$ denote the corresponding induced topological space.
+
+\begin{gendef}[X]
+	\_ \inducedTopSp \_: topSpace[X] \cross \power X \fun topSpaces[X]
+\where
+	\forall \tau: top[X]; U: \power X @ \\
+	\t1	(X, \tau) \inducedTopSp U = (U, \tau \inducedFam U)
+\end{gendef}
+
+\section{Product Topology}
+
+Let $(X, \tau)$ and $(Y, \sigma) $ be topological spaces.
+There is a natural topology on $X \cross Y$ generated by the products of the sets in $\tau$ and $\sigma$.
+
+\subsection{\zcmd{prodFam}}
+
+Let $X$ and $Y$ be sets and let $\phi$ and $\psi$ be families on them.
+The product of these families is the family that consists of the products of the sets in them and is a family on $X \cross Y$.
+Let $\phi \prodFam \psi$ denote the product of the families.
+
+\begin{gendef}[X,Y]
+	\_ \prodFam \_ : \family X \cross \family Y \fun \family(X \cross Y)
+\where
+	\forall \phi: \family~X; \psi: \family~Y @ \\
+	\t1	\phi \prodFam \psi = \{~ U: \phi; V: \psi @ U \cross V ~\}
+\end{gendef}
+
+\begin{remark}
+
+If $\tau$ and $sigma$ are topologies then $\tau \prodFam \sigma$ is not, in general, a topology.
+However, we can use it to generate a topology.
+
+\end{remark}
+
+\subsection{\zcmd{prodTop}}
+
+Let $\tau \prodTop \sigma$ denote the topology generated by $\tau \prodFam \sigma$.
+
+\begin{gendef}[X,Y]
+	\_ \prodTop \_: top[X] \cross top[Y] \fun top[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\tau \prodTop \sigma = topGen(\tau \prodFam \sigma)
+\end{gendef}
+
+\subsection{\zcmd{prodTopSp}}
+
+Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
+
+\begin{gendef}[X,Y]
+	\_ \prodTopSp \_: topSpace[X] \cross topSpace[Y] \fun topSpace[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	(X, \tau) \prodTopSp (Y, \sigma) = (X \cross Y, \tau \prodTop \sigma)
+\end{gendef}
+
+\printbibliography
+
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{real-numbers}[2018/08/05 Z Notation for real numbers package]
+
+\RequirePackage{amssymb}
+
+% the set of real numbers
+\newcommand{\R}{\mathbb{R}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the real number 0
+\newcommand{\zeroR}{0}
+
+% the real number 1
+\newcommand{\oneR}{1}
+
+% the negation prefix operator -x
+\newcommand{\negR}{-}
+
+% the addition infix operator x + y
+\newcommand{\addR}{\mathbin{+}}
+
+% the subtraction infix operator
+\newcommand{\subR}{\mathbin{-}}
+
+%%inop \addR \subR 3
+
+% the multiplication infix operator x * y
+\newcommand{\mulR}{\mathbin{*}}
+
+% the division infix operator x / y
+\newcommand{\divR}{\mathbin{/}}
+
+%%inop \mulR \divR 4
+
+% the less then infix relation x < y
+\newcommand{\ltR}{\mathrel{<}}
+
+% the less than or equal to infix relation x <= y
+\newcommand{\leR}{\mathrel{\leq}}
+
+% the greater than infix relation x > y
+\newcommand{\gtR}{\mathrel{>}}
+
+% the greater than or equal to infix relation x > y
+\newcommand{\geR}{\mathrel{\geq}}
+
+%%inrel \ltR \leR \gtR \geR
+
+% the set of all open sets of real numbers
+\newcommand{\openR}{\mathsf{open}}
+
+% the absolute value function abs(x) = |x|
+\DeclareMathOperator{\absR}{abs}
+
+% the positive square root function sqrt(x)
+\DeclareMathOperator{\sqrtR}{sqrt}
+
+\DeclareMathOperator{\intervalR}{interval}
+\DeclareMathOperator{\ballR}{ball}
+\DeclareMathOperator{\ballsR}{balls}
+\DeclareMathOperator{\neighR}{neigh}
+
+\newcommand{\tauR}{\tau_\R}
+\newcommand{\Rtau}{\R_\tau}
+
+\DeclareMathOperator{\limRR}{lim}
+\DeclareMathOperator{\limR}{lim}
+\DeclareMathOperator{\limFR}{lim}
+
+\DeclareMathOperator{\FunR}{F}
+\DeclareMathOperator{\FunPR}{F}
+
+\DeclareMathOperator{\CzeroR}{C^0}
+\DeclareMathOperator{\CzeroPR}{C^0}
+
+\DeclareMathOperator{\CnR}{C}
+\DeclareMathOperator{\CnPR}{C}
+
+\DeclareMathOperator{\diffRR}{diff}
+\DeclareMathOperator{\diffR}{diff}
+\DeclareMathOperator{\diffPR}{diff}
+
+\DeclareMathOperator{\smoothR}{C^{\infty}}
+\DeclareMathOperator{\smoothPR}{C^{\infty}}
+
+\DeclareMathOperator{\derivFR}{D}
+\DeclareMathOperator{\derivF}{D}
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{../topological-spaces/topological-spaces}
+\usepackage{real-numbers}
+
+\title{Real Numbers}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for the real numbers, $\R$, and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+The real numbers, $\R$, are foundational to many mathematical objects such as vector spaces and manifolds,
+but are not built-in to Z Notation.
+This article provides type declarations for $\R$ and related objects so that they can be used and type checked in formal Z specifications.
+
+No attempt has been made to provide complete, axiomatic definitions of all these objects since that would only be of use for proof checking.
+Although proof checking is highly desirable, it is beyond the scope of this article.
+The type declarations given here are intended to provide a basis for future axiomatization.
+
+\section{The Real Numbers}
+
+\subsection{\zcmd{R}}
+
+Let $\R$ denote the set of all real numbers.
+\begin{zed}
+	[\R]
+\end{zed}
+
+\subsection{\zcmd{zeroR} and \zcmd{oneR}}
+
+Let $\zeroR$ and $\oneR$ denote the zero and unit elements of the real numbers.
+
+\begin{axdef}
+	\zeroR: \R \\
+	\oneR: \R
+\end{axdef}
+
+\subsection{\zcmd{Rnz}}
+
+Let $\Rnz$ denote the set of non-zero real numbers, 
+also referred to as the {\it punctured} real number line.
+
+\begin{zed}
+	\Rnz == \R \setminus \{ \zeroR \}
+\end{zed}
+
+\subsection{\zcmd{addR}, \zcmd{subR}, \zcmd{mulR}, and \zcmd{divR}}
+
+Let $x \addR y$, $x \subR y$, $x \mulR y$, and $x \divR y$ denote the usual arithmetic operations of
+addition, subtraction, multiplication, and division.
+
+\begin{axdef}
+	\_ \addR \_: \R \cross \R \fun \R \\
+	\_ \subR \_: \R \cross \R \fun \R \\
+	\_ \mulR \_: \R \cross \R \fun \R \\
+	\_ \divR \_: \R \cross \Rnz \fun \R
+\end{axdef}
+
+\subsection{\zcmd{negR}}
+
+Let $\negR~x$ denote the negative of $x$.
+
+\begin{axdef}
+	\negR: \R \fun \R
+\where
+	\forall x : \R @ \\
+	\t1	\negR~x = \zeroR \subR x
+\end{axdef}
+
+\subsection{\zcmd{ltR}, \zcmd{leR}, \zcmd{gtR}, and \zcmd{geR}}
+
+Let $x \ltR y$, $x \leR y$, $x \gtR y$, and $x \geR y$ denote the usual comparison relations.
+
+\begin{axdef}
+	\_ \ltR \_: \R \rel \R \\
+	\_ \leR \_: \R \rel \R \\
+	\_ \gtR \_: \R \rel \R \\
+	\_ \geR \_: \R \rel \R
+\end{axdef}
+
+\subsection{\zcmd{absR}}
+
+Let $\absR(x)$ denote $\abs{x}$, the absolute value of $x$.
+
+\begin{axdef}
+	\absR: \R \fun \R
+\where
+	\forall x: \R @ \\
+	\t1	\absR(x) = \IF x \geR \zeroR \THEN x \ELSE \negR~x
+\end{axdef}
+
+\subsection{\zcmd{Rpos}}
+
+Let $\Rpos$ denote the set of positive real numbers.
+
+\begin{zed}
+	\Rpos == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+\subsection{\zcmd{sqrtR}}
+
+For non-negative $x$, let $\sqrtR(x)$ denote $\sqrt{x}$, the non-negative square root of $x$.
+
+\begin{axdef}
+	\sqrtR: \R \pfun \R
+\where
+	\sqrtR = \{~ x: \R | x \geR \zeroR @ x \mulR x \mapsto x ~\}
+\end{axdef}
+
+\section{Open Sets}
+
+\subsection{\zcmd{intervalR}}
+
+For any real numbers $a$ and $b$, let $\intervalR(a,b)$ denote $(a,b)$, the open interval bounded by $a$ and $b$.
+
+\begin{axdef}
+	\intervalR: \R \cross \R \fun \power \R
+\where
+	\forall a, b: \R @ \\
+	\t1	\intervalR(a,b) = \{~ x: \R | a \ltR x \ltR b ~\}
+\end{axdef}
+
+\begin{remark}
+If $a \geR b$ then $\intervalR(a,b) = \emptyset$.
+\end{remark}
+
+\subsection{\zcmd{ballR}}
+
+For any real numbers $x$ and $r$, let $\ballR(x,r)$ denote the set of all real numbers within distance $r$ of $x$.
+
+\begin{axdef}
+	\ballR: \R \cross \R \fun \power \R
+\where
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \{~ x': \R | \absR(x' \subR x) \ltR r ~\}
+\end{axdef}
+
+\begin{remark}
+Balls are intervals.
+
+\begin{zed}
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \intervalR(x \subR r, x \addR r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \gtR 0$ then $x$ is in $\ballR(x, r)$. 
+
+\begin{zed}
+	\forall x: \R; r: \Rpos @ \\
+	\t1	x \in \ballR(x,r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \leR 0$ then $\ballR(x,r)$ is empty.
+
+\begin{zed}
+	\forall x, r: \R | r \leR \zeroR @ \\
+	\t1	\ballR(x,r) = \emptyset
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{ballsR}}
+
+Let $\ballsR$ denote the set of all open balls in $\R$.
+
+\begin{axdef}
+	\ballsR: \family~\R
+\where
+	\ballsR = \{~ x, r: \R @ \ballR(x,r) ~\}
+\end{axdef}
+
+\subsection{\zcmd{openR}}
+
+A subset $U$ of $\R$ is said to be {\it open} if every point $x \in U$ is surrounded by some open ball $B \subset U$ that lies
+strictly within $U$.
+Let $\openR$ denote the set of all open subsets of $\R$.
+
+\begin{axdef}
+	\openR: \family~\R
+\where
+	\openR = \{~ U:  \power \R | \\
+	\t1	\forall x: U @ \\
+	\t2		\exists B: \ballsR @ x \in B \subset U ~\}
+\end{axdef}
+
+\begin{remark}
+All balls are open.
+
+\begin{zed}
+	\ballsR \subset \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The empty set is open.
+
+\begin{zed}
+	\emptyset \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The set of all real numbers is open.
+
+\begin{zed}
+	\R \in \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{tauR}}
+
+The topology generated by the open balls of $\R$ is referred to as the {\it usual} or {\it standard} topology on $\R$ .
+Let $\tauR$ denote the usual topology on $\R$.
+
+\begin{axdef}
+	\tauR: top[\R]
+\where
+	\tauR = topGen[\R] \ballsR
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\tauR = \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{Rtau}}
+
+Let $\Rtau$ denote the topological space defined by $\R$ with the usual topology.
+
+\begin{axdef}
+	\Rtau: topSpaces[\R]
+\where
+	\Rtau = (\R, \tauR)
+\end{axdef}
+
+\begin{example}
+
+\begin{zed}
+	\Rtau \in topSpace[\R]
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{neighR}}
+
+Let $x$ be a real number.
+Any open set that contains $x$ is called a {\it neighbourhood} of it.
+Let $\neighR(x)$ denote the set of all neighbourhoods of $x$.
+
+\begin{axdef}
+	\neighR: \R \fun \family~\R
+\where
+	\forall x: \R @ \\
+	\t1	\neighR(x) = \{~ U: \openR | x \in U~\}
+\end{axdef}
+
+Clearly, every real number has an infinity of neighbourhoods.
+
+\begin{remark}
+Any open ball that contains $x$ is a neighbourhood of $x$.
+
+\begin{zed}
+	\forall x: \R; B: \ballsR | \\
+	\t1	x \in B @ \\
+	\t2		B \in \neighR(x)
+\end{zed}
+
+\end{remark}
+
+\section{Functions}
+
+The following sections define continuity, limits, and differentiability, which are point-wise properties of functions.
+These properties are {\it local} in the sense that in order to determine if they hold at a given point it is sufficient to
+consider the restriction of the function to an arbitrarily small neighbourhood of the point.
+It is therefore useful to first introduce the set of {\it locally defined} functions, 
+namely those functions that are defined in some neighbourhood of each point of  their domains.
+
+\subsection{\zcmd{FunR}}
+
+For $x$ a real number,
+let $\FunR(x)$ denote the set of all real-valued, partial functions on $\R$ that are locally defined at $x$.
+
+\begin{axdef}
+	\FunR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\FunR(x) = \{~ f: \R \pfun \R | \exists U: \neighR(x) @ U \subseteq \dom f ~\}
+\end{axdef}
+
+\begin{remark}
+The function $\sqrtR$ is not locally defined at $0$ because it's defined only for non-negative numbers,
+but every neighbourhood of $0$ contains some negative numbers.
+
+\begin{zed}
+	\sqrtR \notin \FunR(\zeroR)
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{FunPR}}
+
+For $U$ a subset of $\R$,
+let $\FunPR(U)$ denote the set of all real-valued functions on $U$ that are locally defined at each point of $U$.
+
+\begin{axdef}
+	\FunPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) = \{~ f: U \fun \R | \forall x: U @ f \in \FunR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \FunPR(U)$ then $U \in \openR$.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\section{Continuity}
+
+Let $f$ be a real-valued partial function on $\R$ 
+that is locally defined at $x$ and let $U$ be a neighbourhood of $x$
+contained within the domain of $f$.
+The function $f$ is said to be {\it continuous} at $x$ if 
+for any $\epsilon > 0$ there is some $\delta > 0$ for which 
+$f(x')$ is always within $\epsilon$ of $f(x)$
+when $x' \in U$ is within $\delta$ of $x$.
+\begin{argue}
+\forall \epsilon > 0 @ \exists \delta > 0 @ \forall x' \in U @ \\
+\t1	\abs{x' - x} < \delta \implies \abs{f(x') - f(x)} < \epsilon
+\end{argue}
+
+\begin{schema}{RealContinuous}
+	f: \R \pfun \R \\
+	x: \R
+\where
+	f \in \FunR(x)
+\also
+	\forall \epsilon: \Rpos @ \exists \delta: \Rpos@ \forall x': \dom f @ \\
+	\t1	\absR(x' \subR x) \ltR \delta \implies \absR(f(x') \subR f(x)) \ltR \epsilon
+\end{schema}
+
+\subsection{\zcmd{CzeroR}}
+
+Let $\CzeroR(x)$ denote the set of all real-valued partial functions on $\R$ that are continuous at $x$.
+\begin{axdef}
+	\CzeroR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CzeroR(x) = \{~ f: \FunR(x) | RealContinuous ~\}
+\end{axdef}
+
+\subsection{\zcmd{CzeroPR}}
+
+Let $U$ be any subset of $\R$. 
+Define $\CzeroPR(U)$ to be the set of all real-valued functions on $U$ that are continuous at each point in $U$.
+
+\begin{axdef}
+	\CzeroPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in   \CzeroR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \CzeroPR(U)$ then $U$ is open.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The $\epsilon-\delta$ definition of continuity given above is compatible with the definition
+of continuity for mappings between topological spaces when we consider $\Rtau$, the usual topology on $\R$,
+and $\Rtau \inducedTopSp U$, the topology induced on the subset $U$.
+
+\begin{zed}
+	\forall U: \openR @ \\
+	\t1	\CzeroPR(U) = \CzeroTT(\Rtau \inducedTopSp U, \Rtau)
+\end{zed}
+
+\end{remark}
+
+\section{Limits}
+
+Let $x$ and $l$ be real numbers and
+let $f$ be a real-valued partial function on $\R$ that is defined everywhere in some
+neighbourhood $U$ of $x$, except possibly at $x$.
+The function $f$ is said to approach the limit $l$ at $x$ if $f \oplus \{ x \mapsto l \}$ is continuous at $x$.
+$$
+	\lim_{x' \to x}{f(x')} = l
+$$
+
+\begin{schema}{Limit}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \oplus \{x \mapsto l\} \in \CzeroR(x)
+\end{schema}
+
+\subsection{\zcmd{limRR}}
+
+Let $\limRR(x,l)$ denote the set of all real-valued partial functions on $\R$ that approach the limit $l$ at $x$.
+
+\begin{axdef}
+	\limRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\limRR(x,l) = \{~ f: \R \pfun \R | Limit ~\}
+\end{axdef}
+
+\begin{theorem}
+If a function $f$ approaches some limit at $x$ then that limit is unique.
+\begin{zed}
+	\forall x, l, l': \R @ \\
+	\t1	\forall f : \limRR(x,l) \cap \limRR(x,l') @ \\
+	\t2		l = l'
+\end{zed}
+\end{theorem}
+
+\begin{proof}
+Suppose we are given real numbers
+\begin{argue}
+	x, l, l' \in \R 
+\end{argue}
+and a function
+\begin{argue}
+	f \in \limRR(x,l) \cap \limRR(x,l')
+\end{argue}
+Let $\epsilon$ be any positive real number
+\begin{argue}
+	\epsilon > 0
+\end{argue}
+Since $f$ approaches limits $l$ and $l'$ at $x$ there exists a real number $\delta > 0$ such that
+\begin{argue}
+	\forall x' \in \R |  \\
+	\t1	\zeroR \ltR \abs{x' \subR x}< \delta @ \\
+	\t2		 \abs{f(x') - l} < \epsilon \land \abs{f(x') - l'} < \epsilon
+\end{argue}
+For any such real number $x'$ we have
+\begin{argue}
+	\abs{l' - l} \\
+	\t1	= \abs{(f(x') - l) - (f(x') - l')} 			& add and subtract $f(x')$ \\
+	\t1	\leq \abs{f(x') - l} + \abs{f(x') - l'} 	& triangle inequality \\
+	\t1	= 2\epsilon					& definition of limits
+\end{argue}
+Since the above holds for any $\epsilon > 0$ we must have
+\begin{argue}
+	l = l'
+\end{argue}
+
+\end{proof}
+
+\subsection{\zcmd{limFR}}
+
+If $f$ approaches the limit $l$ at $x$ then let $\limFR(f,x)$ denote $l$.
+By the preceding theorem, $\limFR(f,x)$ is well-defined when it exists.
+
+\begin{axdef}
+	\limFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\limFR = \{~ Limit @ (f, x) \mapsto l ~\}
+\end{axdef}
+
+\section{Differentiability}
+
+Let $f$ be a real-valued partial function on $\R$, let $x$ be a real number,
+and let $f$ be defined on some neighbourhood $U$ of $x$.
+
+The function $f$ is said to be {\it differentiable} at $x$ if the following limit holds for some number denoted by $f'(x)$.
+$$
+\lim_{h \to 0} \frac{f(x+h) - f(x)}{h} = f'(x)
+$$
+
+\begin{remark}
+If $f$ is differentiable at $x$ then $f$ is continuous at $x$.
+\end{remark}
+
+The geometric intuition behind the concept of differentiability is that $f$ is differentiable at $x$
+when, very near $x$, the graph of $f$ is approximately a straight line through the point $(x, f(x))$ with slope $f'(x)$.
+$$
+f(x + h) \approx f(x) + f'(x) h \quad \text{when} \quad \abs{h} \approx 0
+$$
+The slope $f'(x)$ is called the {\it derivative} of $f$ at $x$
+and $f'$ is called the {\it derived function}.
+
+We can read this definition as saying that the approximate slope function $m(h)$ defined for 
+small enough, non-zero values of $h$ by
+$$
+	m(h) = \frac{f(x + h) - f(x)}{h}
+$$
+approaches the limit $l = f'(x)$ as $h \to 0$.
+$$
+	\lim_{h\to 0}{m(h)} = l = f'(x)
+$$
+
+\begin{schema}{Differentiable}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \in \CzeroR(x)
+\also
+	\LET m == (\lambda h: \Rnz | x \addR h \in \dom f @ (f(x \addR h) \subR f(x)) \divR h) @ \\
+	\t1	\limFR(m, \zeroR) = l
+\end{schema}
+
+\begin{remark}
+If $f$ is differentiable at $x$ then the limit $l$ is unique.
+\end{remark}
+
+\subsection{\zcmd{diffRR}}
+
+Let $\diffRR(x,l)$ denote the set of all functions $f$ that are differentiable at $x$ with $f'(x) = l$.
+
+\begin{axdef}
+	\diffRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\diffRR(x, l) = \{~ f: \R \pfun \R | Differentiable ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffR}}
+
+Let $\diffR(x)$ denote the set of all functions that are differentiable at $x$.
+
+\begin{axdef}
+	\diffR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\diffR(x) = \bigcup \{~ l: \R @ \diffRR(x,l) ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffPR}}
+
+Let $U$ be any subset of $\R$. 
+Let $\diffPR(U)$ denote the set of all functions on $U$
+that are differentiable at each point of $U$.
+
+\begin{axdef}
+	\diffPR: \power \R \fun \power(\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\diffPR(U) = \{~ f: \CzeroPR(U) | \forall x: U @ f \in \diffR(x) ~\}
+\end{axdef}
+
+\section{Derivatives}
+
+\subsection{\zcmd{derivFR}}
+
+Let $\derivFR(f,x)$ denote $f'(x)$, the derivative of $f$ at $x$.
+
+\begin{axdef}
+	\derivFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\derivFR = \{~ Differentiable @ (f,x) \mapsto l ~\}
+\end{axdef}
+
+\subsection{\zcmd{derivF}}
+
+Let $\derivF(f)$ denote $f'$, the derived function.
+
+\begin{axdef}
+	\derivF: (\R \pfun \R) \fun (\R \pfun \R)
+\where
+	\forall f: \R \pfun \R @ \\
+		\t1	\derivF f = (\lambda x: \R | f \in \diffR(x) @ \derivFR(f,x)) 
+\end{axdef}
+
+\begin{remark}
+If $f$ is differentiable on $U$ then $f'$ is not necessarily continuous on $U$.
+Counterexamples exist.
+\end{remark}
+
+\begin{remark}
+If $f$ is uniformly differentiable on $U$ then $f'$ is continuous on $U$.
+A further discussion of uniform differentiability is beyond the scope of this article.
+\end{remark}
+
+\section{Higher Order Derivatives}
+
+Let $n$ be a natural number and let $x$ be a real number.
+In differential geometry we normally deal with $C^n(x)$, the set of functions
+that possess continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\subsection{\zcmd{CnR}}
+
+Let $\CnR(n,x)$ denote the set of all functions that have continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\begin{axdef}
+	\CnR: \nat \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CnR(0,x) = \CzeroR(x)
+\also
+	\forall n: \nat; x: \R @ \\
+	\t1	\CnR(n + 1, x) = \{~ f: \diffR(x) | \derivF f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{CnPR}}
+
+Let $n$ be a natural number and let $U$ be a subset of $\R$.
+Let $\CnPR(n,U)$ denote the set of all functions on $U$ that have continuous derivatives of order $0, \ldots, n$
+at every point of $U$.
+
+\begin{axdef}
+	\CnPR: \nat \cross \power \R \fun \power(\R \pfun \R)
+\where
+	\forall n: \nat; U: \power \R @ \\
+	\t1	\CnPR(n,U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\section{Smoothness}
+
+\subsection{\zcmd{smoothR}}
+
+A function is said to be {\it smooth} if it possesses continuous derivatives of all orders.
+Let $x$ be a real number.
+Let $\smoothR(x)$ denote the set of all functions that are smooth at $x$.
+
+\begin{axdef}
+	\smoothR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\smoothR(x) = \{~ f: \FunR(x) | \forall n: \nat @ f \in \CnR(n, x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{smoothPR}}
+
+Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at every point of $U$.
+
+\begin{axdef}
+	\smoothPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\smoothPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \smoothR(x) ~\}
+\end{axdef}
+
+\printbibliography
+
+\end{document}% manifolds

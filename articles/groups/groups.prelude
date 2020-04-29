@@ -324,20 +324,32 @@ Let $f \restrictU U$ denote the restriction of $f$ to $U$.
 
 \printbibliography
 
-\end{document}% continuous mappings between topological spaces
-\DeclareMathOperator{\CzeroTT}{C^0}
+\end{document}% groups
 
-% topological decoration on operators
-\newcommand{\topology}{\mathsf{top}}
+% group multiplication operator
+\newcommand{\gmul}{\mathbin{*}}
+%%inop \gmul 4
 
-% the induced topological space infix operator
-\newcommand{\inducedTopSp}{\mathbin{|_\topology}}
-%%inop \inducedTopSp 6
+% group multiplication identity element
+\newcommand{\gone}{\mathbf{1}}
 
-% the product topology infix operator
-\newcommand{\prodTop}{\mathbin{\cross_\topology}}
-%%inop \prodTop 5
+% group inverse operator
+\newcommand{\ginv}{^{-1}}
+%%postop \ginv
 
-% the product topological space infix operator
-\newcommand{\prodTopSp}{\mathbin{\cross_\topology}}
-%%inop \prodTopSp 5
+% abelian group decorator
+\newcommand{\ab}{\mathsf{ab}}
+
+% Z as an abelian group under addition
+\newcommand{\Zab}{\num_\ab}
+
+% group addition operator
+\newcommand{\gadd}{\mathbin{+}}
+%%inop \gadd 3
+
+% group additive identity element
+\newcommand{\gzero}{\mathbf{0}}
+
+% group negative operator
+\newcommand{\gneg}{-}
+

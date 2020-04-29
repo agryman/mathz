@@ -1,0 +1,649 @@
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{../groups/groups}
+\usepackage{../topological-spaces/topological-spaces}
+\usepackage{../real-numbers/real-numbers}
+\usepackage{vector-spaces}
+
+\title{Vector Spaces}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for vector spaces and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Real vector spaces are multidimensional generalizations of real numbers.
+They are the objects studied in linear algebra and are foundational to differential geometry.
+
+\section{Real $n$-tuples}
+
+\subsection{\zcmd{Rinf}}
+
+Let $n$ be a natural number.
+A finite sequence of $n$ real numbers is called a {\it real $n$-tuple}.
+Let $\Rinf$ denote the set of all real $n$-tuples for any $n$.
+
+\begin{zed}
+	\Rinf == \seq \R
+\end{zed}
+
+\subsection{\zcmd{Rtuples}}
+
+Let $\Rtuples(n)$ denote $\R^n$, the set of all $n$-tuples for some given $n$.
+\begin{axdef}
+	\Rtuples: \nat \fun \power \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\Rtuples(n) = \{~ v: \Rinf | \# v = n ~\}
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\Rinf = \bigcup \{~ n: \nat @ \Rtuples(n) ~\}
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{DeltaR}}
+
+Let $\DeltaR$ denote the family of subsets of $\Rinf$ such that all tuples in each subset have the same number of components.
+Such as subset is said to be {\it well-dimensioned}.
+
+\begin{axdef}
+	\DeltaR: \family~\Rinf
+\where
+	\DeltaR = \bigcup \{~ n: \nat @ \power(\Rtuples(n)) ~\}
+\end{axdef}
+
+\begin{example}
+The subset $\Rtuples(n)$ is well-dimensioned.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\Rtuples(n) \in \DeltaR
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{dimR}}
+
+Let $\dimR(U)$ denote the number of components of the tuples in $U \in \DeltaR$.
+
+\begin{axdef}
+	\dimR: \DeltaR \fun \nat
+\where
+	\forall n: \nat @ \forall U: \power(\Rtuples(n)) @ \\
+	\t1	\dimR(U) = n
+\end{axdef}
+
+\begin{example}
+The dimension of $\Rtuples(n)$ is $n$.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\dimR(\Rtuples(n)) = n
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{zeroRn}}
+
+Let $\zeroRn(n)$ denote the $n$-tuple consisting of all zeroes.
+
+\begin{axdef}
+	\zeroRn: \nat \fun \Rinf
+\where
+	\zeroRn(0) = \langle \rangle
+\also
+	\forall n: \nat_1 @ \\
+	\t1	\zeroRn(n) = (\lambda i: 1 \upto n @ \zeroR)
+\end{axdef}
+
+\begin{remark}
+The tuple $\zeroRn(n)$ is in $\Rtuples(n)$.
+
+\begin{zed}
+	\forall n: \nat @
+		\zeroRn(n) \in \Rtuples(n)
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{piR}}
+
+The real numbers that comprise an $n$-tuple are called its components.
+The real number $v(i)$ is the $i$-th component of the $n$-tuple $v$ where
+$1 \le i \le n$.
+Let $\piR(i)$ be the projection function that maps an $n$-tuple $v$ to its $i$-th component $v(i)$.
+
+\begin{axdef}
+	\piR: \nat_1 \fun \Rinf \pfun \R
+\where
+	\forall i: \nat_1 @ \\
+	\t1	\piR(i) = (\lambda v: \Rinf | i \in \dom v @ v(i))
+\end{axdef}
+
+\begin{remark}
+Every component of $\zeroRn(n)$ is $\zeroR$.
+
+\begin{zed}
+	\forall n: \nat @ \forall i: 1 \upto n @ \\
+	\t1	\piR(i)(\zeroRn(n)) = \zeroR
+\end{zed}
+
+\end{remark}
+
+\section{Scalar Multiplication}
+
+\subsection{\zcmd{smulR}}
+
+Let $v$ be an $n$-tuple and let $c$ be a real number.
+Scalar multiplication of $v$ by $c$ is the $n$-tuple $c \smulR v$ defined by component-wise multiplication.
+
+\begin{axdef}
+	\_ \smulR \_ : \R \cross \Rinf \fun \Rinf 
+\where
+	\forall c: \R @ \\
+	\t1	c \smulR \langle \rangle = \langle \rangle
+\also
+	\forall c: \R; n: \nat_1 @ \\
+	\t1	\forall v: \Rtuples(n); i: 1 \upto n @ \\
+	\t2		(c \smulR v)(i) = c \mulR v(i)
+\end{axdef}
+
+\begin{remark}
+Scalar multiplication is associative in the sense that $(a \mulR b) \smulR v = a \smulR (b \smulR v)$
+
+\begin{zed}
+	\forall a, b: \R; v: \Rinf @ \\
+	\t1	(a \mulR b) \smulR v = a \smulR (b \smulR v)
+\end{zed}
+
+\end{remark}
+
+\section{Vector Addition and Subtraction}
+
+\subsection{\zcmd{Rdelta}}
+
+Let $\Rdelta$ denote the set of all pairs of tuples that have the same number of components.
+
+\begin{axdef}
+	\Rdelta: \Rinf \rel \Rinf
+\where
+	\Rdelta = \{~ v, w: \Rinf | \# v = \# w ~\}
+\end{axdef}
+
+\subsection{\zcmd{vaddR}}
+
+Let $v$ and $w$ be $n$-tuples.
+Vector addition of $v$ and $w$ is the $n$-tuple $v \vaddR w$ defined by component-wise addition.
+
+\begin{axdef}
+	\_ \vaddR \_: \Rdelta \fun \Rinf
+\where
+	\langle \rangle \vaddR \langle \rangle = \langle \rangle
+\also
+	\forall n: \nat_1 @ \\
+	\t1	\forall v, w: \Rtuples(n); i: 1 \upto n @ \\
+	\t2		(v \vaddR w)(i) = v(i) \addR w(i)
+\end{axdef}
+
+\subsection{\zcmd{vsubR}}
+
+Vector subtraction is defined similarly.
+
+\begin{axdef}
+	\_ \vsubR \_: \Rdelta \fun \Rinf
+\where
+	\langle \rangle \vsubR \langle \rangle = \langle \rangle
+\also
+	\forall n: \nat_1 @ \\
+	\t1	\forall v, w: \Rtuples(n); i: 1 \upto n @ \\
+	\t2		(v \vsubR w)(i) = v(i) \subR w(i)
+\end{axdef}
+
+Each $\Rtuples(n)$ is a real vector space under the operations of scalar multiplication and vector addition
+defined above. 
+
+\section{Vector Spaces}
+
+The sets $\R^n$ with the operations of scalar multiplication and vector addition form vector spaces.
+In general, a vector space is a set of vectors endowed with scalar multiplication and vector addition operations that
+follow rules analogous to those for $\R^n$.
+
+\subsection{$VectorSpace$}
+
+Let $V$ be a set and let $VectorSpace[V]$ denote the set of all vector spaces whose vectors are $V$.
+
+\begin{schema}{VectorSpace}[V]
+	\zeroV: V \\
+	\_ \addV \_: V \cross V \fun V \\
+	\_ \smulV \_: \R \cross V \fun V
+\where
+	\forall v: V @ \\
+	\t1	\zeroV \addV v = v = v \addV \zeroV
+\also
+	\forall v, w: V @ \\
+	\t1	v \addV w = w \addV v
+\also
+	\forall u, v, w: V @ \\
+	\t1	u \addV (v \addV w) = (u \addV v) \addV w
+\also
+	\forall v: V @ \\
+	\t1	\zeroR \smulV v = \zeroV
+\also
+	\forall v: V @ \\
+	\t1	\oneR \smulV v = v
+\also
+	\forall a, b: \R; v: V @ \\
+	\t1	(a \addR b) \smulV v = (a \smulV v) \addV (b \smulV v)
+\also
+	\forall a, b: \R; v: V @ \\
+	\t1	(a \mulR b) \smulV v = a \smulV (b \smulV v)
+\also
+	\forall a: \R; v, w: V @ \\
+	\t1	a \smulV (v \addV w) = (a \smulV v) \addV (a \smulV w)
+\end{schema}
+\begin{itemize}
+	\item the zero vector $\zeroV$ is the identity element for vector addition
+	\item vector addition is commutative
+	\item vector addition is associative
+	\item scalar multiplication by $\zeroR$ gives the zero vector
+	\item scalar multiplication by $\oneR$ leaves any vector unchanged
+	\item real addition distributes over scalar multiplication
+	\item real multiplication associates over scalar multiplication
+	\item scalar multiplication distributes over vector addition
+\end{itemize}
+
+\subsection{$vectorSpace$}
+
+Let $vectorSpace[V]$ the set of all triples consisting of a zero vector, a vector addition operation, and a scalar multiplication operation
+that define a vector space whose vectors are $V$,
+
+\section{Linear Transformations}
+
+\subsection{Linear}
+
+Let $n$ and $m$ be natural numbers.
+A mapping $L$ from $\R^n$ to $\R^m$ is said to be a {\it linear transformation} if it preserves scalar multiplication and vector addition.
+\begin{schema}{Linear}
+	n, m: \nat \\
+	L: \Rinf \pfun \Rinf
+\where
+	L \in \Rtuples(n) \fun \Rtuples(m)
+\also
+	\forall c: \R; v: \Rtuples(n) @ \\
+	\t1	L(c \smulR v) = c \smulR L(v)
+\also
+	\forall v, w: \Rtuples(n) @ \\
+	\t1	L(v \vaddR w) = L(v) \vaddR L(w)
+\end{schema}
+
+\subsection{\zcmd{linR}}
+
+Define $\linR(n,m)$ to be the set of all linear transformations from $\R^n$ to $\R^m$.
+\begin{axdef}
+	\linR: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
+\where
+	\forall n,m: \nat @ \\
+	\t1	\linR(n,m) = \{~ L: \Rinf \pfun \Rinf | Linear ~\}
+\end{axdef}
+
+\subsection{\zcmd{In}}
+
+Let $\In(n)$ denote the identity function on $\Rtuples(n)$.
+
+\begin{axdef}
+	\In: \nat \fun \Rinf \pfun \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\In(n) = \id(\Rtuples(n))
+\end{axdef}
+
+\begin{remark}
+The function $\In(n)$ is a linear transformation.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\In(n) \in \linR(n, n)
+\end{zed}
+
+\end{remark}
+
+\section{The Dot Product}
+
+\subsection{\zcmd{dotR}}
+
+The {\it inner} or {\it dot} product of $n$-tuples $v$ and $w$ is the real number $v \dotR w$ defined by the sum of the component-wise products.
+
+\begin{axdef}
+	\_ \dotR \_ : \Rdelta \fun \R
+\where
+	\langle \rangle \dotR \langle \rangle = \zeroR
+\also
+	\forall x, y: \R; v, w: \Rinf | \# v = \# w @ \\
+	\t1	(\langle x \rangle \cat v) \dotR (\langle y \rangle \cat w) = x \mulR y \addR v \dotR w
+\end{axdef}
+
+Each $\Rtuples(n)$ is a real inner product space under the operation of dot product defined above.
+
+\section{The Norm}
+
+\subsection{\zcmd{normR}}
+
+The norm $\norm{v}$ of the $n$-tuple $v$ is the positive square root of its dot product with itself.
+$$
+	\norm{v} = \sqrt{v \dotR v}
+$$
+
+Define $\normR(v)$ to be $\norm{v}$.
+\begin{axdef}
+	\normR: \Rinf \fun \R
+\where
+	\forall v: \Rinf @ \\
+	\t1	\normR(v) = \sqrtR(v \dotR v)
+\end{axdef}
+
+The concepts of continuity, limits, and differentiability extend to functions between normed vector spaces such as $\R^n$.
+
+\subsection{\zcmd{ballRn}}
+
+Let $\ballRn(v,r)$ denote the open ball in $\Rtuples(n)$ of radius $r  \in \R$ centred at $v \in \Rtuples(n)$.
+
+\begin{axdef}
+	\ballRn: \Rinf \cross \R \fun \power \Rinf
+\where
+	\forall v: \Rinf; r: \R @ \LET n == \# v @ \\
+	\t1	\ballRn(v, r) = \{~ w: \Rtuples(n) | \normR(v \vsubR w) \ltR r ~\}
+\end{axdef}
+
+\subsection{\zcmd{ballsRn}}
+
+Let $\ballsRn(n)$ denote the family of all open balls in $\Rtuples(n)$.
+
+\begin{axdef}
+	\ballsRn: \nat \fun \family~\Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\ballsRn(n) =  \{~ v: \Rtuples(n); r: \R @ \ballRn(v,r) ~\}
+\end{axdef}
+
+\subsection{\zcmd{tauRn}}
+
+The usual topology on $\Rtuples(n)$ is the topology generated by the open balls in $\Rtuples(n)$.
+Let $\tauRn(n)$ denote the usual topology on $\Rtuples(n)$.
+
+\begin{axdef}
+	\tauRn: \nat \fun \family~\Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\tauRn(n) = topGen[\Rtuples(n)] (\ballsRn(n))
+\end{axdef}
+
+\begin{remark}
+
+If $n \in \nat$ then $\tauRn(n)$ is a topology on $\Rtuples(n)$.
+
+\begin{zed}
+	\forall n: \nat @ \tauRn(n) \in top[\Rtuples(n)]
+\end{zed}
+\end{remark}
+
+\subsection{\zcmd{neighRn}}
+
+Let $x \in \Rtuples(n)$. 
+Let $\neighRn(x)$ denote the set of all open sets $U$ in the usual topology $\tauRn(n)$ that contain $x$.
+Such a set $U$ is called a neighbourhood of $x$.
+
+\begin{axdef}
+	\neighRn: \Rinf \fun \family~\Rinf
+\where
+	\forall x: \Rinf @ \LET n == \# x @\\
+	\t1	\neighRn(x) = \{~ U: \tauRn(n) | x \in U ~\}
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\forall v: \Rinf @ \LET n == \# v @ \neighRn(v) \in \family(\Rtuples(n))
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{RtauN}}
+
+Let $\RtauN(n)$ denote the topological space defined by the usual topology on $\Rtuples(n)$.
+
+\begin{axdef}
+	\RtauN: \nat \fun topSpaces[\Rinf]
+\where
+	\forall n: \nat @ \\
+	\t1	\RtauN(n) = (\Rtuples(n), \tauRn(n))
+\end{axdef}
+
+\section{Continuity}
+
+\subsection{\zcmd{CzeroN}}
+
+A function $f$ from $\R^n$ to $\R$ is said to be continuous if it is continuous with respect to the usual topologies.
+Let $\CzeroN(n)$ denote the set of these continuous mappings.
+
+\begin{axdef}
+	\CzeroN: \nat \fun \power(\Rinf \pfun \R)
+\where
+	\forall n: \nat @ \\
+	\t1	\CzeroN(n) = \CzeroTT(\RtauN(n), \Rtau)
+\end{axdef}
+
+\subsection{\zcmd{CzeroPRn}}
+
+Let $U$ be a subset of $\R^n$.
+A function $f \in U \fun \R$ is said to be continuous if it is continuous with respect to the topology induced on $U$.
+Let $\CzeroPRn(U)$ denote the set of these continuous functions.
+
+\begin{axdef}
+	\CzeroPRn: \DeltaR \fun \power(\Rinf \pfun \R)
+\where
+	\forall U: \DeltaR @ \\
+	\t1	\LET n == \dimR U @ \\
+	\t2		\CzeroPRn(U) = \CzeroTT(\RtauN(n) \inducedTopSp U, \Rtau)
+\end{axdef}
+
+\subsection{\zcmd{CzeroRn}}
+
+A partial function $f$ from $\R^n$ to $\R$ is said to be continuous at $x \in \R^n$ if its domain contains a neighbourhood $U$ of $x$
+such that its restriction to $U$ is continuous on $U$.
+Let $\CzeroRn(x)$ denote the set of such functions.
+
+\begin{axdef}
+	\CzeroRn: \Rinf \fun \power(\Rinf \pfun \R)
+\where
+	\forall x: \Rinf @ \\
+	\t1	\LET n == \# x @ \\
+	\t2		\CzeroRn(x) = \{~ f: \Rtuples(n) \pfun \R | \exists U: \neighRn(x) | U \subseteq \dom f @ U \dres f \in \CzeroPRn(U) ~\}
+\end{axdef}
+
+\subsection{\zcmd{CzeroNN}}
+
+A mapping $f$ from $\Rtuples(n)$ to $\Rtuples(m)$ is said to be continuous if it is continuous with respect to the usual topologies.
+Let $\CzeroNN(n,m)$ denote the set of these continuous mappings.
+
+\begin{axdef}
+	\CzeroNN: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \\
+	\t1	\CzeroNN(n,m) = \CzeroTT(\RtauN(n), \RtauN(m))
+\end{axdef}
+
+\begin{example}
+The function $\In(n)$ is continuous.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\In(n) \in \CzeroNN(n,n)
+\end{zed}
+
+\begin{theorem}
+Linear functions are continuous.
+
+\begin{zed}
+	\forall n, m: \nat@ \\
+	\t1	\linR(n, m) \subseteq \CzeroNN(n,m)
+\end{zed}
+
+\end{theorem}
+
+\end{example}
+
+\subsection{\zcmd{CzeroPRnN}}
+
+Let $U$ be any subset of $\Rtuples(n)$.
+Let $\CzeroPRnN(U,m)$ denote the set of continuous mappings from the topology induced by $\RtauN(n)$ on $U$ to $\RtauN(m)$.
+
+\begin{axdef}
+	\CzeroPRnN: \DeltaR \cross \nat \fun \power (\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \\
+	\t1	\forall U: \DeltaR | \dimR(U) = n @ \\
+	\t2		\CzeroPRnN(U, m) = \CzeroTT(\RtauN(n) \inducedTopSp U, \RtauN(m))
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\forall n, m: \nat @ \\
+	\t1	\CzeroPRnN(\Rtuples(n),m) = \CzeroNN(n,m)
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{CzeroRnN}}
+
+Let $x \in \Rtuples(n)$ and let $f$ be a partial function from $\Rtuples(n)$ to $\Rtuples(m)$
+whose domain includes some neighbourhood $U$ of $x$ such that $f$ restricted to $U$ is continuous.
+In this case $f$ is said to be {\it continuous at $x$}.
+
+\begin{schema}{VectorContinuous}
+	n, m: \nat \\
+	f: \Rinf \pfun \Rinf \\
+	x: \Rinf
+\where
+	f \in \Rtuples(n) \pfun \Rtuples(m)
+\also
+	\exists U: \neighRn(x) | \\
+	\t1	U \subseteq \dom f @ \\
+	\t2		U \dres f \in \CzeroPRnN(U,m)
+\end{schema}
+
+Let $\CzeroRnN(x,m)$ denote the set of all partial functions $f$ from $\Rtuples(n)$ to $\Rtuples(m)$
+that are continuous at $x$.
+
+\begin{axdef}
+	\CzeroRnN: \Rinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \forall x: \Rtuples(n)  @ \\
+	\t1	\CzeroRnN(x, m) = \\
+	\t2		\{~ f: \Rtuples(n) \pfun \Rtuples(m) | VectorContinuous ~\}
+\end{axdef}
+
+\begin{example}
+The function $\In(n)$ is continuous at every point $x \in \Rtuples(n)$.
+
+\begin{zed}
+	\forall n: \nat @ \forall x: \Rtuples(n) @ \\
+	\t1	\In(n) \in \CzeroRnN(x, n)
+\end{zed}
+
+\end{example}
+
+\begin{theorem}
+Linear functions are continuous everywhere.
+
+\begin{zed}
+	\forall n, m: \nat @ \\
+	\t1	\forall x: \Rtuples(n); L: \linR(n,m) @ \\
+	\t2		L \in \CzeroRnN(x, m)
+\end{zed}
+
+\end{theorem}
+
+
+\section{Differentiability}
+
+Let $x \in \R^n$ and let $f: \R^n \pfun \R^m$ be continuous at $x$.
+Then $f$ is said to be {\it differentiable at $x$} if there exists a linear transformation $L: \R^n \fun \R^m$
+such that $f(x + h) - f(x)$ is approximately linear in $h$ for very small $h$.
+$$
+f(x + h) - f(x) \approx  L(h) + O(h^2) \quad \text{when} \quad \norm{h} \approx 0
+$$
+
+This condition can be written as a limit.
+$$
+\lim_{h \to 0} \frac{\norm{f(x+h) - f(x) - L(h)}}{\norm{h}} = 0
+$$
+
+\subsection{$diffQuot$}
+
+The limit exists when the following difference quotient function $q: \R^n \pfun \R$ is continuous at $0$.
+$$
+q(h) = 
+\begin{cases}
+	\frac{\norm{f(x+h) - f(x) - L(h)}}{\norm{h}}	&	\text{if } h \neq 0\\
+	0								&	\text{otherwise}
+\end{cases}
+$$
+
+\begin{schema}{DifferenceQuotient}
+	VectorContinuous \\
+	L: \Rinf \pfun \Rinf \\
+	q: \Rinf \pfun \R
+\where
+	L \in \linR(n, m)
+\also
+	\dom q = \{~ h: \Rtuples(n) | x \vaddR h \in \dom f ~\}
+\also
+	\forall h: \dom q | h \neq \zeroRn(n) @ \\
+	\t1	q(h) = \normR(f(x \vaddR h) \vsubR f(x) \vsubR L(h)) \divR \normR(h)
+\also
+	q(\zeroRn(n)) = \zeroR
+\end{schema}
+
+The function $f$ is differentiable at $x$ when there exists a linear transformation $L$ such that the difference quotient $q$ is
+continuous at $0$.
+
+\begin{schema}{VectorDifferentiable}
+	DifferenceQuotient
+\where
+	q \in \CzeroRn(\zeroRn(n))
+\end{schema}
+
+Clearly $q$ is uniquely determined by $f$, $x$, and $L$.
+Let $diffQuot(f,x,L)$ denote the difference quotient.
+
+\begin{axdef}
+	diffQuot: (\Rinf \pfun \Rinf) \cross \Rinf \cross (\Rinf \pfun \Rinf) \pfun (\Rinf \pfun \R)
+\where
+	diffQuot = \{~ VectorDifferentiable @ (f, x, L) \mapsto q ~\}
+\end{axdef}
+
+
+
+
+Let $\smoothRnm(x,m)$ denote the set of all functions $f \in \Rtuples(n) \pfun \Rtuples(m)$ that are smooth at $x \in \Rtuples(n)$.
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,238 @@
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{groups}
+
+\title{Groups}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for groups and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Groups are ubiquitous throughout mathematics and physics.
+
+\section{Groups}
+
+A {\it group} is a set $G$ of elements $x, y, \ldots$ endowed with an associative multiplication operation $x \gmul y$
+that has an identity element $\gone$ such that all elements have inverses $x \ginv, y \ginv, \ldots$.
+
+\subsection{$Group$}
+
+Let $Group[G]$ denote the set of all group structures defined on some given set $G$ of elements.
+
+\begin{schema}{Group}[G]
+	\_ \gmul \_: G \cross G \fun G \\
+	\gone: G \\
+	\_ \ginv: G \fun G
+\where
+	\forall x, y, z: G @ \\
+	\t1	(x \gmul y) \gmul z = x \gmul (y \gmul z)
+\also
+	\forall x: G @ \\
+	\t1	x \gmul \gone = x = \gone \gmul x
+\also
+	\forall x: G @ \\
+	\t1	x \gmul x \ginv = \gone = x \ginv \gmul x
+\end{schema}
+\begin{itemize}
+
+\item The group multiplication operation is associative.
+
+\item The element $\gone$ is both a left and right identity element under group multiplication.
+
+\item Every group element has an inverse element that is both a left and right inverse under group multiplication.
+
+\end{itemize}
+
+\begin{remark}
+The group multiplication operation uniquely determines the set of elements.
+
+\begin{zed}
+	\forall Group[\setX] @ \\
+	\t1	\setX = \ran (\_ \gmul \_)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The group multiplication operation uniquely determines the identity operation.
+
+\begin{zed}
+	\forall Group[\setX] @ \\
+	\t1	\forall x, y: \setX @ \\
+	\t2		x \gmul y = x \implies y = \gone
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The group multiplication uniquely determines the inverses.
+
+\begin{zed}
+	\forall Group[\setX] @ \\
+	\t1	\forall x, y: \setX @ \\
+	\t2		x \gmul y = \gone \implies x = y \ginv \land y = x \ginv
+\end{zed}
+
+\end{remark}
+
+\subsection{$group$}
+
+Let $group[G]$ denote the set of all group multiplication operations on $G$.
+
+\begin{gendef}[G]
+	group: \power(G \cross G \fun G)
+\where
+	group = \{~ Group[G] @ (\_ \gmul \_) ~\}
+\end{gendef}
+
+\subsection{$bij$}
+
+Let $X$ be a set and let $bij[X]$ denote the set of a bijections $X \bij X$ from $X$ to itself.
+
+\begin{gendef}[X]
+	bij: \power(X \fun X)
+\where
+	bij = X \bij X
+\end{gendef}
+
+\begin{remark}
+The composition of bijections is a bijection.
+
+\begin{zed}
+	\forall f, g: bij[\setX] @ \\
+	\t1	f \circ g \in bij[\setX]
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+Composition is associative.
+
+\begin{zed}
+	\forall f, g, h: bij[\setX] @ \\
+	\t1	f \circ (g \circ h) = (f \circ g) \circ h
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The identity function $\id X$ acts as a left and right identity element under composition.
+
+\begin{zed}
+	\forall f: bij[\setX] @ \\
+	\t1	 \id \setX \circ f = f = f \circ \id \setX
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
+
+\begin{zed}
+	\forall f: bij[\setX] @ \\
+	\t1	f \circ f \inv = \id \setX = f \inv \circ f
+\end{zed}
+
+\end{remark}
+
+\subsection{$Bij$}
+
+The preceding remarks show that set $bij[X]$ under the operation of composition has the structure of a group.
+Let $Bij[X]$ denote this group.
+
+\begin{gendef}[X]
+	Bij: bij[X] \cross bij[X] \fun bij[X]
+\where
+	Bij = (\lambda f, g: bij[X] @ f \circ g)
+\end{gendef}
+
+\begin{theorem}
+The multiplication operation $Bij[X]$ is a group.
+
+\begin{zed}
+	Bij[\setX] \in group[bij[\setX]]
+\end{zed}
+
+\end{theorem}
+
+\section{Abelian Groups}
+
+An {\it abelian group} is a group in which the multiplication is commutative, i.e. $x \gmul y = y \gmul x$.
+In this case, the group multiplication is denoted as addition $x \gadd y$, the identity element is denoted as a zero $\gzero$,
+and the inverse of an element is denoted as its negative $\gneg x$.
+
+\subsection{$AbelianGroup$}
+
+Let $AbelianGroup[G]$ denote the abelian group structures on $G$.
+
+\begin{schema}{AbelianGroup}[G]
+	Group[G] \\
+	\_ \gadd \_: G \cross G \fun G \\
+	\gzero: G \\
+	\gneg: G \fun G
+\where
+	(\_ \gadd \_) = (\_ \gmul \_)
+\also
+	\gzero = \gone
+\also
+	\gneg = (\_ \ginv)
+\also
+	\forall x, y: G @ \\
+	\t1	x \gadd y = y \gadd x
+\end{schema}
+\begin{itemize}
+
+\item The group multiplication is denoted as addition.
+
+\item The group identify element is denoted as the zero element.
+
+\item The inverse of a group element is denoted as the negative of the element.
+
+\item The group addition is commutative.
+
+\end{itemize}
+
+\subsection{$abelianGroup$}
+
+Let $abelianGroup[G]$ denote the subset of abelian groups in $group[G]$.
+
+\begin{gendef}[G]
+	abelianGroup: \power(G \cross G \fun G)
+\where
+	abelianGroup = \{~ AbelianGroup[G] @ (\_ \gadd \_) ~\}
+\end{gendef}
+
+\begin{remark}
+The set $abelianGroup[G]$ is a subset of $group[G]$.
+
+\begin{zed}
+	abelianGroup[\setX] \subseteq group[\setX]
+\end{zed}
+
+\end{remark}
+
+\begin{example}
+The integer addition is an abelian group.
+
+\begin{zed}
+	(\_ + \_) \in abelianGroup[\num]
+\end{zed}
+
+\end{example}
+
+\printbibliography
+
+\end{document}
