@@ -1,0 +1,92 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{real-numbers}[2018/08/05 Z Notation for real numbers package]
+
+\RequirePackage{amssymb}
+
+% the set of real numbers
+\newcommand{\R}{\mathbb{R}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the real number 0
+\newcommand{\zeroR}{0}
+
+% the real number 1
+\newcommand{\oneR}{1}
+
+% the negation prefix operator -x
+\newcommand{\negR}{-}
+
+% the addition infix operator x + y
+\newcommand{\addR}{\mathbin{+}}
+
+% the subtraction infix operator
+\newcommand{\subR}{\mathbin{-}}
+
+%%inop \addR \subR 3
+
+% the multiplication infix operator x * y
+\newcommand{\mulR}{\mathbin{*}}
+
+% the division infix operator x / y
+\newcommand{\divR}{\mathbin{/}}
+
+%%inop \mulR \divR 4
+
+% the less then infix relation x < y
+\newcommand{\ltR}{\mathrel{<}}
+
+% the less than or equal to infix relation x <= y
+\newcommand{\leR}{\mathrel{\leq}}
+
+% the greater than infix relation x > y
+\newcommand{\gtR}{\mathrel{>}}
+
+% the greater than or equal to infix relation x > y
+\newcommand{\geR}{\mathrel{\geq}}
+
+%%inrel \ltR \leR \gtR \geR
+
+% the set of all open sets of real numbers
+\newcommand{\openR}{\mathsf{open}}
+
+% the absolute value function abs(x) = |x|
+\DeclareMathOperator{\absR}{abs}
+
+% the positive square root function sqrt(x)
+\DeclareMathOperator{\sqrtR}{sqrt}
+
+\DeclareMathOperator{\intervalR}{interval}
+\DeclareMathOperator{\ballR}{ball}
+\DeclareMathOperator{\ballsR}{balls}
+\DeclareMathOperator{\neighR}{neigh}
+
+\newcommand{\tauR}{\tau_\R}
+\newcommand{\Rtau}{\R_\tau}
+
+\DeclareMathOperator{\limRR}{lim}
+\DeclareMathOperator{\limR}{lim}
+\DeclareMathOperator{\limFR}{lim}
+
+\DeclareMathOperator{\FunR}{F}
+\DeclareMathOperator{\FunPR}{F}
+
+\DeclareMathOperator{\CzeroR}{C^0}
+\DeclareMathOperator{\CzeroPR}{C^0}
+
+\DeclareMathOperator{\CnR}{C}
+\DeclareMathOperator{\CnPR}{C}
+
+\DeclareMathOperator{\diffRR}{diff}
+\DeclareMathOperator{\diffR}{diff}
+\DeclareMathOperator{\diffPR}{diff}
+
+\DeclareMathOperator{\smoothR}{C^{\infty}}
+\DeclareMathOperator{\smoothPR}{C^{\infty}}
+
+\DeclareMathOperator{\derivFR}{D}
+\DeclareMathOperator{\derivF}{D}

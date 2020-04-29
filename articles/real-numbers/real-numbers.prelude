@@ -1,0 +1,754 @@
+%
+% fuzzlib.x
+%
+% This file is part of fuzz2000
+% Copyright (c) 1982--2006 J. M. Spivey
+% All rights reserved
+%
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are met:
+%
+% 1. Redistributions of source code must retain the above copyright notice,
+%    this list of conditions and the following disclaimer.
+% 2. Redistributions in binary form must reproduce the above copyright notice,
+%    this list of conditions and the following disclaimer in the documentation
+%    and/or other materials provided with the distribution.
+% 3. The name of the author may not be used to endorse or promote products
+%    derived from this software without specific prior written permission.
+%
+% THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+% IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+% OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+% IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+% SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+% OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+% 
+% $Id: fuzzlib.x,v 1.2 2007-02-16 12:45:13 mike Exp $
+%
+
+%%token $"\bind" 335
+%%token $"\bsup" 262
+%%token $"\cross" 266
+%%token $"\defs" 268
+%%token $"\ELSE" 333
+%%token $"\esup" 275
+%%token $"\exists" 277
+%%token $"\exists_1" 278
+%%token $"false" 280
+%%token $"\forall" 282
+%%token $"\hide" 284
+%%token $"\iff" 273
+%%token $"\IF" 331
+%%token $"\implies" 285
+%%token $"\in" 286
+%%token $"\inrel" 329
+%%token $"\lambda" 289
+%%token $"\land" 258
+%%token $"\langle" 334
+%%token $"\lbag" 290
+%%token $"\ldata" 291
+%%token $"\LET" 292
+%%token $"\limg" 293
+%%token $"\lnot" 296
+%%token $"\lor" 298
+%%token $"\mid" 124
+%%token $"\mu" 294
+%%token $"\pipe" 299
+%%token $"\power" 300
+%%token $"\pre" 301
+%%token $"\project" 302
+%%token $"\rangle" 336
+%%token $"\rbag" 303
+%%token $"\rdata" 304
+%%token $"\rimg" 305
+%%token $"\semi" 281
+%%token $"\spot" 64
+%%token $"\THEN" 332
+%%token $"\theta" 306
+%%token $"true" 307
+%%token $"\vdash" 309
+%%token $"\where" 310
+%%token $"==" 272
+%%token $"%%ingen" 312
+%%token $"%%inop" 313
+%%token $"%%inrel" 314
+%%token $"%%pregen" 316
+%%token $"%%prerel" 317
+%%token $"%%postop" 315
+%%token $"%%type" 318
+%%token $"%%tame" 319
+%%token $"%%pname" 320
+%%token $"%%ignore" 338
+%%token $"%%debug" 340
+%%token $"%%line" 341
+%%token $"\begin{axdef}" 259
+%%token $"\begin{gendef}" 260
+%%token $"\begin{schema}" 261
+%%token $"\begin{zed}" 264
+%%token $"\begin{syntax}" 263
+%%token $"\end{axdef}" 270
+%%token $"\end{gendef}" 271
+%%token $"\end{schema}" 274
+%%token $"\end{zed}" 279
+%%token $"\end{syntax}" 276
+
+%%inop \mapsto							1
+%%inop \upto							2
+%%inop + - \cup \setminus \cat \uplus \uminus			3
+%%inop * \div \mod \cap \circ \comp \filter \extract \otimes	4
+%%inop \oplus \bcount						5
+%%inop \dres \rres \ndres \nrres				6
+%%postop \plus \star \inv
+%%inrel \neq \notin \subseteq \subset < \leq \geq > \inbag \partition
+%%inrel \prefix \subbageq \suffix \inseq
+%%prerel \disjoint
+%%ingen \rel \fun \pinj \inj \psurj \surj \bij \ffun \finj
+%%pregen \power_1 \id \finset \iseq
+%%ignore \quad \qquad
+
+%%type \pfun \nat \seq \bag
+\begin{gendef}[X]
+	\finset \_: \power (\power X)
+\end{gendef}
+\begin{gendef}[X,Y]
+	\_ \rel \_, \_ \ffun \_: \power (\power (X \cross Y)) \\
+	\_ \fun \_: \power (X \pfun Y)
+\end{gendef}
+%%type \rel \ffun \finset
+
+\begin{axdef}
+	-: \num \fun \num \\
+        \_ + \_ , \_ - \_ , \_ * \_: \num \cross \num \fun \num \\
+        \_ \div \_ , \_ \mod \_: 
+		\num \cross \num \pfun \num \\
+        \_ < \_ , \_ \leq \_ , \_ \geq \_ , \_ > \_: 
+		\num \rel \num \\
+	\nat_1: \power \nat \\
+        succ: \nat \fun \nat \\
+	\_ \upto \_: \num \cross \num \fun \power \num \\
+        min: \power \num \pfun \num \\
+        max: \power \num \pfun \num
+\end{axdef}
+
+\begin{gendef}[X]
+        \_ \neq \_: X \rel X \\
+        \_ \notin \_: X \rel \power X \\
+	\empty, \emptyset: \power X \\
+	\_ \subseteq \_ , \_ \subset \_: \power X \rel \power X \\
+	\power_1 \_: \power (\power X) \\
+        \_  \cup \_ , \_ \cap \_ , \_ \setminus \_:
+                \power X \cross \power X \fun \power X \\
+        \bigcup, \bigcap: \power (\power X) \fun \power X \\
+	\id \_: X \rel X \\
+        \_\plus, \_\star: (X \rel X) \fun (X \rel X) \\
+        iter: \num \fun (X \rel X) \fun (X \rel X) \\
+	\finset_1 \_: \power (\finset X) \\
+        \#: \finset X \fun \nat \\
+	\seq_1 \_, \iseq \_: \power (\seq X) \\
+        \_ \cat \_ :  \seq X \cross \seq X \fun \seq X \\
+        head, last: \seq X \pfun X \\
+        tail, front: \seq X \pfun \seq X \\
+        rev: \seq X \fun \seq X \\
+        \_ \filter \_: \seq X \cross \power X \fun \seq X \\
+        \_ \extract \_: \power \nat \cross \seq X \pfun \seq X \\
+	squash: (\nat \ffun X) \pfun \seq X \\
+	\_\prefix\_, \_\suffix\_, \_\inseq\_: \seq X \rel \seq X \\
+        \dcat: \seq (\seq X) \fun \seq X \\
+        count: \bag X \fun (X \fun \nat) \\
+	\_\bcount\_: \bag X \cross X \fun \nat \\
+        \_ \inbag \_: X \rel \bag X \\
+	\_ \subbageq \_: \bag X \rel \bag X \\
+        \_ \uplus \_, \_ \uminus \_: \bag X \cross \bag X \fun \bag X \\
+	\_ \otimes \_: \nat \cross \bag X \fun \bag X \\
+        items: \seq X \fun \bag X
+\end{gendef}
+
+\begin{gendef}[X,Y]
+        first: X \cross Y \fun X \\
+        second: X \cross Y \fun Y \\
+        \_ \mapsto \_: X \cross Y \fun X \cross Y \\
+        \dom: (X \rel Y) \fun \power X \\
+        \ran: (X \rel Y) \fun \power Y \\
+        \_ \dres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \rres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_ \ndres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \nrres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_\inv: (X \rel Y) \fun (Y \rel X) \\
+        \_\limg\_\rimg: (X \rel Y) \cross \power X \fun \power Y \\
+        \_ \oplus \_: (X \rel Y) \cross (X \rel Y) \fun (X \rel Y) \\
+	\_ \pinj \_, \_ \inj \_, \_ \psurj \_, 
+	\_ \surj \_, \_ \bij \_, \_ \finj \_: \power(X \pfun Y) \\
+        \disjoint \_: \power (X \pfun \power Y) \\
+        \_ \partition \_: (X \pfun \power Y) \rel \power Y
+\end{gendef}
+
+\begin{gendef}[X,Y,Z]
+        \_ \comp \_: (X \rel Y) \cross (Y \rel Z) \fun (X \rel Z) \\
+	\_ \circ \_: (Y \rel Z) \cross (X \rel Y) \fun (X \rel Z)
+\end{gendef}
+
+%%pname \pfun $"-+>"
+%%pname \ffun $"-++>"
+%%pname \rel $"<->"
+%%pname \seq $"seq"
+%%pname \bag $"bag"
+%%pname \finset $"F"
+%%pname \nat $"NN"
+%%pname \num $"ZZ"
+%%pname \upto $".."
+%%pname \# $"#"
+%%pname \power_1 $"P_1"
+%%pname \id $"id"
+%%pname \mapsto $"|->"
+%%pname \dom $"dom"
+%%pname \ran $"ran"
+%%pname \fun $"-->"
+%%pname \pinj $">+>"
+%%pname \inj $">->"
+%%pname \psurj $"-+>>"
+%%pname \surj $"-->>"
+%%pname \bij $">->>"
+%%pname \finj $">++>"
+%%pname \disjoint $"disjoint"
+%%pname \partition $"partition"
+
+%%tame \cup \cap \setminus \bigcup \bigcap count \uplus items
+%%tame \plus \cat head last tail front rev \filter \dcat
+%%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
+%%tame \inv \limg\rimg \oplus \comp \circ
+% arbitrary sets
+\newcommand{\setX}{\mathsf{X}}
+\newcommand{\setY}{\mathsf{Y}}
+\newcommand{\setZ}{\mathsf{Z}}
+
+% families of sets
+\newcommand{\family}{\mathcal{F}}
+%%pregen \family
+
+% the induced family infix operator
+\newcommand{\inducedFam}{\mathbin{|_\family}}
+%%inop \inducedFam 6
+
+% the product family infix operator
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
+%%inop \prodFam 5
+
+% the constant function
+\DeclareMathOperator{\const}{const}
+
+% the function restriction infix operator
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
+%%inop \restrictU 6
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{sets}
+
+\title{Sets}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for concepts related to sets.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Typed set theory forms the mathematical foundation of Z Notation
+and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
+The articles augments the tool-kit with some additional concepts.
+
+\section{Arbitrary Sets}
+
+\subsection{\zcmd{setX}, \zcmd{setY}, and \zcmd{setZ}}
+
+Let $\setX$, $\setY$, and $\setZ$ denote arbitrary sets.
+These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
+by arbitrary sets.
+
+\begin{zed}
+	[\setX, \setY, \setZ]
+\end{zed}
+
+\section{Families}
+
+\subsection{\zcmd{family}}
+
+Let $X$ be a set.
+A {\it family} of subsets of $X$ is a set of subsets of $X$.
+Let $\family X$ denote the set of all families of subsets of $X$.
+
+\begin{zed}
+	\family X == \power(\power X)
+\end{zed}
+
+\section{Functions}
+
+
+\subsection{\zcmd{const}}
+
+Let $X$ and $Y$ be sets and let $c \in Y$ be some given point.
+The mapping that sends every point of $X$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\const(c)$ denote the constant mapping.
+
+\begin{gendef}[X,Y]
+	\const: Y \fun (X \fun Y)
+\where
+	\forall c: Y @ \\
+	\t1	\const(c) = (\lambda x: X @ c)
+\end{gendef}
+
+
+\subsection{\zcmd{restrictU}}
+
+Let $f: X \fun Y$ and let $U \subseteq X$.
+Let $f \restrictU U$ denote the restriction of $f$ to $U$.
+
+\begin{gendef}[X,Y]
+	\_ \restrictU \_: (X \fun Y) \cross \power X \fun (X \pfun Y)
+\where
+	\forall f: X \fun Y; U: \power X @ \\
+	\t1	f \restrictU U = U \dres f
+\end{gendef}
+
+\printbibliography
+
+\end{document}% continuous mappings between topological spaces
+\DeclareMathOperator{\CzeroTT}{C^0}
+
+% topological decoration on operators
+\newcommand{\topology}{\mathsf{top}}
+
+% the induced topological space infix operator
+\newcommand{\inducedTopSp}{\mathbin{|_\topology}}
+%%inop \inducedTopSp 6
+
+% the product topology infix operator
+\newcommand{\prodTop}{\mathbin{\cross_\topology}}
+%%inop \prodTop 5
+
+% the product topological space infix operator
+\newcommand{\prodTopSp}{\mathbin{\cross_\topology}}
+%%inop \prodTopSp 5
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{topological-spaces}
+
+\title{Topological Spaces}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article defines topological spaces and related concepts.
+\end{abstract}
+
+\section{Topological Spaces}
+
+\subsection{$Topology$}
+
+A {\it topology} $\tau$ on $X$ is a family of subsets of $X$, referred to as the {\it open} subsets of $X$, that satisfy the following axioms.
+
+\begin{schema}{Topology}[X]
+	\tau: \family X
+\where
+	\emptyset \in \tau
+\also
+	X \in \tau
+\also
+	\forall F: \finset \tau @ \bigcap F \in \tau
+\also
+	\forall F: \power \tau @ \bigcup F \in \tau
+\end{schema}
+
+\begin{itemize}
+\item The empty set is open.
+\item The whole set is open.
+\item The intersection of a finite family of open sets is open.
+\item The union of any family of open sets is open. 
+\end{itemize}
+
+\subsection{$top$ and $tops$}
+
+Let $top[X]$ denote the set of all topologies on $X$.
+
+\begin{gendef}[X]
+	top: \power(\family X)
+\where
+	top = \{~ Topology[X] @ \tau ~\}
+\end{gendef}
+
+Let $tops[X]$ denote the set of all topologies on subsets $U \subseteq X$.
+
+\begin{gendef}[X]
+	tops: \power(\family X)
+\where
+	tops = \bigcup \{~ U: \power X @ top[U] ~\}
+\end{gendef}
+
+\subsection{$discrete$ and $indiscrete$}
+
+The {\it discrete} topology on $X$ consists of all subsets of $X$.
+The {\it indiscrete} topology on $X$ consists of just $X$ and $\emptyset$.
+Let $discrete[X]$ and $indiscrete[X]$ denote the discrete and indiscrete topologies on $X$.
+
+\begin{gendef}[X]
+	discrete, indiscrete: \family X
+\where
+	discrete = \power X
+\also
+	indiscrete =  \{ \emptyset, X \}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+Then $discrete[\setX]$ and $indiscrete[\setX]$ are topologies on $\setX$.
+
+\begin{zed}
+	discrete[\setX] \in top[\setX] 
+\also
+	indiscrete[\setX] \in top[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topGen$}
+
+\begin{remark}
+
+The intersection of a set of topologies on $X$ is also a topology on $X$.
+
+\end{remark}
+
+Given a family $B$ of subsets of $X$, the topology {\it generated by} $B$ is the intersection of all
+topologies that contain $B$.
+The set $B$ is referred to as a {\it basis} for the topology it generates.
+Let $topGen[X]~B$ denote the topology on $X$ generated by the basis $B$.
+
+\begin{gendef}[X]
+	topGen: \family X \fun top[X]
+\where
+	\forall B: \family X @ \\
+	\t1	topGen~B = \bigcap \{~ \tau: top[X] | B \subseteq \tau ~\}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	topGen[\setX] \emptyset = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \emptyset \} = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \setX \} = indiscrete[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topSpace$}
+
+Let $X$ be a set.
+A {\it topological space} is a pair $(X, \tau)$ where $\tau$ is a topology on $X$.
+Let $topSpace[X]$ denote the set of all topological spaces $(X,\tau)$.
+
+\begin{zed}
+	topSpace[X] == \{~ \tau: top[X] @ (X, \tau) ~\}
+\end{zed}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	(\setX, indiscrete[\setX]) \in topSpace[\setX]
+\also
+	(\setX, discrete[\setX]) \in topSpace[\setX]
+\end{zed}
+
+
+\end{example}
+
+\subsection{$topSpaces$}
+
+Let $topSpaces[t]$ dentote the set of all topological spaces $(X,\tau)$ where $X$ is a subset of $t$.
+
+\begin{gendef}[t]
+	topSpaces: \power t \rel \family t
+\where
+	topSpaces = \{~ X: \power t; \tau: \family t | \tau \in top[X] ~\}
+\end{gendef}
+
+\begin{remark}
+
+\begin{zed}
+	topSpace[\setX] \subseteq topSpaces[\setX]
+\end{zed}
+
+\end{remark}
+
+\section{Continuous Mappings}
+
+Let $(X,\tau)$ and $(Y,\sigma)$ be topological spaces.
+
+\subsection{$Continuous$}
+
+A mapping $f \in X \fun Y$ is said to be {\it continuous} if the inverse image of every open set is open.
+
+\begin{schema}{Continuous}[X,Y]
+	f: X \fun Y \\
+	\tau: top[X] \\
+	\sigma: top[Y]
+\where
+	\forall U: \sigma @ \\
+	\t1	f\inv\limg U \rimg \in \tau
+\end{schema}
+
+\subsection{\zcmd{CzeroTT}}
+
+Let $A$ and $B$ be topological spaces, and
+let $\CzeroTT(A,B)$ denote the set of continuous mappings from $A$ to $B$.
+
+\begin{gendef}[X,Y]
+	\CzeroTT: topSpace[X] \cross topSpace[Y] \fun \power (X \fun Y)
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\LET A == (X, \tau); B == (Y, \sigma) @ \\
+	\t2		\CzeroTT(A,B) = \{~ f: X \fun Y | Continuous[X,Y] ~\}
+\end{gendef}
+
+\subsection{The Identity Mapping}
+
+\begin{remark}
+The identity mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX] @ \\
+	\t1	\LET A == (\setX, \tau) @ \\
+	\t2		\id \setX \in \CzeroTT(A, A)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The constant mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX]; \sigma: top[\setY]; c: \setY @ \\
+	\t1	\LET A == (\setX, \tau); B == (\setY, \sigma) @ \\
+	\t2		\const[\setX,\setY] c \in \CzeroTT(A,B)
+\end{zed}
+
+\end{remark}
+
+\subsection{Composition of Continuous Mapping}
+
+\begin{remark}
+Let $\setX$, $\setY$, and $\setZ$ be arbitrary sets.
+The composition of continuous mappings is a continuous mapping.
+
+\begin{zed}
+	\forall A: topSpace[\setX]; B: topSpace[\setY]; C: topSpace[\setZ] @ \\
+	\t1	\forall f: \CzeroTT(A, B); g: \CzeroTT(B, C) @ \\
+	\t2		g \circ f \in \CzeroTT(A, C)
+\end{zed}
+
+\end{remark}
+
+\section{Induced Topology}
+
+Let $A = (X, \tau)$ be a topological space and let $U \subseteq X$ be a subset.
+The topology on $X$ {\it induces} a topology on $U$.
+This topology is variously referred to as the {\it induced}, {\it relative}, or {\it subspace} topology on $U$.
+
+\subsection{\zcmd{inducedFam}}
+
+Let $\phi$ be a family of subsets of $X$ and let $U$ be a subset of $X$.
+The family of subsets of $U$ {\it induced} by $\phi$ is the set of intersections of the members of $\phi$ with $U$.
+Let $\phi \inducedFam U$ denote the family on $U$ induced by $\phi$.
+
+\begin{gendef}[X]
+	\_ \inducedFam \_:  \family X \cross \power X \fun \family X
+\where
+	\forall \phi: \family X; U: \power X @ \\
+	\t1	\phi \inducedFam U = \{~ Y: \phi @ Y \cap U ~\}
+\end{gendef}
+
+\begin{remark}
+If $\tau$ is a topology on $X$ then $\tau \inducedFam U$ is a topology on $U$.
+
+\begin{zed}
+	\forall \tau: top[\setX]; U: \power \setX @ \\
+	\t1	\tau \inducedFam U \in top[U]
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{inducedTopSp}}
+
+Let $(X, \tau) \inducedTopSp U$ denote the corresponding induced topological space.
+
+\begin{gendef}[X]
+	\_ \inducedTopSp \_: topSpace[X] \cross \power X \fun topSpaces[X]
+\where
+	\forall \tau: top[X]; U: \power X @ \\
+	\t1	(X, \tau) \inducedTopSp U = (U, \tau \inducedFam U)
+\end{gendef}
+
+\section{Product Topology}
+
+Let $(X, \tau)$ and $(Y, \sigma) $ be topological spaces.
+There is a natural topology on $X \cross Y$ generated by the products of the sets in $\tau$ and $\sigma$.
+
+\subsection{\zcmd{prodFam}}
+
+Let $X$ and $Y$ be sets and let $\phi$ and $\psi$ be families on them.
+The product of these families is the family that consists of the products of the sets in them and is a family on $X \cross Y$.
+Let $\phi \prodFam \psi$ denote the product of the families.
+
+\begin{gendef}[X,Y]
+	\_ \prodFam \_ : \family X \cross \family Y \fun \family(X \cross Y)
+\where
+	\forall \phi: \family~X; \psi: \family~Y @ \\
+	\t1	\phi \prodFam \psi = \{~ U: \phi; V: \psi @ U \cross V ~\}
+\end{gendef}
+
+\begin{remark}
+
+If $\tau$ and $sigma$ are topologies then $\tau \prodFam \sigma$ is not, in general, a topology.
+However, we can use it to generate a topology.
+
+\end{remark}
+
+\subsection{\zcmd{prodTop}}
+
+Let $\tau \prodTop \sigma$ denote the topology generated by $\tau \prodFam \sigma$.
+
+\begin{gendef}[X,Y]
+	\_ \prodTop \_: top[X] \cross top[Y] \fun top[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\tau \prodTop \sigma = topGen(\tau \prodFam \sigma)
+\end{gendef}
+
+\subsection{\zcmd{prodTopSp}}
+
+Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
+
+\begin{gendef}[X,Y]
+	\_ \prodTopSp \_: topSpace[X] \cross topSpace[Y] \fun topSpace[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	(X, \tau) \prodTopSp (Y, \sigma) = (X \cross Y, \tau \prodTop \sigma)
+\end{gendef}
+
+\printbibliography
+
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{real-numbers}[2018/08/05 Z Notation for real numbers package]
+
+\RequirePackage{amssymb}
+
+% the set of real numbers
+\newcommand{\R}{\mathbb{R}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the real number 0
+\newcommand{\zeroR}{0}
+
+% the real number 1
+\newcommand{\oneR}{1}
+
+% the negation prefix operator -x
+\newcommand{\negR}{-}
+
+% the addition infix operator x + y
+\newcommand{\addR}{\mathbin{+}}
+
+% the subtraction infix operator
+\newcommand{\subR}{\mathbin{-}}
+
+%%inop \addR \subR 3
+
+% the multiplication infix operator x * y
+\newcommand{\mulR}{\mathbin{*}}
+
+% the division infix operator x / y
+\newcommand{\divR}{\mathbin{/}}
+
+%%inop \mulR \divR 4
+
+% the less then infix relation x < y
+\newcommand{\ltR}{\mathrel{<}}
+
+% the less than or equal to infix relation x <= y
+\newcommand{\leR}{\mathrel{\leq}}
+
+% the greater than infix relation x > y
+\newcommand{\gtR}{\mathrel{>}}
+
+% the greater than or equal to infix relation x > y
+\newcommand{\geR}{\mathrel{\geq}}
+
+%%inrel \ltR \leR \gtR \geR
+
+% the set of all open sets of real numbers
+\newcommand{\openR}{\mathsf{open}}
+
+% the absolute value function abs(x) = |x|
+\DeclareMathOperator{\absR}{abs}
+
+% the positive square root function sqrt(x)
+\DeclareMathOperator{\sqrtR}{sqrt}
+
+\DeclareMathOperator{\intervalR}{interval}
+\DeclareMathOperator{\ballR}{ball}
+\DeclareMathOperator{\ballsR}{balls}
+\DeclareMathOperator{\neighR}{neigh}
+
+\newcommand{\tauR}{\tau_\R}
+\newcommand{\Rtau}{\R_\tau}
+
+\DeclareMathOperator{\limRR}{lim}
+\DeclareMathOperator{\limR}{lim}
+\DeclareMathOperator{\limFR}{lim}
+
+\DeclareMathOperator{\FunR}{F}
+\DeclareMathOperator{\FunPR}{F}
+
+\DeclareMathOperator{\CzeroR}{C^0}
+\DeclareMathOperator{\CzeroPR}{C^0}
+
+\DeclareMathOperator{\CnR}{C}
+\DeclareMathOperator{\CnPR}{C}
+
+\DeclareMathOperator{\diffRR}{diff}
+\DeclareMathOperator{\diffR}{diff}
+\DeclareMathOperator{\diffPR}{diff}
+
+\DeclareMathOperator{\smoothR}{C^{\infty}}
+\DeclareMathOperator{\smoothPR}{C^{\infty}}
+
+\DeclareMathOperator{\derivFR}{D}
+\DeclareMathOperator{\derivF}{D}
