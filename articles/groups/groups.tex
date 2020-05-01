@@ -22,98 +22,358 @@ It has been type checked by \fuzz.
 \section{Introduction}
 
 Groups are ubiquitous throughout mathematics and physics.
+This article defines the basic algebraic objects related to groups and their homomorphisms.
+
+\section{Binary Operations}
+
+Let $\genT$ be a set. We refer to the members of $\genT$ as its {\em elements}.
+A {\em binary operation} on $\genT$ is a function that maps pairs of elements to elements.
+
+\subsection{\zcmd{binop}}
+
+Let $\binop \genT$ denote the set of all binary operations on $\genT$.
+
+\begin{zed}
+\binop \genT == \genT \cross \genT \fun \genT
+\end{zed}
+
+\subsection{Infix Operator Symbols \zcmd{timesG}, \zcmd{mulG}, and \zcmd{addG}}
+
+The result of applying a binary operation to the pair of elements $(x, y)$ 
+is often denoted by an expression formed using an infix operator symbol,
+e.g. $x \timesG y$, $x \mulG y$ or $x \addG y$.
+
+\subsection{$MapPerservesOperation$}
+
+Let $\genT$ and $\genU$ be sets and let $A$ and $B$ be binary operations on them.
+Let $f$ be a function that maps $\genT$ to $\genU$.
+The function $f$ is said to {\em preserve the operations} if it maps the product of elements to 
+the product of the mapped elements.
+
+Let $MapPreservesOperation$ denote this situation.
+
+\begin{schema}{MapPreservesOperation}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \binop \genT \\
+B: \binop \genU
+\where
+\LET (\_ \mulG \_) == A; (\_ \timesG \_) == B @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		f(x \mulG y) = (f~x) \timesG (f~y)
+\end{schema}
+
+\subsection{\zcmd{homBinOp}}
+
+A map that preserves operations is said to be an {\em operation homomorphism}.
+
+Let $A$ and $B$ be binary operations. 
+Let $\homBinOp(A,B)$ denote the set of operation homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homBinOp: \binop \genT \cross \binop \genU  \fun \power (\genT \fun \genU)
+\where
+\homBinOp = (\lambda A: \binop \genT; B: \binop \genU @ \\
+\t1	\{~ f: \genT \fun \genU | MapPreservesOperation[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity map is an operation homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two operation homomorphisms is an operation homomorphism.
+\end{remark}
+
+\section{Semigroups}
+
+\subsection{$OperationIsAssociative$}
+
+A binary operation is said to be {\em associative} if the result of applying it to three elements
+is independent of the order in which it is applied pairwise.
+
+Let $OperationIsAssociative$ denote this situation.
+
+\begin{schema}{OperationIsAssociative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y, z: \genT @ \\
+\t2		(x \mulG y) \mulG z = x \mulG (y \mulG z)
+\end{schema}
+
+\subsection{\zcmd{semigroup}}
+
+Let $\semigroup \genT$ denote the set of all semigroups on the set of elements $\genT$.
+
+\begin{zed}
+\semigroup \genT == \{~ A: \binop \genT | OperationIsAssociative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{homSemigroup}}
+
+A {\em semigroup homomorphism} from $A$ to $B$ is a homomorphism of the underlying binary operation.
+
+Let $\homSemigroup(A, B)$ denote the set of all semigroup homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homSemigroup: \semigroup \genT \cross \semigroup \genU \fun \power (\genT \pfun \genU)
+\where
+\homSemigroup = \\
+\t1	(\lambda A: \semigroup \genT; B: \semigroup \genU @ \homBinOp(A, B))
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a semigroup homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two semigroup homomorphisms is another semigroup homomorphism.
+\end{remark}
+
+\section{Monoids}
+
+\subsection{$IdentityElement$}
+
+Let $\genT$ be a set, let $A$ be a binary operation over $\genT$, and let $e$ be an element of $\genT$.
+The element $e$ is said to be an {\em identity element} of $A$ if left and right 
+products with it leave all elements unchanged.
+
+Let $IdentityElement$ denote this situation.
+
+\begin{schema}{IdentityElement}[\genT]
+A: \binop \genT \\
+e: \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x: \genT @ \\
+\t2		e \mulG x = x = x \mulG e
+\end{schema}
+
+\subsection{$identity\_element$}
+
+Let $identity\_element$ denote the relation that associates a binary operation one of its identity elements.
+
+\begin{gendef}[\genT]
+identity\_element: \binop \genT \rel \genT
+\where
+identity\_element = \\
+\t1	\{~ IdentityElement[\genT] @ A \mapsto e ~\}
+\end{gendef}
+
+\begin{remark}
+If a binary operation has an identity element then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $\mulG$ be a binary operation. Suppose $e$ and $e'$ are identity elements.
+\begin{argue}
+e \\
+\t1	= e \mulG e'	& $e'$ is an identity element \\
+\t1	= e'			& $e$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since identity elements are unique if they exist, the relation from binary operations to identity elements is a partial function.
+
+\begin{zed}
+identity\_element \in \binop \setT \pfun \setT
+\end{zed}
+
+\end{remark}
+
+
+\subsection{Identity Element Symbols \zcmd{zeroG}, and \zcmd{oneG}}
+
+Identity elements are typically denoted by the symbols  $\zeroG$ or $\oneG$.
+
+\subsection{\zcmd{monoid}}
+
+Let $\genT$ be a set of elements.
+A {\em monoid} over $\genT$ is a semigroup over $\genT$ that has an identity element.
+
+Let $\monoid \genT$ denote the set of all monoids over $\genT$.
+
+\begin{zed}
+\monoid \genT == \{~ A: \semigroup \genT | \exists e: \genT @ IdentityElement[\genT] ~\}
+\end{zed}
+
+
+\subsection{$MapPreservesIdentity$}
+
+Let $A$ and $B$ be monoids and let $f$ map the elements of $A$ to the elements of $B$.
+The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
+to the identity element of $B$.
+
+Let $MapPreservesIdentity$ denote this situation.
+
+\begin{schema}{MapPreservesIdentity}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \monoid \genT \\
+B: \monoid \genU
+\where
+\LET e == identity\_element~A; \\
+\t1	e' == identity\_element~B @ \\
+\t2		f~e = e'
+\end{schema}
+
+\subsubsection{\zcmd{homMonoid}}
+
+A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
+that preserves identity.
+
+Let $\homMonoid(A, B)$ denote the set of all monoid homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
+\where
+\homMonoid = \\
+\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
+\t2		\{~ f: \homSemigroup(A, B) | \\
+\t3			MapPreservesIdentity[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a monoid homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two monoid homomorphisms is another monoid homomorphism.
+\end{remark}
 
 \section{Groups}
 
-A {\it group} is a set $G$ of elements $x, y, \ldots$ endowed with an associative multiplication operation $x \gmul y$
-that has an identity element $\gone$ such that all elements have inverses $x \ginv, y \ginv, \ldots$.
+\subsection{$InverseOperation$ and Postfix Operator symbol \zcmd{invG}}
 
-\subsection{$Group$}
+Let $\genT$ be a set of elements and let $A$ be a monoid on $\genT$.
+A function $inv \in \genT \fun \genT$ is said to be an {\em inverse operation} if it maps each element
+to an element whose product with it is the identity element.
+Typically, the expression $x \invG$ is used to denote the inverse of $x$.
 
-Let $Group[G]$ denote the set of all group structures defined on some given set $G$ of elements.
+Let $InverseOperation$ denote this situation.
 
-\begin{schema}{Group}[G]
-	\_ \gmul \_: G \cross G \fun G \\
-	\gone: G \\
-	\_ \ginv: G \fun G
+\begin{schema}{InverseOperation}[\genT]
+A: \monoid \genT \\
+inv: \genT \fun \genT
 \where
-	\forall x, y, z: G @ \\
-	\t1	(x \gmul y) \gmul z = x \gmul (y \gmul z)
-\also
-	\forall x: G @ \\
-	\t1	x \gmul \gone = x = \gone \gmul x
-\also
-	\forall x: G @ \\
-	\t1	x \gmul x \ginv = \gone = x \ginv \gmul x
+\LET (\_ \mulG \_) == A; \\
+\t1	\oneG == identity\_element~A; \\
+\t1	(\_ \invG) == inv @ \\
+\t2		\forall x: \genT @ \\
+\t3			x \mulG x \invG = \oneG = x \invG  \mulG x
 \end{schema}
-\begin{itemize}
 
-\item The group multiplication operation is associative.
+\subsection{$inverse\_operation$}
 
-\item The element $\gone$ is both a left and right identity element under group multiplication.
+Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
 
-\item Every group element has an inverse element that is both a left and right inverse under group multiplication.
-
-\end{itemize}
-
-\begin{remark}
-The group multiplication operation uniquely determines the set of elements.
-
-\begin{zed}
-	\forall Group[\setX] @ \\
-	\t1	\setX = \ran (\_ \gmul \_)
-\end{zed}
-
-\end{remark}
-
-\begin{remark}
-The group multiplication operation uniquely determines the identity operation.
-
-\begin{zed}
-	\forall Group[\setX] @ \\
-	\t1	\forall x, y: \setX @ \\
-	\t2		x \gmul y = x \implies y = \gone
-\end{zed}
-
-\end{remark}
-
-\begin{remark}
-The group multiplication uniquely determines the inverses.
-
-\begin{zed}
-	\forall Group[\setX] @ \\
-	\t1	\forall x, y: \setX @ \\
-	\t2		x \gmul y = \gone \implies x = y \ginv \land y = x \ginv
-\end{zed}
-
-\end{remark}
-
-\subsection{$group$}
-
-Let $group[G]$ denote the set of all group multiplication operations on $G$.
-
-\begin{gendef}[G]
-	group: \power(G \cross G \fun G)
+\begin{gendef}[\genT]
+inverse\_operation: \monoid \genT \rel \genT \fun \genT
 \where
-	group = \{~ Group[G] @ (\_ \gmul \_) ~\}
+inverse\_operation = \\
+\t1	\{~ InverseOperation[\genT] @ A \mapsto inv ~\}
 \end{gendef}
+
+\begin{remark}
+If a monoid has an inverse operation then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $x$ be any element.
+Suppose $x \invG$ and $x \daggerG$ are inverses of $x$.
+\begin{argue}
+x\daggerG \\
+\t1	= x\daggerG \mulG \oneG				& $\oneG$ is an identity element \\
+\t1	= x\daggerG \mulG (x \mulG x \invG)		& $x \invG$ is an inverse \\
+\t1	= (x\daggerG \mulG x) \mulG x \invG		& associativity \\
+\t1	= \oneG \mulG x \invG				& $x \daggerG$ is an inverse \\
+\t1	= x \invG							& $\oneG$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since if inverse operation exist they are unique, the relation between monoids and inverse operations
+is a partial function.
+
+\begin{zed}
+inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
+\end{zed}
+
+\end{remark}
+
+\subsection{$\group$}
+
+A {\em group} is a monoid that has an inverse operation.
+
+Let $\genT$ be a set of elements.
+Let $\group \genT$ denote the set of all groups over $\genT$.
+
+\begin{zed}
+\group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
+\end{zed}
+
+\subsubsection{$MapPreservesInverse$}
+
+Let $\genT$ and $\genU$ be sets of elements,
+let $A$ and $B$ be groups over $\genT$ and $\genU$, 
+and let $f$ map $\genT$ to $\genU$.
+The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
+to the inverses of the corresponding elements of $B$.
+
+Let $MapPreservesInverse$ denote this situation.
+
+\begin{schema}{MapPreservesInverse}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \group \genT \\
+B: \group \genU
+\where
+\LET (\_ \invG) == inverse\_operation~A; \\
+\t1	(\_ \daggerG) == inverse\_operation~B @ \\
+\t2		\forall x: \genT @ \\
+\t3			f(x \invG) = (f~x) \daggerG
+\end{schema}
+
+\subsubsection{\zcmd{homGroup}}
+
+Let $A$ and $B$ be groups.
+A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
+from $A$ to $B$ that preserves inverses.
+
+Let $\homGroup(A, B)$ denote the set of all group homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
+\where
+\homGroup = \\
+\t1	(\lambda A: \group \genT; B: \group \genU @ \\
+\t2		\{~ f: \homMonoid(A, B) | \\
+\t3			MapPreservesInverse[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a group homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two group homomorphisms is another group homomorphism.
+\end{remark}
 
 \subsection{$bij$}
 
-Let $X$ be a set and let $bij[X]$ denote the set of a bijections $X \bij X$ from $X$ to itself.
+Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
 
-\begin{gendef}[X]
-	bij: \power(X \fun X)
+\begin{gendef}[\genT]
+	bij: \power (\genT \fun \genT)
 \where
-	bij = X \bij X
+	bij = \genT \bij \genT
 \end{gendef}
 
 \begin{remark}
 The composition of bijections is a bijection.
 
 \begin{zed}
-	\forall f, g: bij[\setX] @ \\
-	\t1	f \circ g \in bij[\setX]
+	\forall f, g: bij[\setT] @ \\
+	\t1	f \circ g \in bij[\setT]
 \end{zed}
 
 \end{remark}
@@ -122,18 +382,18 @@ The composition of bijections is a bijection.
 Composition is associative.
 
 \begin{zed}
-	\forall f, g, h: bij[\setX] @ \\
+	\forall f, g, h: bij[\setT] @ \\
 	\t1	f \circ (g \circ h) = (f \circ g) \circ h
 \end{zed}
 
 \end{remark}
 
 \begin{remark}
-The identity function $\id X$ acts as a left and right identity element under composition.
+The identity function $\id \setT$ acts as a left and right identity element under composition.
 
 \begin{zed}
-	\forall f: bij[\setX] @ \\
-	\t1	 \id \setX \circ f = f = f \circ \id \setX
+	\forall f: bij[\setT] @ \\
+	\t1	 \id \setT \circ f = f = f \circ \id \setT
 \end{zed}
 
 \end{remark}
@@ -142,93 +402,73 @@ The identity function $\id X$ acts as a left and right identity element under co
 The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
 
 \begin{zed}
-	\forall f: bij[\setX] @ \\
-	\t1	f \circ f \inv = \id \setX = f \inv \circ f
+	\forall f: bij[\setT] @ \\
+	\t1	f \circ f \inv = \id \setT = f \inv \circ f
 \end{zed}
 
 \end{remark}
 
 \subsection{$Bij$}
 
-The preceding remarks show that set $bij[X]$ under the operation of composition has the structure of a group.
-Let $Bij[X]$ denote this group.
+The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
+Let $Bij[\genT]$ denote this group.
 
-\begin{gendef}[X]
-	Bij: bij[X] \cross bij[X] \fun bij[X]
+\begin{gendef}[\genT]
+	Bij: bij[\genT] \cross bij[\genT] \fun bij[\genT]
 \where
-	Bij = (\lambda f, g: bij[X] @ f \circ g)
+	Bij = (\lambda f, g: bij[\genT] @ f \circ g)
 \end{gendef}
 
-\begin{theorem}
-The multiplication operation $Bij[X]$ is a group.
+\begin{example}
+Let $\setT$ be any non-empty set.
+The composition operation $Bij[\setT]$ is a group over the set of bijections $bij[\setT]$ from $\setT$ to $\setT$.
 
 \begin{zed}
-	Bij[\setX] \in group[bij[\setX]]
+\setT \neq \emptyset \implies \\
+\t1	Bij[\setT] \in \group bij[\setT]
 \end{zed}
 
-\end{theorem}
+\end{example}
 
 \section{Abelian Groups}
 
-An {\it abelian group} is a group in which the multiplication is commutative, i.e. $x \gmul y = y \gmul x$.
-In this case, the group multiplication is denoted as addition $x \gadd y$, the identity element is denoted as a zero $\gzero$,
-and the inverse of an element is denoted as its negative $\gneg x$.
+\subsection{OperationIsCommutative}
 
-\subsection{$AbelianGroup$}
+Let $\genT$ be a set of elements.
+A binary operation $A$ over $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
+their order.
 
-Let $AbelianGroup[G]$ denote the abelian group structures on $G$.
+Let $OperationIsCommutative$ denote this situation.
 
-\begin{schema}{AbelianGroup}[G]
-	Group[G] \\
-	\_ \gadd \_: G \cross G \fun G \\
-	\gzero: G \\
-	\gneg: G \fun G
+\begin{schema}{OperationIsCommutative}[\genT]
+A: \binop \genT
 \where
-	(\_ \gadd \_) = (\_ \gmul \_)
-\also
-	\gzero = \gone
-\also
-	\gneg = (\_ \ginv)
-\also
-	\forall x, y: G @ \\
-	\t1	x \gadd y = y \gadd x
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		x \mulG y = y \mulG x
 \end{schema}
-\begin{itemize}
 
-\item The group multiplication is denoted as addition.
+\subsection{\zcmd{abgroup}}
 
-\item The group identify element is denoted as the zero element.
+An {\em Abelian group} is a group in which the binary operation is commutative.
+Let $\genT$ be a set of elements.
 
-\item The inverse of a group element is denoted as the negative of the element.
-
-\item The group addition is commutative.
-
-\end{itemize}
-
-\subsection{$abelianGroup$}
-
-Let $abelianGroup[G]$ denote the subset of abelian groups in $group[G]$.
-
-\begin{gendef}[G]
-	abelianGroup: \power(G \cross G \fun G)
-\where
-	abelianGroup = \{~ AbelianGroup[G] @ (\_ \gadd \_) ~\}
-\end{gendef}
-
-\begin{remark}
-The set $abelianGroup[G]$ is a subset of $group[G]$.
+Let $\abgroup \genT$ denote the set of all Abelian groups over $\genT$.
 
 \begin{zed}
-	abelianGroup[\setX] \subseteq group[\setX]
+\abgroup \genT == \{~ A: \group \genT | OperationIsCommutative[\genT] ~\}
 \end{zed}
 
-\end{remark}
+\subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
+
+Often in an Abelian group the binary operation is denoted as addition $x \addG y$,
+the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
 
 \begin{example}
-The integer addition is an abelian group.
+Addition over the integers is an Abelian group.
 
 \begin{zed}
-	(\_ + \_) \in abelianGroup[\num]
+	(\_ + \_) \in \abgroup \num
 \end{zed}
 
 \end{example}

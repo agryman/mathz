@@ -3,14 +3,10 @@
 
 \RequirePackage{amssymb}
 
+% real numbers
+
 % the set of real numbers
 \newcommand{\R}{\mathbb{R}}
-
-% the set of positive real numbers
-\newcommand{\Rpos}{\R_{+}}
-
-% the set of non-zero real numbers
-\newcommand{\Rnz}{\R_{*}}
 
 % the real number 0
 \newcommand{\zeroR}{0}
@@ -19,37 +15,53 @@
 \newcommand{\oneR}{1}
 
 % the negation prefix operator -x
-\newcommand{\negR}{-}
+\DeclareMathOperator{\negR}{-}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
 
 % the addition infix operator x + y
+%%inop \addR 3
 \newcommand{\addR}{\mathbin{+}}
 
-% the subtraction infix operator
+% the subtraction infix operator x - y
+%%inop \subR 3
 \newcommand{\subR}{\mathbin{-}}
 
-%%inop \addR \subR 3
-
 % the multiplication infix operator x * y
+%%inop \mulR 4
 \newcommand{\mulR}{\mathbin{*}}
 
 % the division infix operator x / y
+%%inop \divR 4
 \newcommand{\divR}{\mathbin{/}}
 
-%%inop \mulR \divR 4
+% the multiplication infix operator restricted to non-zero real numbers
+%%inop \mulRnz 4
+\newcommand{\mulRnz}{\mathbin{\overline{*}}}
 
-% the less then infix relation x < y
+% the inverse postfix operator defined on non-zero real numbers
+%%postop \invRnz
+\newcommand{\invRnz}{^{-1}}
+
+% the less than infix relation x < y
+%%inrel \ltR
 \newcommand{\ltR}{\mathrel{<}}
 
 % the less than or equal to infix relation x <= y
+%%inrel \leR
 \newcommand{\leR}{\mathrel{\leq}}
 
 % the greater than infix relation x > y
+%%inrel \gtR
 \newcommand{\gtR}{\mathrel{>}}
 
 % the greater than or equal to infix relation x > y
+%%inrel \geR
 \newcommand{\geR}{\mathrel{\geq}}
-
-%%inrel \ltR \leR \gtR \geR
 
 % the set of all open sets of real numbers
 \newcommand{\openR}{\mathsf{open}}

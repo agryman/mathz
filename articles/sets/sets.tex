@@ -22,30 +22,36 @@ It has been type checked by \fuzz.
 
 Typed set theory forms the mathematical foundation of Z Notation
 and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
-The articles augments the tool-kit with some additional concepts.
+This articles augments the tool-kit with some additional concepts.
 
 \section{Arbitrary Sets}
 
-\subsection{\zcmd{setX}, \zcmd{setY}, and \zcmd{setZ}}
+\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
 
-Let $\setX$, $\setY$, and $\setZ$ denote arbitrary sets.
+Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
 These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
 by arbitrary sets.
 
 \begin{zed}
-	[\setX, \setY, \setZ]
+	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
+
+\section{Formal Arguments to Generic Constructions}
+
+The following typographically distinctive symbols will be used as formal arguments to generic constructions:
+$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
+They denote arbitrary sets.
 
 \section{Families}
 
 \subsection{\zcmd{family}}
 
-Let $X$ be a set.
-A {\it family} of subsets of $X$ is a set of subsets of $X$.
-Let $\family X$ denote the set of all families of subsets of $X$.
+Let $\genT$ be a set.
+A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $\family \genT$ denote the set of all families of subsets of $X$.
 
 \begin{zed}
-	\family X == \power(\power X)
+	\family \genT == \power(\power \genT)
 \end{zed}
 
 \section{Functions}
@@ -53,28 +59,28 @@ Let $\family X$ denote the set of all families of subsets of $X$.
 
 \subsection{\zcmd{const}}
 
-Let $X$ and $Y$ be sets and let $c \in Y$ be some given point.
-The mapping that sends every point of $X$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
+The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
 Let $\const(c)$ denote the constant mapping.
 
-\begin{gendef}[X,Y]
-	\const: Y \fun (X \fun Y)
+\begin{gendef}[\genT, \genU]
+	\const: \genU \fun (\genT \fun \genU)
 \where
-	\forall c: Y @ \\
-	\t1	\const(c) = (\lambda x: X @ c)
+	\forall c: \genU @ \\
+	\t1	\const(c) = (\lambda x: \genT @ c)
 \end{gendef}
 
 
 \subsection{\zcmd{restrictU}}
 
-Let $f: X \fun Y$ and let $U \subseteq X$.
-Let $f \restrictU U$ denote the restriction of $f$ to $U$.
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
+Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 
-\begin{gendef}[X,Y]
-	\_ \restrictU \_: (X \fun Y) \cross \power X \fun (X \pfun Y)
+\begin{gendef}[\genT, \genU]
+	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
 \where
-	\forall f: X \fun Y; U: \power X @ \\
-	\t1	f \restrictU U = U \dres f
+	\forall f: \genT \fun \genU; T: \power \genT @ \\
+	\t1	f \restrictU T = T \dres f
 \end{gendef}
 
 \printbibliography

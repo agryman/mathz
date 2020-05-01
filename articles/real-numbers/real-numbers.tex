@@ -30,6 +30,117 @@ No attempt has been made to provide complete, axiomatic definitions of all these
 Although proof checking is highly desirable, it is beyond the scope of this article.
 The type declarations given here are intended to provide a basis for future axiomatization.
 
+\section{Real Numbers}
+
+Z notation does not predefine the set of real numbers, so we define it here.
+
+\subsection{\zcmd{R}}
+
+Let $\R$ denote the set of real numbers.
+We define it to be simply a given set.
+We'll add further axioms as needed below.
+
+\begin{zed}
+[\R]
+\end{zed}
+
+\subsection{\zcmd{addR}, \zcmd{zeroR}, \zcmd{negR}, and \zcmd{subR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \addR y$ denote addition,
+let $\zeroR$ denote zero,
+let $\negR x$ denote negative,
+and let $x \subR y$ denote subtraction.
+
+Although these real number objects are displayed the same as the corresponding integer objects,
+they represent distinct mathematical objects.
+This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
+because the underlying types of objects will, as a rule, be clear from the context.
+Visually distinct symbols will be used in cases where confusion is possible.
+
+The real numbers form an Abelian group under addition.
+
+\begin{axdef}
+	\_ \addR \_: \R \cross \R \fun \R \\
+	\zeroR: \R \\
+	\negR: \R \fun \R
+	\where
+	\exists_1 A: AbelianGroup[\R] @ \\
+	\t1	A.elements = \R \land \\
+	\t1	A.(\_ \addG \_) = (\_ \addR \_) \land \\
+	\t1	A.\zeroG = \zeroR \land \\
+	\t1	A.\negG = \negR
+\end{axdef}
+
+Subtraction is defined in terms of addition and negative.
+
+\begin{axdef}
+	\_ \subR \_: \R \cross \R \fun \R
+	\where
+	\forall x, y: \R @ x \subR y = x \addR (\negR y)
+\end{axdef}
+
+\subsection{\zcmd{Rnz}}
+
+Let $\Rnz$ denote the set of non-zero real numbers.
+
+\begin{zed}
+	\Rnz == \R \setminus \{ \zeroR \}
+\end{zed}
+
+\subsection{\zcmd{mulR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \mulR y$ denote multiplication.
+
+\begin{axdef}
+	\_ \mulR \_: \R \cross \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{mulRnz}, \zcmd{oneR}, \zcmd{invRnz}, and \zcmd{divR}}
+
+Let $(\_ \mulRnz \_)$ denote the restriction of $(\_ \mulR \_)$ to $\Rnz$.
+
+\begin{axdef}
+	\_ \mulRnz \_: \Rnz \cross \Rnz \fun \Rnz
+	\where
+	(\_ \mulRnz \_) = (\lambda x, y: \Rnz @ x \mulR y)
+\end{axdef}
+
+Let $x$ be real number and let $y$ be a non-zero real number.
+let $\oneR$ denote one,
+let $y \invRnz$ denote inverse,
+and let $x \divR y$ denote division.
+
+\begin{axdef}
+	\oneR: \Rnz \\
+	\_ \invRnz: \Rnz \fun \Rnz
+\end{axdef}
+
+The non-negative real numbers form an Abelian group under multiplication.
+
+\begin{zed}
+	\exists_1 A: AbelianGroup[\Rnz] @ \\
+	\t1	A.elements = \Rnz \land \\
+	\t1	A.(\_ \mulG \_) = (\_ \mulRnz \_) \land \\
+	\t1	A.\oneG = \oneR \land \\
+	\t1	A.(\_ \invG) = (\_ \invRnz)
+\end{zed}
+
+Division is defined in terms of multiplicative inverse.
+
+\begin{axdef}
+	\_ \divR \_: \R \cross \Rnz \fun \R
+	\where
+	\forall x: \R; y: \Rnz @ x \divR y = x \mulR (y \invRnz)
+\end{axdef}
+
+Addition is distributive over multiplication.
+
+\begin{zed}
+	\forall x, y, z: \R @ (x \addR y) \mulR z = x \mulR z \addR y \mulR z
+\end{zed}
+
 \section{The Real Numbers}
 
 \subsection{\zcmd{R}}

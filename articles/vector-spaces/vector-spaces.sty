@@ -1,4 +1,23 @@
 % real vector spaces
+
+% the abstract zero vector
+\newcommand{\zeroV}{\mathbf{0}}
+
+\DeclareMathOperator{\negV}{-}
+
+% the abstract vector addition and subtraction infix operators
+%%inop \addV \subV 3
+\newcommand{\addV}{\mathbin{+}}
+\newcommand{\subV}{\mathbin{-}}
+
+%%inop \mulS 4
+\newcommand{\mulS}{\mathbin{*}}
+
+\DeclareMathOperator{\RealVectorSpaceAbelianGroup}{as_{ab}}
+
+% real n-tuples
+\newcommand{\Rn}[1]{\R^{#1}}
+
 \newcommand{\Rinf}{\R^\infty}
 \newcommand{\Rtuples}{\R}
 
@@ -17,14 +36,6 @@
 \newcommand{\vaddR}{\mathbin{+}}
 \newcommand{\vsubR}{\mathbin{-}}
 %%inop \vaddR \vsubR 3
-
-% the abstract zero vector
-\newcommand{\zeroV}{\mathbf{0}}
-
-% the abstract vector addition and subtraction operators
-\newcommand{\addV}{\mathbin{+}}
-\newcommand{\subV}{\mathbin{-}}
-%%inop \addV \subV 3
 
 % the abstract vector scalar multiplication operator
 \newcommand{\smulV}{\mathbin{*}}

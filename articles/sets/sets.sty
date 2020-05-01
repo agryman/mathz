@@ -1,23 +1,38 @@
-% arbitrary sets
+% style file for sets.tex
+
+% formal parameters for generic constructions
+\newcommand{\genT}{\mathsf{t}}
+\newcommand{\genU}{\mathsf{u}}
+\newcommand{\genV}{\mathsf{v}}
+\newcommand{\genW}{\mathsf{w}}
+\newcommand{\genX}{\mathsf{x}}
+\newcommand{\genY}{\mathsf{y}}
+\newcommand{\genZ}{\mathsf{z}}
+
+% arbitrary sets used in theorems, remarks, and example involving generic constructs
+\newcommand{\setT}{\mathsf{T}}
+\newcommand{\setU}{\mathsf{U}}
+\newcommand{\setV}{\mathsf{V}}
+\newcommand{\setW}{\mathsf{W}}
 \newcommand{\setX}{\mathsf{X}}
 \newcommand{\setY}{\mathsf{Y}}
 \newcommand{\setZ}{\mathsf{Z}}
 
 % families of sets
-\newcommand{\family}{\mathcal{F}}
 %%pregen \family
+\newcommand{\family}{\mathcal{F}}
 
 % the induced family infix operator
-\newcommand{\inducedFam}{\mathbin{|_\family}}
 %%inop \inducedFam 6
+\newcommand{\inducedFam}{\mathbin{|_\family}}
 
 % the product family infix operator
-\newcommand{\prodFam}{\mathbin{\cross_\family}}
 %%inop \prodFam 5
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
 
 % the constant function
 \DeclareMathOperator{\const}{const}
 
 % the function restriction infix operator
-\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
 %%inop \restrictU 6
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}

@@ -1,29 +1,52 @@
 % groups
 
-% group multiplication operator
-\newcommand{\gmul}{\mathbin{*}}
-%%inop \gmul 4
+% binary operations
+%%pregen \binop
+\DeclareMathOperator{\binop}{binop}
 
-% group multiplication identity element
-\newcommand{\gone}{\mathbf{1}}
+% binary operation homomorphisms
+\DeclareMathOperator{\homBinOp}{hom_{op}}
 
-% group inverse operator
-\newcommand{\ginv}{^{-1}}
-%%postop \ginv
+% semigroups
 
-% abelian group decorator
-\newcommand{\ab}{\mathsf{ab}}
+% the set of all semigroups
+%%pregen \semigroup
+\DeclareMathOperator{\semigroup}{semigroup}
 
-% Z as an abelian group under addition
-\newcommand{\Zab}{\num_\ab}
+\DeclareMathOperator{\homSemigroup}{hom_{sg}}
 
-% group addition operator
-\newcommand{\gadd}{\mathbin{+}}
-%%inop \gadd 3
+% monoids
 
-% group additive identity element
-\newcommand{\gzero}{\mathbf{0}}
+% the set of all monoids
+%%pregen \monoid
+\DeclareMathOperator{\monoid}{monoid}
+\DeclareMathOperator{\homMonoid}{hom_{mon}}
 
-% group negative operator
-\newcommand{\gneg}{-}
+% groups
 
+%%pregen \group
+\DeclareMathOperator{\group}{group}
+\DeclareMathOperator{\homGroup}{hom_{grp}}
+
+% group identity element
+\newcommand{\oneG}{1}
+
+%%inop \mulG \timesG 4
+\newcommand{\mulG}{\mathbin{*}}
+\newcommand{\timesG}{\mathbin{\times}}
+
+%%postop \invG \daggerG
+\newcommand{\invG}{^{-1}}
+\newcommand{\daggerG}{^{\dagger}}
+
+% Abelian groups
+
+%%pregen \abgroup
+\DeclareMathOperator{\abgroup}{abgroup}
+
+%%inop \addG 3
+\newcommand{\addG}{\mathbin{+}}
+
+\newcommand{\zeroG}{0}
+
+\DeclareMathOperator{\negG}{-}

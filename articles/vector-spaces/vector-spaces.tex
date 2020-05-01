@@ -8,6 +8,7 @@
 \usepackage{../topological-spaces/topological-spaces}
 \usepackage{../real-numbers/real-numbers}
 \usepackage{vector-spaces}
+\usepackage{amsmath}
 
 \title{Vector Spaces}
 \author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
@@ -21,6 +22,78 @@
 This article contains Z Notation type declarations for vector spaces and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\section{Real Vector Spaces}
+
+\subsection{\zcmd{addV}, \zcmd{zeroV}, \zcmd{negV}, and \zcmd{mulS}}
+
+Let $v$ and $w$ denote vectors and let $x$ denote a real number.
+Let $v \addV w$ denote vector addition,
+let $\zeroV$ denote the zero vector,
+let $\negV v$ denote the negative vector,
+and let $x \mulS v$ denote scalar multiplication.
+
+Let $RealVectorSpace$ denote the set of all real vector spaces.
+
+\begin{schema}{RealVectorSpace}[\genT]
+	vectors: \power \genT \\
+	\_ \addV \_: \genT \cross \genT \pfun \genT \\
+	\zeroV: \genT \\
+	\negV: \genT \pfun \genT \\
+	\_ \mulS \_: \R \cross \genT \pfun \genT
+	\where
+	\exists_1 A: AbelianGroup[\genT] @ \\
+	\t1	A.elements = vectors \land \\
+	\t1	A.(\_ \addG \_) = (\_ \addV \_) \land \\
+	\t1	A.\zeroG = \zeroV \land \\
+	\t1	A.\negG = \negV
+	\also
+	(\_ \mulS \_) \in \R \cross vectors \fun vectors
+	\also
+	\forall v: vectors @ \zeroR \mulS v = \zeroV
+	\also
+	\forall v: vectors @ \oneR \mulS v = v
+	\also
+	\forall x, y: \R; v: vectors @ (x \mulR y) \mulS v = x \mulS (y \mulS v)
+	\also
+	\forall x, y: \R; v: vectors @ (x \addR y) \mulS v = x \mulS v \addV y \mulS v
+	\also
+	\forall x: \R; v, w: vectors @ x \mulS (v \addV w) = x \mulS v \addV x \mulS w
+\end{schema}
+
+\begin{itemize}
+	\item Vectors form an Abelian group under addition.
+	\item Multiplying a vector by a scalar gives a vector.
+	\item Multiplying by $\zeroR$ gives the zero vector.
+	\item Multiplying by $\oneR$ gives the same vector.
+	\item Scalar multiplication is associative.
+	\item Scalar addition distributes over scalar multiplication.
+	\item Vector addition distributes over scalar multiplication.
+\end{itemize}
+
+\subsubsection{$\RealVectorSpaceAbelianGroup$}
+
+We can forget scalar multiplication on vectors and obtain an Abelian group.
+Let $\RealVectorSpaceAbelianGroup$ denote the function that maps a real vector space to
+its underlying Abelian group.
+
+\begin{gendef}[\genT]
+	\RealVectorSpaceAbelianGroup: RealVectorSpace[\genT] \fun AbelianGroup[\genT]
+	\where
+	\RealVectorSpaceAbelianGroup = \\
+	\t1	(\lambda V: RealVectorSpace[\genT] @ \\
+	\t2		(\mu A: AbelianGroup[\genT] | \\
+	\t3			A.elements = V.vectors \land \\
+	\t3			A.(\_ \addG \_) = V.(\_ \addV \_) \land \\
+	\t3			A.\zeroG = V.\zeroV \land \\
+	\t3			A.\negG = V.\negV))
+\end{gendef}
+
+\subsection{Linear Transformations}
+
+Let $X$ and $Y$ be vector spaces.
+A {\em linear transformation} from $X$ to $Y$ is a homomorphism of the underlying Abelian groups
+that preserves scalar multiplication.
 
 \section{Introduction}
 

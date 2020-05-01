@@ -220,29 +220,44 @@
 %%tame \plus \cat head last tail front rev \filter \dcat
 %%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
 %%tame \inv \limg\rimg \oplus \comp \circ
-% arbitrary sets
+% style file for sets.tex
+
+% formal parameters for generic constructions
+\newcommand{\genT}{\mathsf{t}}
+\newcommand{\genU}{\mathsf{u}}
+\newcommand{\genV}{\mathsf{v}}
+\newcommand{\genW}{\mathsf{w}}
+\newcommand{\genX}{\mathsf{x}}
+\newcommand{\genY}{\mathsf{y}}
+\newcommand{\genZ}{\mathsf{z}}
+
+% arbitrary sets used in theorems, remarks, and example involving generic constructs
+\newcommand{\setT}{\mathsf{T}}
+\newcommand{\setU}{\mathsf{U}}
+\newcommand{\setV}{\mathsf{V}}
+\newcommand{\setW}{\mathsf{W}}
 \newcommand{\setX}{\mathsf{X}}
 \newcommand{\setY}{\mathsf{Y}}
 \newcommand{\setZ}{\mathsf{Z}}
 
 % families of sets
-\newcommand{\family}{\mathcal{F}}
 %%pregen \family
+\newcommand{\family}{\mathcal{F}}
 
 % the induced family infix operator
-\newcommand{\inducedFam}{\mathbin{|_\family}}
 %%inop \inducedFam 6
+\newcommand{\inducedFam}{\mathbin{|_\family}}
 
 % the product family infix operator
-\newcommand{\prodFam}{\mathbin{\cross_\family}}
 %%inop \prodFam 5
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
 
 % the constant function
 \DeclareMathOperator{\const}{const}
 
 % the function restriction infix operator
-\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
 %%inop \restrictU 6
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
 \documentclass[11pt, oneside]{article}
 
 \usepackage{../../shared/preamble}
@@ -267,30 +282,36 @@ It has been type checked by \fuzz.
 
 Typed set theory forms the mathematical foundation of Z Notation
 and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
-The articles augments the tool-kit with some additional concepts.
+This articles augments the tool-kit with some additional concepts.
 
 \section{Arbitrary Sets}
 
-\subsection{\zcmd{setX}, \zcmd{setY}, and \zcmd{setZ}}
+\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
 
-Let $\setX$, $\setY$, and $\setZ$ denote arbitrary sets.
+Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
 These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
 by arbitrary sets.
 
 \begin{zed}
-	[\setX, \setY, \setZ]
+	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
+
+\section{Formal Arguments to Generic Constructions}
+
+The following typographically distinctive symbols will be used as formal arguments to generic constructions:
+$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
+They denote arbitrary sets.
 
 \section{Families}
 
 \subsection{\zcmd{family}}
 
-Let $X$ be a set.
-A {\it family} of subsets of $X$ is a set of subsets of $X$.
-Let $\family X$ denote the set of all families of subsets of $X$.
+Let $\genT$ be a set.
+A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $\family \genT$ denote the set of all families of subsets of $X$.
 
 \begin{zed}
-	\family X == \power(\power X)
+	\family \genT == \power(\power \genT)
 \end{zed}
 
 \section{Functions}
@@ -298,58 +319,81 @@ Let $\family X$ denote the set of all families of subsets of $X$.
 
 \subsection{\zcmd{const}}
 
-Let $X$ and $Y$ be sets and let $c \in Y$ be some given point.
-The mapping that sends every point of $X$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
+The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
 Let $\const(c)$ denote the constant mapping.
 
-\begin{gendef}[X,Y]
-	\const: Y \fun (X \fun Y)
+\begin{gendef}[\genT, \genU]
+	\const: \genU \fun (\genT \fun \genU)
 \where
-	\forall c: Y @ \\
-	\t1	\const(c) = (\lambda x: X @ c)
+	\forall c: \genU @ \\
+	\t1	\const(c) = (\lambda x: \genT @ c)
 \end{gendef}
 
 
 \subsection{\zcmd{restrictU}}
 
-Let $f: X \fun Y$ and let $U \subseteq X$.
-Let $f \restrictU U$ denote the restriction of $f$ to $U$.
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
+Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 
-\begin{gendef}[X,Y]
-	\_ \restrictU \_: (X \fun Y) \cross \power X \fun (X \pfun Y)
+\begin{gendef}[\genT, \genU]
+	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
 \where
-	\forall f: X \fun Y; U: \power X @ \\
-	\t1	f \restrictU U = U \dres f
+	\forall f: \genT \fun \genU; T: \power \genT @ \\
+	\t1	f \restrictU T = T \dres f
 \end{gendef}
 
 \printbibliography
 
 \end{document}% groups
 
-% group multiplication operator
-\newcommand{\gmul}{\mathbin{*}}
-%%inop \gmul 4
+% binary operations
+%%pregen \binop
+\DeclareMathOperator{\binop}{binop}
 
-% group multiplication identity element
-\newcommand{\gone}{\mathbf{1}}
+% binary operation homomorphisms
+\DeclareMathOperator{\homBinOp}{hom_{op}}
 
-% group inverse operator
-\newcommand{\ginv}{^{-1}}
-%%postop \ginv
+% semigroups
 
-% abelian group decorator
-\newcommand{\ab}{\mathsf{ab}}
+% the set of all semigroups
+%%pregen \semigroup
+\DeclareMathOperator{\semigroup}{semigroup}
 
-% Z as an abelian group under addition
-\newcommand{\Zab}{\num_\ab}
+\DeclareMathOperator{\homSemigroup}{hom_{sg}}
 
-% group addition operator
-\newcommand{\gadd}{\mathbin{+}}
-%%inop \gadd 3
+% monoids
 
-% group additive identity element
-\newcommand{\gzero}{\mathbf{0}}
+% the set of all monoids
+%%pregen \monoid
+\DeclareMathOperator{\monoid}{monoid}
+\DeclareMathOperator{\homMonoid}{hom_{mon}}
 
-% group negative operator
-\newcommand{\gneg}{-}
+% groups
 
+%%pregen \group
+\DeclareMathOperator{\group}{group}
+\DeclareMathOperator{\homGroup}{hom_{grp}}
+
+% group identity element
+\newcommand{\oneG}{1}
+
+%%inop \mulG \timesG 4
+\newcommand{\mulG}{\mathbin{*}}
+\newcommand{\timesG}{\mathbin{\times}}
+
+%%postop \invG \daggerG
+\newcommand{\invG}{^{-1}}
+\newcommand{\daggerG}{^{\dagger}}
+
+% Abelian groups
+
+%%pregen \abgroup
+\DeclareMathOperator{\abgroup}{abgroup}
+
+%%inop \addG 3
+\newcommand{\addG}{\mathbin{+}}
+
+\newcommand{\zeroG}{0}
+
+\DeclareMathOperator{\negG}{-}
