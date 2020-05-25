@@ -13,50 +13,64 @@
 %%inop \mulS 4
 \newcommand{\mulS}{\mathbin{*}}
 
-\DeclareMathOperator{\RealVectorSpaceAbelianGroup}{as_{ab}}
+%%inop \timesS 4
+\newcommand{\timesS}{\mathbin{\times}}
 
-% real n-tuples
-\newcommand{\Rn}[1]{\R^{#1}}
+% the set of all real vector spaces
+%%pregen \vecR
+\DeclareMathOperator{\vecR}{vec_{\R}}
 
+\DeclareMathOperator{\homVecR}{L_{\R}}
+
+
+% the set of all real n-tuples for any n >= 0
 \newcommand{\Rinf}{\R^\infty}
-\newcommand{\Rtuples}{\R}
+
+% the set of all real n-tuples for a given n >= 0
+\DeclareMathOperator{\Rtup}{\R}
 
 % the zero n-tuple
-\newcommand{\zeroRn}{\mathbf{0}}
+\DeclareMathOperator{\zeroRtup}{\mathbf{0}}
 
 % the projection function
-\newcommand{\piR}{\pi}
+\DeclareMathOperator{\piRinf}{\pi}
 
-\newcommand{\smulR}{\mathbin{*}}
-%%inop \smulR 4
+% scalar multiplication on \Rinf
+%%inop \smulRinf 4
+\newcommand{\smulRinf}{\mathbin{*}}
 
 % the set of pairs of equal length tuples
-\newcommand{\Rdelta}{\R^\Delta}
+\newcommand{\RinfDelta}{\R^\Delta}
 
-\newcommand{\vaddR}{\mathbin{+}}
-\newcommand{\vsubR}{\mathbin{-}}
-%%inop \vaddR \vsubR 3
+% vector addition on \Rinf
+\newcommand{\addRinf}{\mathbin{+}}
+
+% vector subtraction on \Rinf
+\newcommand{\subRinf}{\mathbin{-}}
+%%inop \addRinf \subRinf 3
+
+% vector negative on \Rinf
+\DeclareMathOperator{\negRinf}{-}
 
 % the abstract vector scalar multiplication operator
 \newcommand{\smulV}{\mathbin{*}}
 %%inop \smulV 4
 
-\newcommand{\dotR}{\mathbin{\cdot}}
-%%inop \dotR 4
+\newcommand{\dotRinf}{\mathbin{\cdot}}
+%%inop \dotRinf 4
 
-\DeclareMathOperator{\normR}{norm}
-\DeclareMathOperator{\ballRn}{ball}
-\DeclareMathOperator{\ballsRn}{balls}
-\DeclareMathOperator{\neighRn}{neigh}
+\DeclareMathOperator{\normRinf}{norm}
+\DeclareMathOperator{\ballRinf}{ball}
+\DeclareMathOperator{\ballsRtup}{balls}
+\DeclareMathOperator{\neighRinf}{neigh}
 
-\newcommand{\tauRn}{\tau_\R}
-\newcommand{\RtauN}{\R_\tau}
-\newcommand{\DeltaR}{\Delta_\R}
-\DeclareMathOperator{\dimR}{dim}
+\newcommand{\tauRtup}{\tau_\R}
+\newcommand{\tsRtup}{\R_\tau}
+\newcommand{\DeltaRinf}{\Delta_\R}
+\DeclareMathOperator{\dimRinf}{dim}
 
-
-\DeclareMathOperator{\linR}{lin}
-\DeclareMathOperator{\In}{I}
+\DeclareMathOperator{\linRtup}{L_{\R}}
+\DeclareMathOperator{\idRtup}{I}
 
 \DeclareMathOperator{\CzeroN}{C^0}
 \DeclareMathOperator{\CzeroPRn}{C^0}

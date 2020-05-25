@@ -220,29 +220,44 @@
 %%tame \plus \cat head last tail front rev \filter \dcat
 %%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
 %%tame \inv \limg\rimg \oplus \comp \circ
-% arbitrary sets
+% style file for sets.tex
+
+% formal parameters for generic constructions
+\newcommand{\genT}{\mathsf{t}}
+\newcommand{\genU}{\mathsf{u}}
+\newcommand{\genV}{\mathsf{v}}
+\newcommand{\genW}{\mathsf{w}}
+\newcommand{\genX}{\mathsf{x}}
+\newcommand{\genY}{\mathsf{y}}
+\newcommand{\genZ}{\mathsf{z}}
+
+% arbitrary sets used in theorems, remarks, and example involving generic constructs
+\newcommand{\setT}{\mathsf{T}}
+\newcommand{\setU}{\mathsf{U}}
+\newcommand{\setV}{\mathsf{V}}
+\newcommand{\setW}{\mathsf{W}}
 \newcommand{\setX}{\mathsf{X}}
 \newcommand{\setY}{\mathsf{Y}}
 \newcommand{\setZ}{\mathsf{Z}}
 
 % families of sets
-\newcommand{\family}{\mathcal{F}}
 %%pregen \family
+\newcommand{\family}{\mathcal{F}}
 
 % the induced family infix operator
-\newcommand{\inducedFam}{\mathbin{|_\family}}
 %%inop \inducedFam 6
+\newcommand{\inducedFam}{\mathbin{|_\family}}
 
 % the product family infix operator
-\newcommand{\prodFam}{\mathbin{\cross_\family}}
 %%inop \prodFam 5
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
 
 % the constant function
 \DeclareMathOperator{\const}{const}
 
 % the function restriction infix operator
-\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
 %%inop \restrictU 6
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
 \documentclass[11pt, oneside]{article}
 
 \usepackage{../../shared/preamble}
@@ -267,30 +282,36 @@ It has been type checked by \fuzz.
 
 Typed set theory forms the mathematical foundation of Z Notation
 and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
-The articles augments the tool-kit with some additional concepts.
+This articles augments the tool-kit with some additional concepts.
 
 \section{Arbitrary Sets}
 
-\subsection{\zcmd{setX}, \zcmd{setY}, and \zcmd{setZ}}
+\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
 
-Let $\setX$, $\setY$, and $\setZ$ denote arbitrary sets.
+Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
 These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
 by arbitrary sets.
 
 \begin{zed}
-	[\setX, \setY, \setZ]
+	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
+
+\section{Formal Arguments to Generic Constructions}
+
+The following typographically distinctive symbols will be used as formal arguments to generic constructions:
+$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
+They denote arbitrary sets.
 
 \section{Families}
 
 \subsection{\zcmd{family}}
 
-Let $X$ be a set.
-A {\it family} of subsets of $X$ is a set of subsets of $X$.
-Let $\family X$ denote the set of all families of subsets of $X$.
+Let $\genT$ be a set.
+A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $\family \genT$ denote the set of all families of subsets of $X$.
 
 \begin{zed}
-	\family X == \power(\power X)
+	\family \genT == \power(\power \genT)
 \end{zed}
 
 \section{Functions}
@@ -298,28 +319,28 @@ Let $\family X$ denote the set of all families of subsets of $X$.
 
 \subsection{\zcmd{const}}
 
-Let $X$ and $Y$ be sets and let $c \in Y$ be some given point.
-The mapping that sends every point of $X$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
+The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
 Let $\const(c)$ denote the constant mapping.
 
-\begin{gendef}[X,Y]
-	\const: Y \fun (X \fun Y)
+\begin{gendef}[\genT, \genU]
+	\const: \genU \fun (\genT \fun \genU)
 \where
-	\forall c: Y @ \\
-	\t1	\const(c) = (\lambda x: X @ c)
+	\forall c: \genU @ \\
+	\t1	\const(c) = (\lambda x: \genT @ c)
 \end{gendef}
 
 
 \subsection{\zcmd{restrictU}}
 
-Let $f: X \fun Y$ and let $U \subseteq X$.
-Let $f \restrictU U$ denote the restriction of $f$ to $U$.
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
+Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 
-\begin{gendef}[X,Y]
-	\_ \restrictU \_: (X \fun Y) \cross \power X \fun (X \pfun Y)
+\begin{gendef}[\genT, \genU]
+	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
 \where
-	\forall f: X \fun Y; U: \power X @ \\
-	\t1	f \restrictU U = U \dres f
+	\forall f: \genT \fun \genU; T: \power \genT @ \\
+	\t1	f \restrictU T = T \dres f
 \end{gendef}
 
 \printbibliography
@@ -660,19 +681,545 @@ Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
 
 \printbibliography
 
+\end{document}% groups
+
+% binary operations
+%%pregen \binop
+\DeclareMathOperator{\binop}{binop}
+
+% binary operation homomorphisms
+\DeclareMathOperator{\homBinOp}{hom_{op}}
+
+% semigroups
+
+% the set of all semigroups
+%%pregen \semigroup
+\DeclareMathOperator{\semigroup}{semigroup}
+
+\DeclareMathOperator{\homSemigroup}{hom_{sg}}
+
+% monoids
+
+% the set of all monoids
+%%pregen \monoid
+\DeclareMathOperator{\monoid}{monoid}
+\DeclareMathOperator{\homMonoid}{hom_{mon}}
+
+% groups
+
+%%pregen \group
+\DeclareMathOperator{\group}{group}
+
+\DeclareMathOperator{\homGroup}{hom_{grp}}
+
+% group identity element
+\newcommand{\oneG}{1}
+
+%%inop \mulG \timesG 4
+\newcommand{\mulG}{\mathbin{*}}
+\newcommand{\timesG}{\mathbin{\times}}
+
+%%postop \invG \daggerG
+\newcommand{\invG}{^{-1}}
+\newcommand{\daggerG}{^{\dagger}}
+
+% Abelian groups
+
+%%pregen \abgroup
+\DeclareMathOperator{\abgroup}{abgroup}
+
+%%inop \addG 3
+\newcommand{\addG}{\mathbin{+}}
+
+\newcommand{\zeroG}{0}
+
+\DeclareMathOperator{\negG}{-}
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{groups}
+
+\title{Groups}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for groups and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Groups are ubiquitous throughout mathematics and physics.
+This article defines the basic algebraic objects related to groups and their homomorphisms.
+
+\section{Binary Operations}
+
+Let $\genT$ be a set. We refer to the members of $\genT$ as its {\em elements}.
+A {\em binary operation} on $\genT$ is a function that maps pairs of elements to elements.
+
+\subsection{\zcmd{binop}}
+
+Let $\binop \genT$ denote the set of all binary operations on $\genT$.
+
+\begin{zed}
+\binop \genT == \genT \cross \genT \fun \genT
+\end{zed}
+
+\subsection{Infix Operator Symbols \zcmd{timesG}, \zcmd{mulG}, and \zcmd{addG}}
+
+The result of applying a binary operation to the pair of elements $(x, y)$ 
+is often denoted by an expression formed using an infix operator symbol,
+e.g. $x \timesG y$, $x \mulG y$ or $x \addG y$.
+
+\subsection{$MapPerservesOperation$}
+
+Let $\genT$ and $\genU$ be sets and let $A$ and $B$ be binary operations on them.
+Let $f$ be a function that maps $\genT$ to $\genU$.
+The function $f$ is said to {\em preserve the operations} if it maps the product of elements to 
+the product of the mapped elements.
+
+Let $MapPreservesOperation$ denote this situation.
+
+\begin{schema}{MapPreservesOperation}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \binop \genT \\
+B: \binop \genU
+\where
+\LET (\_ \mulG \_) == A; (\_ \timesG \_) == B @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		f(x \mulG y) = (f~x) \timesG (f~y)
+\end{schema}
+
+\subsection{\zcmd{homBinOp}}
+
+A map that preserves operations is said to be an {\em operation homomorphism}.
+
+Let $A$ and $B$ be binary operations. 
+Let $\homBinOp(A,B)$ denote the set of operation homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homBinOp: \binop \genT \cross \binop \genU  \fun \power (\genT \fun \genU)
+\where
+\homBinOp = (\lambda A: \binop \genT; B: \binop \genU @ \\
+\t1	\{~ f: \genT \fun \genU | MapPreservesOperation[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity map is an operation homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two operation homomorphisms is an operation homomorphism.
+\end{remark}
+
+\section{Semigroups}
+
+\subsection{$OperationIsAssociative$}
+
+A binary operation is said to be {\em associative} if the result of applying it to three elements
+is independent of the order in which it is applied pairwise.
+
+Let $OperationIsAssociative$ denote this situation.
+
+\begin{schema}{OperationIsAssociative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y, z: \genT @ \\
+\t2		(x \mulG y) \mulG z = x \mulG (y \mulG z)
+\end{schema}
+
+\subsection{\zcmd{semigroup}}
+
+Let $\semigroup \genT$ denote the set of all semigroups on the set of elements $\genT$.
+
+\begin{zed}
+\semigroup \genT == \{~ A: \binop \genT | OperationIsAssociative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{homSemigroup}}
+
+A {\em semigroup homomorphism} from $A$ to $B$ is a homomorphism of the underlying binary operation.
+
+Let $\homSemigroup(A, B)$ denote the set of all semigroup homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homSemigroup: \semigroup \genT \cross \semigroup \genU \fun \power (\genT \pfun \genU)
+\where
+\homSemigroup = \\
+\t1	(\lambda A: \semigroup \genT; B: \semigroup \genU @ \homBinOp(A, B))
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a semigroup homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two semigroup homomorphisms is another semigroup homomorphism.
+\end{remark}
+
+\section{Monoids}
+
+\subsection{$IdentityElement$}
+
+Let $\genT$ be a set, let $A$ be a binary operation over $\genT$, and let $e$ be an element of $\genT$.
+The element $e$ is said to be an {\em identity element} of $A$ if left and right 
+products with it leave all elements unchanged.
+
+Let $IdentityElement$ denote this situation.
+
+\begin{schema}{IdentityElement}[\genT]
+A: \binop \genT \\
+e: \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x: \genT @ \\
+\t2		e \mulG x = x = x \mulG e
+\end{schema}
+
+\subsection{$identity\_element$}
+
+Let $identity\_element$ denote the relation that associates a binary operation one of its identity elements.
+
+\begin{gendef}[\genT]
+identity\_element: \binop \genT \rel \genT
+\where
+identity\_element = \\
+\t1	\{~ IdentityElement[\genT] @ A \mapsto e ~\}
+\end{gendef}
+
+\begin{remark}
+If a binary operation has an identity element then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $\mulG$ be a binary operation. Suppose $e$ and $e'$ are identity elements.
+\begin{argue}
+e \\
+\t1	= e \mulG e'	& $e'$ is an identity element \\
+\t1	= e'			& $e$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since identity elements are unique if they exist, the relation from binary operations to identity elements is a partial function.
+
+\begin{zed}
+identity\_element \in \binop \setT \pfun \setT
+\end{zed}
+
+\end{remark}
+
+
+\subsection{Identity Element Symbols \zcmd{zeroG}, and \zcmd{oneG}}
+
+Identity elements are typically denoted by the symbols  $\zeroG$ or $\oneG$.
+
+\subsection{\zcmd{monoid}}
+
+Let $\genT$ be a set of elements.
+A {\em monoid} over $\genT$ is a semigroup over $\genT$ that has an identity element.
+
+Let $\monoid \genT$ denote the set of all monoids over $\genT$.
+
+\begin{zed}
+\monoid \genT == \{~ A: \semigroup \genT | \exists e: \genT @ IdentityElement[\genT] ~\}
+\end{zed}
+
+
+\subsection{$MapPreservesIdentity$}
+
+Let $A$ and $B$ be monoids and let $f$ map the elements of $A$ to the elements of $B$.
+The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
+to the identity element of $B$.
+
+Let $MapPreservesIdentity$ denote this situation.
+
+\begin{schema}{MapPreservesIdentity}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \monoid \genT \\
+B: \monoid \genU
+\where
+\LET e == identity\_element~A; \\
+\t1	e' == identity\_element~B @ \\
+\t2		f~e = e'
+\end{schema}
+
+\subsubsection{\zcmd{homMonoid}}
+
+A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
+that preserves identity.
+
+Let $\homMonoid(A, B)$ denote the set of all monoid homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
+\where
+\homMonoid = \\
+\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
+\t2		\{~ f: \homSemigroup(A, B) | \\
+\t3			MapPreservesIdentity[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a monoid homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two monoid homomorphisms is another monoid homomorphism.
+\end{remark}
+
+\section{Groups}
+
+\subsection{$InverseOperation$ and Postfix Operator symbol \zcmd{invG}}
+
+Let $\genT$ be a set of elements and let $A$ be a monoid on $\genT$.
+A function $inv \in \genT \fun \genT$ is said to be an {\em inverse operation} if it maps each element
+to an element whose product with it is the identity element.
+Typically, the expression $x \invG$ is used to denote the inverse of $x$.
+
+Let $InverseOperation$ denote this situation.
+
+\begin{schema}{InverseOperation}[\genT]
+A: \monoid \genT \\
+inv: \genT \fun \genT
+\where
+\LET (\_ \mulG \_) == A; \\
+\t1	\oneG == identity\_element~A; \\
+\t1	(\_ \invG) == inv @ \\
+\t2		\forall x: \genT @ \\
+\t3			x \mulG x \invG = \oneG = x \invG  \mulG x
+\end{schema}
+
+\subsection{$inverse\_operation$}
+
+Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
+
+\begin{gendef}[\genT]
+inverse\_operation: \monoid \genT \rel \genT \fun \genT
+\where
+inverse\_operation = \\
+\t1	\{~ InverseOperation[\genT] @ A \mapsto inv ~\}
+\end{gendef}
+
+\begin{remark}
+If a monoid has an inverse operation then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $x$ be any element.
+Suppose $x \invG$ and $x \daggerG$ are inverses of $x$.
+\begin{argue}
+x\daggerG \\
+\t1	= x\daggerG \mulG \oneG				& $\oneG$ is an identity element \\
+\t1	= x\daggerG \mulG (x \mulG x \invG)		& $x \invG$ is an inverse \\
+\t1	= (x\daggerG \mulG x) \mulG x \invG		& associativity \\
+\t1	= \oneG \mulG x \invG				& $x \daggerG$ is an inverse \\
+\t1	= x \invG							& $\oneG$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since if inverse operation exist they are unique, the relation between monoids and inverse operations
+is a partial function.
+
+\begin{zed}
+inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
+\end{zed}
+
+\end{remark}
+
+\subsection{$\group$}
+
+A {\em group} is a monoid that has an inverse operation.
+
+Let $\genT$ be a set of elements.
+Let $\group \genT$ denote the set of all groups over $\genT$.
+
+\begin{zed}
+\group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
+\end{zed}
+
+\subsubsection{$MapPreservesInverse$}
+
+Let $\genT$ and $\genU$ be sets of elements,
+let $A$ and $B$ be groups over $\genT$ and $\genU$, 
+and let $f$ map $\genT$ to $\genU$.
+The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
+to the inverses of the corresponding elements of $B$.
+
+Let $MapPreservesInverse$ denote this situation.
+
+\begin{schema}{MapPreservesInverse}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \group \genT \\
+B: \group \genU
+\where
+\LET (\_ \invG) == inverse\_operation~A; \\
+\t1	(\_ \daggerG) == inverse\_operation~B @ \\
+\t2		\forall x: \genT @ \\
+\t3			f(x \invG) = (f~x) \daggerG
+\end{schema}
+
+\subsubsection{\zcmd{homGroup}}
+
+Let $A$ and $B$ be groups.
+A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
+from $A$ to $B$ that preserves inverses.
+
+Let $\homGroup(A, B)$ denote the set of all group homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
+\where
+\homGroup = \\
+\t1	(\lambda A: \group \genT; B: \group \genU @ \\
+\t2		\{~ f: \homMonoid(A, B) | \\
+\t3			MapPreservesInverse[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a group homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two group homomorphisms is another group homomorphism.
+\end{remark}
+
+\subsection{$bij$}
+
+Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
+
+\begin{gendef}[\genT]
+	bij: \power (\genT \fun \genT)
+\where
+	bij = \genT \bij \genT
+\end{gendef}
+
+\begin{remark}
+The composition of bijections is a bijection.
+
+\begin{zed}
+	\forall f, g: bij[\setT] @ \\
+	\t1	f \circ g \in bij[\setT]
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+Composition is associative.
+
+\begin{zed}
+	\forall f, g, h: bij[\setT] @ \\
+	\t1	f \circ (g \circ h) = (f \circ g) \circ h
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The identity function $\id \setT$ acts as a left and right identity element under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	 \id \setT \circ f = f = f \circ \id \setT
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	f \circ f \inv = \id \setT = f \inv \circ f
+\end{zed}
+
+\end{remark}
+
+\subsection{$Bij$}
+
+The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
+Let $Bij[\genT]$ denote this group.
+
+\begin{gendef}[\genT]
+	Bij: bij[\genT] \cross bij[\genT] \fun bij[\genT]
+\where
+	Bij = (\lambda f, g: bij[\genT] @ f \circ g)
+\end{gendef}
+
+\begin{example}
+Let $\setT$ be any non-empty set.
+The composition operation $Bij[\setT]$ is a group over the set of bijections $bij[\setT]$ from $\setT$ to $\setT$.
+
+\begin{zed}
+\setT \neq \emptyset \implies \\
+\t1	Bij[\setT] \in \group bij[\setT]
+\end{zed}
+
+\end{example}
+
+\section{Abelian Groups}
+
+\subsection{OperationIsCommutative}
+
+Let $\genT$ be a set of elements.
+A binary operation $A$ over $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
+their order.
+
+Let $OperationIsCommutative$ denote this situation.
+
+\begin{schema}{OperationIsCommutative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		x \mulG y = y \mulG x
+\end{schema}
+
+\subsection{\zcmd{abgroup}}
+
+An {\em Abelian group} is a group in which the binary operation is commutative.
+Let $\genT$ be a set of elements.
+
+Let $\abgroup \genT$ denote the set of all Abelian groups over $\genT$.
+
+\begin{zed}
+\abgroup \genT == \{~ A: \group \genT | OperationIsCommutative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
+
+Often in an Abelian group the binary operation is denoted as addition $x \addG y$,
+the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
+
+\begin{example}
+Addition over the integers is an Abelian group.
+
+\begin{zed}
+	(\_ + \_) \in \abgroup \num
+\end{zed}
+
+\end{example}
+
+\printbibliography
+
 \end{document}\NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{real-numbers}[2018/08/05 Z Notation for real numbers package]
 
 \RequirePackage{amssymb}
 
+% real numbers
+
 % the set of real numbers
 \newcommand{\R}{\mathbb{R}}
-
-% the set of positive real numbers
-\newcommand{\Rpos}{\R_{+}}
-
-% the set of non-zero real numbers
-\newcommand{\Rnz}{\R_{*}}
 
 % the real number 0
 \newcommand{\zeroR}{0}
@@ -681,37 +1228,53 @@ Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
 \newcommand{\oneR}{1}
 
 % the negation prefix operator -x
-\newcommand{\negR}{-}
+\DeclareMathOperator{\negR}{-}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
 
 % the addition infix operator x + y
+%%inop \addR 3
 \newcommand{\addR}{\mathbin{+}}
 
-% the subtraction infix operator
+% the subtraction infix operator x - y
+%%inop \subR 3
 \newcommand{\subR}{\mathbin{-}}
 
-%%inop \addR \subR 3
-
 % the multiplication infix operator x * y
+%%inop \mulR 4
 \newcommand{\mulR}{\mathbin{*}}
 
 % the division infix operator x / y
+%%inop \divR 4
 \newcommand{\divR}{\mathbin{/}}
 
-%%inop \mulR \divR 4
+% the multiplication infix operator restricted to non-zero real numbers
+%%inop \mulRnz 4
+\newcommand{\mulRnz}{\mathbin{\overline{*}}}
 
-% the less then infix relation x < y
+% the inverse postfix operator defined on non-zero real numbers
+%%postop \invRnz
+\newcommand{\invRnz}{^{-1}}
+
+% the less than infix relation x < y
+%%inrel \ltR
 \newcommand{\ltR}{\mathrel{<}}
 
 % the less than or equal to infix relation x <= y
+%%inrel \leR
 \newcommand{\leR}{\mathrel{\leq}}
 
 % the greater than infix relation x > y
+%%inrel \gtR
 \newcommand{\gtR}{\mathrel{>}}
 
 % the greater than or equal to infix relation x > y
+%%inrel \geR
 \newcommand{\geR}{\mathrel{\geq}}
-
-%%inrel \ltR \leR \gtR \geR
 
 % the set of all open sets of real numbers
 \newcommand{\openR}{\mathsf{open}}

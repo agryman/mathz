@@ -373,6 +373,7 @@ Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 
 %%pregen \group
 \DeclareMathOperator{\group}{group}
+
 \DeclareMathOperator{\homGroup}{hom_{grp}}
 
 % group identity element

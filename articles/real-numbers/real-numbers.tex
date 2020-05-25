@@ -5,6 +5,7 @@
 
 \usepackage{../sets/sets}
 \usepackage{../topological-spaces/topological-spaces}
+\usepackage{../groups/groups}
 \usepackage{real-numbers}
 
 \title{Real Numbers}
@@ -49,10 +50,16 @@ We'll add further axioms as needed below.
 Let $x$ and $y$ be real numbers.
 Let $x \addR y$ denote addition,
 let $\zeroR$ denote zero,
-let $\negR x$ denote negative,
+let $\negR x$ denote negation,
 and let $x \subR y$ denote subtraction.
 
-Although these real number objects are displayed the same as the corresponding integer objects,
+\begin{axdef}
+	\_ \addR \_: \R \cross \R \fun \R \\
+	\zeroR: \R \\
+	\negR: \R \fun \R
+\end{axdef}
+
+Although these real number objects are displayed the same symbols as the corresponding integer objects,
 they represent distinct mathematical objects.
 This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
 because the underlying types of objects will, as a rule, be clear from the context.
@@ -60,17 +67,13 @@ Visually distinct symbols will be used in cases where confusion is possible.
 
 The real numbers form an Abelian group under addition.
 
-\begin{axdef}
-	\_ \addR \_: \R \cross \R \fun \R \\
-	\zeroR: \R \\
-	\negR: \R \fun \R
-	\where
-	\exists_1 A: AbelianGroup[\R] @ \\
-	\t1	A.elements = \R \land \\
-	\t1	A.(\_ \addG \_) = (\_ \addR \_) \land \\
-	\t1	A.\zeroG = \zeroR \land \\
-	\t1	A.\negG = \negR
-\end{axdef}
+\begin{zed}
+(\_ \addR \_) \in \abgroup \R
+\also
+\zeroR = identity\_element(\_ \addR \_)
+\also
+\negR = inverse\_operation(\_ \addR \_)
+\end{zed}
 
 Subtraction is defined in terms of addition and negative.
 
@@ -82,7 +85,8 @@ Subtraction is defined in terms of addition and negative.
 
 \subsection{\zcmd{Rnz}}
 
-Let $\Rnz$ denote the set of non-zero real numbers.
+Let $\Rnz$ denote the set of non-zero real numbers,
+also referred to as the {\it punctured real number line}.
 
 \begin{zed}
 	\Rnz == \R \setminus \{ \zeroR \}
@@ -120,11 +124,11 @@ and let $x \divR y$ denote division.
 The non-negative real numbers form an Abelian group under multiplication.
 
 \begin{zed}
-	\exists_1 A: AbelianGroup[\Rnz] @ \\
-	\t1	A.elements = \Rnz \land \\
-	\t1	A.(\_ \mulG \_) = (\_ \mulRnz \_) \land \\
-	\t1	A.\oneG = \oneR \land \\
-	\t1	A.(\_ \invG) = (\_ \invRnz)
+(\_ \mulRnz \_) \in \abgroup \Rnz
+\also
+\oneR = identity\_element(\_ \mulRnz \_)
+\also
+(\_ \invRnz) = inverse\_operation(\_ \mulRnz \_)
 \end{zed}
 
 Division is defined in terms of multiplicative inverse.
@@ -140,56 +144,6 @@ Addition is distributive over multiplication.
 \begin{zed}
 	\forall x, y, z: \R @ (x \addR y) \mulR z = x \mulR z \addR y \mulR z
 \end{zed}
-
-\section{The Real Numbers}
-
-\subsection{\zcmd{R}}
-
-Let $\R$ denote the set of all real numbers.
-\begin{zed}
-	[\R]
-\end{zed}
-
-\subsection{\zcmd{zeroR} and \zcmd{oneR}}
-
-Let $\zeroR$ and $\oneR$ denote the zero and unit elements of the real numbers.
-
-\begin{axdef}
-	\zeroR: \R \\
-	\oneR: \R
-\end{axdef}
-
-\subsection{\zcmd{Rnz}}
-
-Let $\Rnz$ denote the set of non-zero real numbers, 
-also referred to as the {\it punctured} real number line.
-
-\begin{zed}
-	\Rnz == \R \setminus \{ \zeroR \}
-\end{zed}
-
-\subsection{\zcmd{addR}, \zcmd{subR}, \zcmd{mulR}, and \zcmd{divR}}
-
-Let $x \addR y$, $x \subR y$, $x \mulR y$, and $x \divR y$ denote the usual arithmetic operations of
-addition, subtraction, multiplication, and division.
-
-\begin{axdef}
-	\_ \addR \_: \R \cross \R \fun \R \\
-	\_ \subR \_: \R \cross \R \fun \R \\
-	\_ \mulR \_: \R \cross \R \fun \R \\
-	\_ \divR \_: \R \cross \Rnz \fun \R
-\end{axdef}
-
-\subsection{\zcmd{negR}}
-
-Let $\negR~x$ denote the negative of $x$.
-
-\begin{axdef}
-	\negR: \R \fun \R
-\where
-	\forall x : \R @ \\
-	\t1	\negR~x = \zeroR \subR x
-\end{axdef}
 
 \subsection{\zcmd{ltR}, \zcmd{leR}, \zcmd{gtR}, and \zcmd{geR}}
 
@@ -308,9 +262,10 @@ Let $\openR$ denote the set of all open subsets of $\R$.
 \begin{axdef}
 	\openR: \family~\R
 \where
-	\openR = \{~ U:  \power \R | \\
-	\t1	\forall x: U @ \\
-	\t2		\exists B: \ballsR @ x \in B \subset U ~\}
+	\openR = \\
+	\t1	\{~ U:  \power \R | \\
+	\t2		\forall x: U @ \\
+	\t3			\exists B: \ballsR @ x \in B \subset U ~\}
 \end{axdef}
 
 \begin{remark}

@@ -6,6 +6,8 @@ cat ../../shared/fuzzlib\
  ../sets/sets.tex\
  ../topological-spaces/topological-spaces.sty\
  ../topological-spaces/topological-spaces.tex\
+ ../groups/groups.sty\
+ ../groups/groups.tex\
  ../real-numbers/real-numbers.sty\
  ../real-numbers/real-numbers.tex\
  formal-specifications.sty > formal-specifications.prelude

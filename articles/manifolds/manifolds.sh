@@ -4,6 +4,8 @@ pwd
 cat ../../shared/fuzzlib\
  ../sets/sets.sty\
  ../sets/sets.tex\
+ ../groups/groups.sty\
+ ../groups/groups.tex\
  ../topological-spaces/topological-spaces.sty\
  ../topological-spaces/topological-spaces.tex\
  ../real-numbers/real-numbers.sty\
