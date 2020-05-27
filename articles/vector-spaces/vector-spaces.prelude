@@ -2125,13 +2125,13 @@ Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at eve
 \DeclareMathOperator{\linRtup}{L_{\R}}
 \DeclareMathOperator{\idRtup}{I}
 
-\DeclareMathOperator{\CzeroN}{C^0}
-\DeclareMathOperator{\CzeroPRn}{C^0}
-\DeclareMathOperator{\CzeroRn}{C^0}
+\DeclareMathOperator{\CzeroRtup}{C^0}
+\DeclareMathOperator{\CzeroSubsetRtup}{C^0}
+\DeclareMathOperator{\CzeroPointRtup}{C^0}
 
-\DeclareMathOperator{\CzeroNN}{C^0}
-\DeclareMathOperator{\CzeroPRnN}{C^0}
-\DeclareMathOperator{\CzeroRnN}{C^0}
+\DeclareMathOperator{\CzeroRtupRtup}{C^0}
+\DeclareMathOperator{\CzeroSubsetRtupRtup}{C^0}
+\DeclareMathOperator{\CzeroPointRtupRtup}{C^0}
 
 \DeclareMathOperator{\smoothRn}{C^\infty}
 \DeclareMathOperator{\smoothRnm}{C^\infty}

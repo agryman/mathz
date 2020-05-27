@@ -567,7 +567,7 @@ The set of all neighbourhoods of $v \in \Rtup(n)$ is a family of sets in $\Rtup(
 
 \end{remark}
 
-\subsection{\zcmd{tsRtup}}
+\subsection{The Topological Space of $n$-tuples: \zcmd{tsRtup}}
 
 Let $\tsRtup(n)$ denote the topological space defined by the usual topology on $\Rtup(n)$.
 
@@ -580,56 +580,58 @@ Let $\tsRtup(n)$ denote the topological space defined by the usual topology on $
 
 \section{Continuity}
 
-\subsection{\zcmd{CzeroN}}
+\subsection{Real-Valued Functions That Are Continuous on the Set of All $n$-tuples: \zcmd{CzeroRtup}}
 
-A function $f$ from $\R^n$ to $\R$ is said to be continuous if it is continuous with respect to their usual topologies.
-Let $\CzeroN(n)$ denote the set of these continuous mappings.
+A function $f \in \R^n \fun \R$ is said to be \textit{continuous} if it is continuous with respect to the usual topologies
+on $\R^n$ and $\R$.
+Let $\CzeroRtup(n)$ denote the set of these continuous functions.
 
 \begin{axdef}
-	\CzeroN: \nat \fun \power(\Rinf \pfun \R)
+	\CzeroRtup: \nat \fun \power(\Rinf \pfun \R)
 \where
 	\forall n: \nat @ \\
-	\t1	\CzeroN(n) = \CzeroTT(\tsRtup(n), \Rtau)
+	\t1	\CzeroRtup(n) = \CzeroTT(\tsRtup(n), \Rtau)
 \end{axdef}
 
-\subsection{\zcmd{CzeroPRn}}
+\subsection{Real-Valued Functions That Are Continuous on a Subset of $n$-tuples: \zcmd{CzeroSubsetRtup}}
 
 Let $U$ be a subset of $\R^n$.
-A function $f \in U \fun \R$ is said to be continuous if it is continuous with respect to the topology induced on $U$.
-Let $\CzeroPRn(U)$ denote the set of these continuous functions.
+A function $f \in U \fun \R$ is said to be \textit{continuous on} $U$
+if it is continuous with respect to the topology induced on $U$.
+Let $\CzeroSubsetRtup(U)$ denote the set of these continuous functions.
 
 \begin{axdef}
-	\CzeroPRn: \DeltaRinf \fun \power(\Rinf \pfun \R)
+	\CzeroSubsetRtup: \DeltaRinf \fun \power(\Rinf \pfun \R)
 \where
 	\forall U: \DeltaRinf @ \\
 	\t1	\LET n == \dimRinf U @ \\
-	\t2		\CzeroPRn(U) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \Rtau)
+	\t2		\CzeroSubsetRtup(U) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \Rtau)
 \end{axdef}
 
-\subsection{\zcmd{CzeroRn}}
+\subsection{Real-Valued Functions That Are Continuous at an $n$-tuple: \zcmd{CzeroPointRtup}}
 
-A partial function $f$ from $\R^n$ to $\R$ is said to be continuous at $x \in \R^n$ if its domain contains a neighbourhood $U$ of $x$
+A partial function $f$ from $\R^n$ to $\R$ is said to be \textit{continuous at} $x \in \R^n$ if its domain contains a neighbourhood $U$ of $x$
 such that its restriction to $U$ is continuous on $U$.
-Let $\CzeroRn(x)$ denote the set of such functions.
+Let $\CzeroPointRtup(x)$ denote the set of such functions.
 
 \begin{axdef}
-	\CzeroRn: \Rinf \fun \power(\Rinf \pfun \R)
+	\CzeroPointRtup: \Rinf \fun \power(\Rinf \pfun \R)
 \where
 	\forall x: \Rinf @ \\
 	\t1	\LET n == \# x @ \\
-	\t2		\CzeroRn(x) = \{~ f: \Rtup(n) \pfun \R | \exists U: \neighRinf(x) | U \subseteq \dom f @ U \dres f \in \CzeroPRn(U) ~\}
+	\t2		\CzeroPointRtup(x) = \{~ f: \Rtup(n) \pfun \R | \exists U: \neighRinf(x) | U \subseteq \dom f @ U \dres f \in \CzeroSubsetRtup(U) ~\}
 \end{axdef}
 
-\subsection{\zcmd{CzeroNN}}
+\subsection{$m$-tuple-Valued Functions That Are Continuous on the Set of All $n$-tuples: \zcmd{CzeroRtupRtup}}
 
 A mapping $f$ from $\Rtup(n)$ to $\Rtup(m)$ is said to be continuous if it is continuous with respect to the usual topologies.
-Let $\CzeroNN(n,m)$ denote the set of these continuous mappings.
+Let $\CzeroRtupRtup(n,m)$ denote the set of these continuous mappings.
 
 \begin{axdef}
-	\CzeroNN: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
+	\CzeroRtupRtup: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
 \where
 	\forall n, m: \nat @ \\
-	\t1	\CzeroNN(n,m) = \CzeroTT(\tsRtup(n), \tsRtup(m))
+	\t1	\CzeroRtupRtup(n,m) = \CzeroTT(\tsRtup(n), \tsRtup(m))
 \end{axdef}
 
 \begin{example}
@@ -637,7 +639,7 @@ The function $\idRtup(n)$ is continuous.
 
 \begin{zed}
 	\forall n: \nat @ \\
-	\t1	\idRtup(n) \in \CzeroNN(n,n)
+	\t1	\idRtup(n) \in \CzeroRtupRtup(n,n)
 \end{zed}
 
 \begin{theorem}
@@ -645,36 +647,37 @@ Linear functions are continuous.
 
 \begin{zed}
 	\forall n, m: \nat@ \\
-	\t1	\linRtup(n, m) \subseteq \CzeroNN(n,m)
+	\t1	\linRtup(n, m) \subseteq \CzeroRtupRtup(n,m)
 \end{zed}
 
 \end{theorem}
 
 \end{example}
 
-\subsection{\zcmd{CzeroPRnN}}
+\subsection{$m$-tuple-Valued Functions That Are Continuous on a Subset of $n$-tuples: \zcmd{CzeroSubsetRtupRtup}}
 
 Let $U$ be any subset of $\Rtup(n)$.
-Let $\CzeroPRnN(U,m)$ denote the set of continuous mappings from the topology induced by $\tsRtup(n)$ on $U$ to $\tsRtup(m)$.
+Let $\CzeroSubsetRtupRtup(U,m)$ denote the set of continuous mappings from the topology induced by $\tsRtup(n)$ on $U$ to $\tsRtup(m)$.
 
 \begin{axdef}
-	\CzeroPRnN: \DeltaRinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
+	\CzeroSubsetRtupRtup: \DeltaRinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
 \where
 	\forall n, m: \nat @ \\
 	\t1	\forall U: \DeltaRinf | \dimRinf(U) = n @ \\
-	\t2		\CzeroPRnN(U, m) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \tsRtup(m))
+	\t2		\CzeroSubsetRtupRtup(U, m) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \tsRtup(m))
 \end{axdef}
 
 \begin{remark}
 
 \begin{zed}
 	\forall n, m: \nat @ \\
-	\t1	\CzeroPRnN(\Rtup(n),m) = \CzeroNN(n,m)
+	\t1	\CzeroSubsetRtupRtup(\Rtup(n),m) = \CzeroRtupRtup(n,m)
 \end{zed}
 
 \end{remark}
 
-\subsection{\zcmd{CzeroRnN}}
+\subsection{$m$-tuple-Valued Functions That Are Continuous at an $n$-tuple: 
+$VectorConinuous$, \zcmd{CzeroPointRtupRtup}}
 
 Let $x \in \Rtup(n)$ and let $f$ be a partial function from $\Rtup(n)$ to $\Rtup(m)$
 whose domain includes some neighbourhood $U$ of $x$ such that $f$ restricted to $U$ is continuous.
@@ -689,17 +692,17 @@ In this case $f$ is said to be {\it continuous at $x$}.
 \also
 	\exists U: \neighRinf(x) | \\
 	\t1	U \subseteq \dom f @ \\
-	\t2		U \dres f \in \CzeroPRnN(U,m)
+	\t2		U \dres f \in \CzeroSubsetRtupRtup(U,m)
 \end{schema}
 
-Let $\CzeroRnN(x,m)$ denote the set of all partial functions $f$ from $\Rtup(n)$ to $\Rtup(m)$
+Let $\CzeroPointRtupRtup(x,m)$ denote the set of all partial functions $f$ from $\Rtup(n)$ to $\Rtup(m)$
 that are continuous at $x$.
 
 \begin{axdef}
-	\CzeroRnN: \Rinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
+	\CzeroPointRtupRtup: \Rinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
 \where
 	\forall n, m: \nat @ \forall x: \Rtup(n)  @ \\
-	\t1	\CzeroRnN(x, m) = \\
+	\t1	\CzeroPointRtupRtup(x, m) = \\
 	\t2		\{~ f: \Rtup(n) \pfun \Rtup(m) | VectorContinuous ~\}
 \end{axdef}
 
@@ -708,7 +711,7 @@ The function $\idRtup(n)$ is continuous at every point $x \in \Rtup(n)$.
 
 \begin{zed}
 	\forall n: \nat @ \forall x: \Rtup(n) @ \\
-	\t1	\idRtup(n) \in \CzeroRnN(x, n)
+	\t1	\idRtup(n) \in \CzeroPointRtupRtup(x, n)
 \end{zed}
 
 \end{example}
@@ -719,7 +722,7 @@ Linear functions are continuous everywhere.
 \begin{zed}
 	\forall n, m: \nat @ \\
 	\t1	\forall x: \Rtup(n); L: \linRtup(n,m) @ \\
-	\t2		L \in \CzeroRnN(x, m)
+	\t2		L \in \CzeroPointRtupRtup(x, m)
 \end{zed}
 
 \end{theorem}
@@ -739,7 +742,7 @@ $$
 \lim_{h \to 0} \frac{\norm{f(x+h) - f(x) - L(h)}}{\norm{h}} = 0
 $$
 
-\subsection{$diffQuot$}
+\subsection{The Difference Quotient: $DifferenceQuotient$ and $diffQuot$}
 
 The limit exists when the following difference quotient function $q: \R^n \pfun \R$ is continuous at $0$.
 $$
@@ -749,6 +752,11 @@ q(h) =
 	0								&	\text{otherwise}
 \end{cases}
 $$
+
+Given a function $f$ that is continuous at $x$, and a linear transformation $L$,
+we can define the difference quotient $q$.
+Clearly $q$ is uniquely determined by $f$, $x$, and $L$.
+Let $DifferenceQuotient$ denote this situation.
 
 \begin{schema}{DifferenceQuotient}
 	VectorContinuous \\
@@ -765,25 +773,41 @@ $$
 	q(\zeroRtup(n)) = \zeroR
 \end{schema}
 
-The function $f$ is differentiable at $x$ when there exists a linear transformation $L$ such that the difference quotient $q$ is
-continuous at $0$.
+\begin{itemize}
+\item $L$ is a linear transformation from $\Rtup(n)$ to $\Rtup(m)$.
+\item The difference quotient $q$ is defined on a subset of $\Rtup(n)$ that contains $\zeroRtup(n)$.
+\item $q(h)$ is defined as the quotient when $h$ is non-zero.
+\item $q(0)$ is defined as zero.
+\end{itemize}
+
+Let $diffQuot(f,x,L)$ denote the difference quotient $q$.
+
+\begin{zed}
+diffQuot == \{~ DifferenceQuotient @ (f, x, L) \mapsto q ~\}
+\end{zed}
+
+\subsection{The Derivative of a Continuous $m$-tuple-Valued Function: $VectorDifferentiable$}
+
+The continuous function $f$ is \textit{differentiable at} $x$ when there exists a linear transformation $L$ 
+such that the difference quotient $q$ is continuous at $0$.
+In this case $L$ is unique and is referred to as the \textit{derivative at} $x$.
 
 \begin{schema}{VectorDifferentiable}
-	DifferenceQuotient
+VectorContinuous \\
+L: \Rinf \pfun \Rinf
 \where
-	q \in \CzeroRn(\zeroRtup(n))
+\LET q == diffQuot(f, x, L) @ \\
+\t1	q \in \CzeroPointRtup(\zeroRtup(n))
 \end{schema}
 
-Clearly $q$ is uniquely determined by $f$, $x$, and $L$.
-Let $diffQuot(f,x,L)$ denote the difference quotient.
+\begin{itemize}
+\item The continuous function $f$ is differentiable at $x$ with derivative $L$ if the resulting
+difference quotient $q$ is continuous at $\zeroRtup(n)$.
+\end{itemize}
 
-\begin{axdef}
-	diffQuot: (\Rinf \pfun \Rinf) \cross \Rinf \cross (\Rinf \pfun \Rinf) \pfun (\Rinf \pfun \R)
-\where
-	diffQuot = \{~ VectorDifferentiable @ (f, x, L) \mapsto q ~\}
-\end{axdef}
-
-
+\begin{remark}
+If $L$ exists then it is unique.
+\end{remark}
 
 
 Let $\smoothRnm(x,m)$ denote the set of all functions $f \in \Rtup(n) \pfun \Rtup(m)$ that are smooth at $x \in \Rtup(n)$.
