@@ -8,7 +8,7 @@
 \usepackage{../real-numbers/real-numbers}
 \usepackage{formal-specifications}
 
-\title{The Role of Formalization and Z Notation}
+\title{The Role of Formalization and \Zed\ }
 \author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
 \date{\today}
 
@@ -19,11 +19,11 @@
 \begin{abstract}
 The notion of {\it type} was introduced into set theory by Russel in an effort to establish a firm foundation for logic.
 Types are now a standard feature of many computer programming languages.
-Z Notation is a formal language based on typed set theory for specifying computer programs.
-Since Z Notation is a formal language, a Z specification can itself be automatically checked for type errors.
+\Zed\  is a formal language based on typed set theory for specifying computer programs.
+Since \Zed\  is a formal language, a Z specification can itself be automatically checked for type errors.
 Writing valid Z specifications requires that the author explicitly define all terms.
 This encourages a style in which complex terms are gradually built up from simpler, previously defined terms.
-This article proposes to use Z Notation to formally specify mathematical structures, even if there is no intension of using
+This article proposes to use \Zed\  to formally specify mathematical structures, even if there is no intension of using
 them in computer programs.
 The hoped for benefits of doing so are that the exercise of formalization will lead the author to a better understanding of the subject
 matter, resulting in a clearer, higher quality, result.
@@ -46,15 +46,15 @@ long before computers were a reality.
 Theoretical computer science now makes extensive use of types.
 Mathematics can be used to specify the requirements for programs.
 Specifications act as a bridge between mathematics and programs.
-Z Notation is a strongly-typed formal specification language.
-However, Z Notation can be used to formalize mathematics even if the goal is not to program a computer.
+\Zed\  is a strongly-typed formal specification language.
+However, \Zed\  can be used to formalize mathematics even if the goal is not to program a computer.
 
 \section{Formalization}
 
-Z Notation can be used to precisely define mathematic objects and a Z specification can be type checked by a program.
-I have found that the exercise of expressing mathematics using Z Notation is a great way make sure that concepts are well-defined.
+\Zed\  can be used to precisely define mathematical objects and a Z specification can be type-checked by a program.
+I have found that the exercise of expressing mathematics using \Zed\  is a great way make sure that concepts are well-defined.
 This is especially helpful, although somewhat labour-intensive, when dealing with complex mathematical structures.
-I propose to formalize all definitions using Z Notation and to validate
+I propose to formalize all definitions using \Zed\  and to validate
 the document using the \fuzz\ type checker.
 
 I believe that the effort of precisely defining every needed concept pays off. 
@@ -74,7 +74,7 @@ hammer and, Bang!, smash the nut.
 My style would be to take the nut and put
 it in a sea of acid so that it would be
 dissolved very slowly, the crust of the nut, without noticing anything.}
-Yes, experts tell us that the style of Grothendieck is like everything is very
+And yes, experts tell us that the style of Grothendieck is like everything is very
 incremental from one step to another to
 another by very tiny steps so that you
 have the impression that nothing occurs
@@ -91,7 +91,7 @@ The message is clear: a slow, methodical build-up of concepts is a good thing in
 
 \section{Given Sets and Signatures}
 
-Although the integers are built-in to Z Notation, the real numbers are not.
+Although the integers are built-in to \Zed\ , the real numbers are not.
 In principle, one could first build up the rational numbers from the integers,
 and then the real numbers from the rational numbers, but that would take a lot of time and not really
 accomplish much.
@@ -105,7 +105,7 @@ But distinct types are disjoint sets.
 This implies that the $0$ element of the integers is not the same object as the $0$ element of the reals.
 In fact, they aren't even comparable within a Z specification since doing so is a type error and the 
 specification would therefore not be valid.
-The name \texttt{0} is built-in to Z Notation as the name of the $0$ element of the integers.
+The name \texttt{0} is built-in to \Zed\  as the name of the $0$ element of the integers.
 A Z specification must therefore introduce a new name to refer to the $0$ element of the reals.
 However, working mathematicians regard the integers as a subset of the reals and therefore have no need to deal with duplicate names.
 As Henri Poincar\'{e} \cite{poincare-fm} said:
@@ -115,7 +115,7 @@ It is enough that these things, though differing in matter, should be similar in
 
 How then can we make a Z specification valid while still honouring normal mathematical practice?
 The way out of this difficulty is that if a mathematician would normally regard two distinct objects as the same
-then we give then distinct Z Notation names, but display them using the same typographic symbol.
+then we give then distinct \Zed\  names, but display them using the same typographic symbol.
 To paraphrase Poincar\'{e}:
 \begin{quote}
 Formalizing mathematics is the art of giving different names, but the same symbol, to different things. 
@@ -164,13 +164,13 @@ namely that whatever the author is asserting about the example is in fact true.
 Similarly, when the author makes a remark or states a theorem, there is also a proof obligation.
 In each of these cases, the author makes a statement and asserts it to be true, but may not offer any proof.
 
-Z notation allows the author to add constraints to a specification.
+\Zed\ allows the author to add constraints to a specification.
 However, if the constraint is a logical consequence of the preceding definitions then it adds nothing to the specification.
 Therefore, we can freely add examples, remarks, and theorems to a specification without changing its meaning.
-These statements should be placed in a zed box that is enclosed in an appropriate \LaTeX\ theorem-like environment.
+These statements should be placed in a \cmd{zed} box that is enclosed in an appropriate \LaTeX\ theorem-like environment.
 
-For example, the following statement will be type checked by \fuzz, is true, and does not change the meaning of
-the specification.
+For example, the following statement is true and therefore does not change the meaning of
+the specification but will be type-checked by \fuzz, .
 
 \begin{example}
 
@@ -180,12 +180,12 @@ the specification.
 	
 \end{example}
 
-The benefit of placing theorem-like statements in zed boxes is that the \fuzz\ type checker will check their type-correctness.
+The benefit of placing theorem-like statements in \cmd{zed} boxes is that the \fuzz\ type checker will check their type-correctness.
 
-\subsection{Generic Theorem-like Statements}
+\subsection{Generic Theorem-Like Statements}
 
 It will often be the case that a theorem-like statement will involve generic constructs.
-Although Z notation provides a mechanism for introducing formal generic parameters into the definition of 
+Although \Zed\ provides a mechanism for introducing formal generic parameters into the definition of 
 generic constants and schemas, it does not provide such a mechanism for constraints.
 We can work around this limitation by declaring a set of global given sets which are understood to be used in theorem-like
 statements where they are taken to represent arbitrary sets.
@@ -204,12 +204,12 @@ For example, we can remark that every element $x$ of an arbitrary set $\setX$ is
 \section{Simulating Standard Mathematical Notation}
 
 The expression $(a,b)$ usually denotes an ordered pair in mathematical writing.
-Sometimes the writer asks us to interpret $(a,b)$ as an open interval of the real number line.
+Sometimes an author asks us to interpret $(a,b)$ as an open interval of the real number line.
 In this case we recognize that the symbols used in the expression $(a,b)$ do not have their usual meanings
 and we interpret them accordingly.
 The notation $(a,b)$ for denoting an open interval of the real number line is
 arguably very compact, convenient, and easy to understand. 
-In contrast, the Z notation function application $\intervalR(a,b)$, defined in the article on real numbers, 
+In contrast, the \Zed\  function application $\intervalR(a,b)$, defined in the article on real numbers, 
 may strike the reader as somewhat verbose and clumsy, albeit precise.
 
 \subsection{Prefix, Infix, and Postfix Operators in \fuzz}
@@ -267,7 +267,7 @@ $(a,b]$ and $[a,b)$.
 Regard $(a$ and $[a$ as open and closed right half lines, and $b)$ and $b]$ as open and closed left half lines.
 Only allow a right half line to be combined with a left half line.
 
-\subsection{Right Half Lines, \zcmd{openLowerBound}, and \zcmd{closedLowerBound}}
+\subsection{Right Half Lines: \zcmd{openLowerBound}, and \zcmd{closedLowerBound}}
 
 Let $RightHalfLine$ denote the type of syntactic fragments that define open and closed right half-lines.
 
@@ -303,7 +303,7 @@ For example
 	\oneR \in rightSet(\closedLowerBound \oneR)
 \end{zed}
 
-\subsection{Left Half Lines, \zcmd{openUpperBound}, and \zcmd{closedUpperBound}}
+\subsection{Left Half Lines: \zcmd{openUpperBound}, and \zcmd{closedUpperBound}}
 
 Let $LeftHalfLine$ denote the type of syntactic fragments that define open and closed left half-lines.
 
@@ -364,9 +364,11 @@ TODO: Fix up the above discussion.
 
 TODO: Use the example environment for examples.
 
+TODO: Improve the Summary. It should summarize the whole article, not just how to simulate mini-languages.
+
 \subsection{Summary}
 
-A lot of standard mathematical notation can be written directly using the built-in capabilities of Z notation and \fuzz.
+A lot of standard mathematical notation can be written directly using the built-in capabilities of \Zed\  and \fuzz.
 However, mathematics contains many specialized notations including those for intervals, probability, and quantum mechanics (Dirac bra-ket notation).
 One can view these specialized notations as mathematical mini-languages.
 As demonstrated above for the case of intervals, it is possible to simulate these notations in Z by introducing new syntactic types along with infix and postfix operators that construct, combine, and reduce fragments of this syntax.

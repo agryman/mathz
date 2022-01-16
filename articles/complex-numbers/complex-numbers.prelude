@@ -1,0 +1,2115 @@
+%
+% fuzzlib.x
+%
+% This file is part of fuzz2000
+% Copyright (c) 1982--2006 J. M. Spivey
+% All rights reserved
+%
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are met:
+%
+% 1. Redistributions of source code must retain the above copyright notice,
+%    this list of conditions and the following disclaimer.
+% 2. Redistributions in binary form must reproduce the above copyright notice,
+%    this list of conditions and the following disclaimer in the documentation
+%    and/or other materials provided with the distribution.
+% 3. The name of the author may not be used to endorse or promote products
+%    derived from this software without specific prior written permission.
+%
+% THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+% IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+% OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+% IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+% SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+% OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+% 
+% $Id: fuzzlib.x,v 1.2 2007-02-16 12:45:13 mike Exp $
+%
+
+%%token $"\bind" 335
+%%token $"\bsup" 262
+%%token $"\cross" 266
+%%token $"\defs" 268
+%%token $"\ELSE" 333
+%%token $"\esup" 275
+%%token $"\exists" 277
+%%token $"\exists_1" 278
+%%token $"false" 280
+%%token $"\forall" 282
+%%token $"\hide" 284
+%%token $"\iff" 273
+%%token $"\IF" 331
+%%token $"\implies" 285
+%%token $"\in" 286
+%%token $"\inrel" 329
+%%token $"\lambda" 289
+%%token $"\land" 258
+%%token $"\langle" 334
+%%token $"\lbag" 290
+%%token $"\ldata" 291
+%%token $"\LET" 292
+%%token $"\limg" 293
+%%token $"\lnot" 296
+%%token $"\lor" 298
+%%token $"\mid" 124
+%%token $"\mu" 294
+%%token $"\pipe" 299
+%%token $"\power" 300
+%%token $"\pre" 301
+%%token $"\project" 302
+%%token $"\rangle" 336
+%%token $"\rbag" 303
+%%token $"\rdata" 304
+%%token $"\rimg" 305
+%%token $"\semi" 281
+%%token $"\spot" 64
+%%token $"\THEN" 332
+%%token $"\theta" 306
+%%token $"true" 307
+%%token $"\vdash" 309
+%%token $"\where" 310
+%%token $"==" 272
+%%token $"%%ingen" 312
+%%token $"%%inop" 313
+%%token $"%%inrel" 314
+%%token $"%%pregen" 316
+%%token $"%%prerel" 317
+%%token $"%%postop" 315
+%%token $"%%type" 318
+%%token $"%%tame" 319
+%%token $"%%pname" 320
+%%token $"%%ignore" 338
+%%token $"%%debug" 340
+%%token $"%%line" 341
+%%token $"\begin{axdef}" 259
+%%token $"\begin{gendef}" 260
+%%token $"\begin{schema}" 261
+%%token $"\begin{zed}" 264
+%%token $"\begin{syntax}" 263
+%%token $"\end{axdef}" 270
+%%token $"\end{gendef}" 271
+%%token $"\end{schema}" 274
+%%token $"\end{zed}" 279
+%%token $"\end{syntax}" 276
+
+%%inop \mapsto							1
+%%inop \upto							2
+%%inop + - \cup \setminus \cat \uplus \uminus			3
+%%inop * \div \mod \cap \circ \comp \filter \extract \otimes	4
+%%inop \oplus \bcount						5
+%%inop \dres \rres \ndres \nrres				6
+%%postop \plus \star \inv
+%%inrel \neq \notin \subseteq \subset < \leq \geq > \inbag \partition
+%%inrel \prefix \subbageq \suffix \inseq
+%%prerel \disjoint
+%%ingen \rel \fun \pinj \inj \psurj \surj \bij \ffun \finj
+%%pregen \power_1 \id \finset \iseq
+%%ignore \quad \qquad
+
+%%type \pfun \nat \seq \bag
+\begin{gendef}[X]
+	\finset \_: \power (\power X)
+\end{gendef}
+\begin{gendef}[X,Y]
+	\_ \rel \_, \_ \ffun \_: \power (\power (X \cross Y)) \\
+	\_ \fun \_: \power (X \pfun Y)
+\end{gendef}
+%%type \rel \ffun \finset
+
+\begin{axdef}
+	-: \num \fun \num \\
+        \_ + \_ , \_ - \_ , \_ * \_: \num \cross \num \fun \num \\
+        \_ \div \_ , \_ \mod \_: 
+		\num \cross \num \pfun \num \\
+        \_ < \_ , \_ \leq \_ , \_ \geq \_ , \_ > \_: 
+		\num \rel \num \\
+	\nat_1: \power \nat \\
+        succ: \nat \fun \nat \\
+	\_ \upto \_: \num \cross \num \fun \power \num \\
+        min: \power \num \pfun \num \\
+        max: \power \num \pfun \num
+\end{axdef}
+
+\begin{gendef}[X]
+        \_ \neq \_: X \rel X \\
+        \_ \notin \_: X \rel \power X \\
+	\empty, \emptyset: \power X \\
+	\_ \subseteq \_ , \_ \subset \_: \power X \rel \power X \\
+	\power_1 \_: \power (\power X) \\
+        \_  \cup \_ , \_ \cap \_ , \_ \setminus \_:
+                \power X \cross \power X \fun \power X \\
+        \bigcup, \bigcap: \power (\power X) \fun \power X \\
+	\id \_: X \rel X \\
+        \_\plus, \_\star: (X \rel X) \fun (X \rel X) \\
+        iter: \num \fun (X \rel X) \fun (X \rel X) \\
+	\finset_1 \_: \power (\finset X) \\
+        \#: \finset X \fun \nat \\
+	\seq_1 \_, \iseq \_: \power (\seq X) \\
+        \_ \cat \_ :  \seq X \cross \seq X \fun \seq X \\
+        head, last: \seq X \pfun X \\
+        tail, front: \seq X \pfun \seq X \\
+        rev: \seq X \fun \seq X \\
+        \_ \filter \_: \seq X \cross \power X \fun \seq X \\
+        \_ \extract \_: \power \nat \cross \seq X \pfun \seq X \\
+	squash: (\nat \ffun X) \pfun \seq X \\
+	\_\prefix\_, \_\suffix\_, \_\inseq\_: \seq X \rel \seq X \\
+        \dcat: \seq (\seq X) \fun \seq X \\
+        count: \bag X \fun (X \fun \nat) \\
+	\_\bcount\_: \bag X \cross X \fun \nat \\
+        \_ \inbag \_: X \rel \bag X \\
+	\_ \subbageq \_: \bag X \rel \bag X \\
+        \_ \uplus \_, \_ \uminus \_: \bag X \cross \bag X \fun \bag X \\
+	\_ \otimes \_: \nat \cross \bag X \fun \bag X \\
+        items: \seq X \fun \bag X
+\end{gendef}
+
+\begin{gendef}[X,Y]
+        first: X \cross Y \fun X \\
+        second: X \cross Y \fun Y \\
+        \_ \mapsto \_: X \cross Y \fun X \cross Y \\
+        \dom: (X \rel Y) \fun \power X \\
+        \ran: (X \rel Y) \fun \power Y \\
+        \_ \dres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \rres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_ \ndres \_: \power X \cross (X \rel Y) \fun (X \rel Y) \\
+        \_ \nrres \_: (X \rel Y) \cross \power Y \fun (X \rel Y) \\
+        \_\inv: (X \rel Y) \fun (Y \rel X) \\
+        \_\limg\_\rimg: (X \rel Y) \cross \power X \fun \power Y \\
+        \_ \oplus \_: (X \rel Y) \cross (X \rel Y) \fun (X \rel Y) \\
+	\_ \pinj \_, \_ \inj \_, \_ \psurj \_, 
+	\_ \surj \_, \_ \bij \_, \_ \finj \_: \power(X \pfun Y) \\
+        \disjoint \_: \power (X \pfun \power Y) \\
+        \_ \partition \_: (X \pfun \power Y) \rel \power Y
+\end{gendef}
+
+\begin{gendef}[X,Y,Z]
+        \_ \comp \_: (X \rel Y) \cross (Y \rel Z) \fun (X \rel Z) \\
+	\_ \circ \_: (Y \rel Z) \cross (X \rel Y) \fun (X \rel Z)
+\end{gendef}
+
+%%pname \pfun $"-+>"
+%%pname \ffun $"-++>"
+%%pname \rel $"<->"
+%%pname \seq $"seq"
+%%pname \bag $"bag"
+%%pname \finset $"F"
+%%pname \nat $"NN"
+%%pname \num $"ZZ"
+%%pname \upto $".."
+%%pname \# $"#"
+%%pname \power_1 $"P_1"
+%%pname \id $"id"
+%%pname \mapsto $"|->"
+%%pname \dom $"dom"
+%%pname \ran $"ran"
+%%pname \fun $"-->"
+%%pname \pinj $">+>"
+%%pname \inj $">->"
+%%pname \psurj $"-+>>"
+%%pname \surj $"-->>"
+%%pname \bij $">->>"
+%%pname \finj $">++>"
+%%pname \disjoint $"disjoint"
+%%pname \partition $"partition"
+
+%%tame \cup \cap \setminus \bigcup \bigcap count \uplus items
+%%tame \plus \cat head last tail front rev \filter \dcat
+%%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
+%%tame \inv \limg\rimg \oplus \comp \circ
+% style file for sets.tex
+
+% formal parameters for generic constructions
+\newcommand{\genT}{\mathsf{t}}
+\newcommand{\genU}{\mathsf{u}}
+\newcommand{\genV}{\mathsf{v}}
+\newcommand{\genW}{\mathsf{w}}
+\newcommand{\genX}{\mathsf{x}}
+\newcommand{\genY}{\mathsf{y}}
+\newcommand{\genZ}{\mathsf{z}}
+
+% arbitrary sets used in theorems, remarks, and examples involving generic constructs
+\newcommand{\setT}{\mathsf{T}}
+\newcommand{\setU}{\mathsf{U}}
+\newcommand{\setV}{\mathsf{V}}
+\newcommand{\setW}{\mathsf{W}}
+\newcommand{\setX}{\mathsf{X}}
+\newcommand{\setY}{\mathsf{Y}}
+\newcommand{\setZ}{\mathsf{Z}}
+
+% families of sets
+%%pregen \family
+\newcommand{\family}{\mathcal{F}}
+
+% the induced family infix operator
+%%inop \inducedFam 6
+\newcommand{\inducedFam}{\mathbin{|_\family}}
+
+% the product family infix operator
+%%inop \prodFam 5
+\newcommand{\prodFam}{\mathbin{\cross_\family}}
+
+% the constant function
+\DeclareMathOperator{\const}{const}
+
+% the function restriction infix operator
+%%inop \restrictU 6
+\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{sets}
+
+\title{Sets}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for concepts related to sets.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Typed set theory forms the mathematical foundation of Z Notation
+and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
+This articles augments the tool-kit with some additional concepts.
+
+\section{Arbitrary Sets}
+
+\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
+
+Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
+These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
+by arbitrary sets.
+
+\begin{zed}
+	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
+\end{zed}
+
+\section{Formal Arguments to Generic Constructions}
+
+The following typographically distinctive symbols will be used as formal arguments to generic constructions:
+$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
+They denote arbitrary sets.
+
+\section{Families}
+
+\subsection{\zcmd{family}}
+
+Let $\genT$ be a set.
+A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $\family \genT$ denote the set of all families of subsets of $X$.
+
+\begin{zed}
+	\family \genT == \power(\power \genT)
+\end{zed}
+
+\section{Functions}
+
+
+\subsection{\zcmd{const}}
+
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
+The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
+Let $\const(c)$ denote the constant mapping.
+
+\begin{gendef}[\genT, \genU]
+	\const: \genU \fun (\genT \fun \genU)
+\where
+	\forall c: \genU @ \\
+	\t1	\const(c) = (\lambda x: \genT @ c)
+\end{gendef}
+
+
+\subsection{\zcmd{restrictU}}
+
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
+Let $f \restrictU T$ denote the restriction of $f$ to $T$.
+
+\begin{gendef}[\genT, \genU]
+	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
+\where
+	\forall f: \genT \fun \genU; T: \power \genT @ \\
+	\t1	f \restrictU T = T \dres f
+\end{gendef}
+
+\printbibliography
+
+\end{document}% continuous mappings between topological spaces
+\DeclareMathOperator{\CzeroTT}{C^0}
+
+% topological decoration on operators
+\newcommand{\topology}{\mathsf{top}}
+
+% the induced topological space infix operator
+\newcommand{\inducedTopSp}{\mathbin{|_\topology}}
+%%inop \inducedTopSp 6
+
+% the product topology infix operator
+\newcommand{\prodTop}{\mathbin{\cross_\topology}}
+%%inop \prodTop 5
+
+% the product topological space infix operator
+\newcommand{\prodTopSp}{\mathbin{\cross_\topology}}
+%%inop \prodTopSp 5
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{topological-spaces}
+
+\title{Topological Spaces}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article defines topological spaces and related concepts.
+\end{abstract}
+
+\section{Topological Spaces}
+
+\subsection{$Topology$}
+
+A {\it topology} $\tau$ on $X$ is a family of subsets of $X$, referred to as the {\it open} subsets of $X$, that satisfy the following axioms.
+
+\begin{schema}{Topology}[X]
+	\tau: \family X
+\where
+	\emptyset \in \tau
+\also
+	X \in \tau
+\also
+	\forall F: \finset \tau @ \bigcap F \in \tau
+\also
+	\forall F: \power \tau @ \bigcup F \in \tau
+\end{schema}
+
+\begin{itemize}
+\item The empty set is open.
+\item The whole set is open.
+\item The intersection of a finite family of open sets is open.
+\item The union of any family of open sets is open. 
+\end{itemize}
+
+\subsection{$top$ and $tops$}
+
+Let $top[X]$ denote the set of all topologies on $X$.
+
+\begin{gendef}[X]
+	top: \power(\family X)
+\where
+	top = \{~ Topology[X] @ \tau ~\}
+\end{gendef}
+
+Let $tops[X]$ denote the set of all topologies on subsets $U \subseteq X$.
+
+\begin{gendef}[X]
+	tops: \power(\family X)
+\where
+	tops = \bigcup \{~ U: \power X @ top[U] ~\}
+\end{gendef}
+
+\subsection{$discrete$ and $indiscrete$}
+
+The {\it discrete} topology on $X$ consists of all subsets of $X$.
+The {\it indiscrete} topology on $X$ consists of just $X$ and $\emptyset$.
+Let $discrete[X]$ and $indiscrete[X]$ denote the discrete and indiscrete topologies on $X$.
+
+\begin{gendef}[X]
+	discrete, indiscrete: \family X
+\where
+	discrete = \power X
+\also
+	indiscrete =  \{ \emptyset, X \}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+Then $discrete[\setX]$ and $indiscrete[\setX]$ are topologies on $\setX$.
+
+\begin{zed}
+	discrete[\setX] \in top[\setX] 
+\also
+	indiscrete[\setX] \in top[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topGen$}
+
+\begin{remark}
+
+The intersection of a set of topologies on $X$ is also a topology on $X$.
+
+\end{remark}
+
+Given a family $B$ of subsets of $X$, the topology {\it generated by} $B$ is the intersection of all
+topologies that contain $B$.
+The set $B$ is referred to as a {\it basis} for the topology it generates.
+Let $topGen[X]~B$ denote the topology on $X$ generated by the basis $B$.
+
+\begin{gendef}[X]
+	topGen: \family X \fun top[X]
+\where
+	\forall B: \family X @ \\
+	\t1	topGen~B = \bigcap \{~ \tau: top[X] | B \subseteq \tau ~\}
+\end{gendef}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	topGen[\setX] \emptyset = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \emptyset \} = indiscrete[\setX]
+\also
+	topGen[\setX] \{ \setX \} = indiscrete[\setX]
+\end{zed}
+
+\end{example}
+
+\subsection{$topSpace$}
+
+Let $X$ be a set.
+A {\it topological space} is a pair $(X, \tau)$ where $\tau$ is a topology on $X$.
+Let $topSpace[X]$ denote the set of all topological spaces $(X,\tau)$.
+
+\begin{zed}
+	topSpace[X] == \{~ \tau: top[X] @ (X, \tau) ~\}
+\end{zed}
+
+\begin{example}
+Let $\setX$ be an arbitrary set.
+
+\begin{zed}
+	(\setX, indiscrete[\setX]) \in topSpace[\setX]
+\also
+	(\setX, discrete[\setX]) \in topSpace[\setX]
+\end{zed}
+
+
+\end{example}
+
+\subsection{$topSpaces$}
+
+Let $topSpaces[t]$ dentote the set of all topological spaces $(X,\tau)$ where $X$ is a subset of $t$.
+
+\begin{gendef}[t]
+	topSpaces: \power t \rel \family t
+\where
+	topSpaces = \{~ X: \power t; \tau: \family t | \tau \in top[X] ~\}
+\end{gendef}
+
+\begin{remark}
+
+\begin{zed}
+	topSpace[\setX] \subseteq topSpaces[\setX]
+\end{zed}
+
+\end{remark}
+
+\section{Continuous Mappings}
+
+Let $(X,\tau)$ and $(Y,\sigma)$ be topological spaces.
+
+\subsection{$Continuous$}
+
+A mapping $f \in X \fun Y$ is said to be {\it continuous} if the inverse image of every open set is open.
+
+\begin{schema}{Continuous}[X,Y]
+	f: X \fun Y \\
+	\tau: top[X] \\
+	\sigma: top[Y]
+\where
+	\forall U: \sigma @ \\
+	\t1	f\inv\limg U \rimg \in \tau
+\end{schema}
+
+\subsection{\zcmd{CzeroTT}}
+
+Let $A$ and $B$ be topological spaces, and
+let $\CzeroTT(A,B)$ denote the set of continuous mappings from $A$ to $B$.
+
+\begin{gendef}[X,Y]
+	\CzeroTT: topSpace[X] \cross topSpace[Y] \fun \power (X \fun Y)
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\LET A == (X, \tau); B == (Y, \sigma) @ \\
+	\t2		\CzeroTT(A,B) = \{~ f: X \fun Y | Continuous[X,Y] ~\}
+\end{gendef}
+
+\subsection{The Identity Mapping}
+
+\begin{remark}
+The identity mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX] @ \\
+	\t1	\LET A == (\setX, \tau) @ \\
+	\t2		\id \setX \in \CzeroTT(A, A)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The constant mapping is continuous.
+
+\begin{zed}
+	\forall \tau: top[\setX]; \sigma: top[\setY]; c: \setY @ \\
+	\t1	\LET A == (\setX, \tau); B == (\setY, \sigma) @ \\
+	\t2		\const[\setX,\setY] c \in \CzeroTT(A,B)
+\end{zed}
+
+\end{remark}
+
+\subsection{Composition of Continuous Mapping}
+
+\begin{remark}
+Let $\setX$, $\setY$, and $\setZ$ be arbitrary sets.
+The composition of continuous mappings is a continuous mapping.
+
+\begin{zed}
+	\forall A: topSpace[\setX]; B: topSpace[\setY]; C: topSpace[\setZ] @ \\
+	\t1	\forall f: \CzeroTT(A, B); g: \CzeroTT(B, C) @ \\
+	\t2		g \circ f \in \CzeroTT(A, C)
+\end{zed}
+
+\end{remark}
+
+\section{Induced Topology}
+
+Let $A = (X, \tau)$ be a topological space and let $U \subseteq X$ be a subset.
+The topology on $X$ {\it induces} a topology on $U$.
+This topology is variously referred to as the {\it induced}, {\it relative}, or {\it subspace} topology on $U$.
+
+\subsection{\zcmd{inducedFam}}
+
+Let $\phi$ be a family of subsets of $X$ and let $U$ be a subset of $X$.
+The family of subsets of $U$ {\it induced} by $\phi$ is the set of intersections of the members of $\phi$ with $U$.
+Let $\phi \inducedFam U$ denote the family on $U$ induced by $\phi$.
+
+\begin{gendef}[X]
+	\_ \inducedFam \_:  \family X \cross \power X \fun \family X
+\where
+	\forall \phi: \family X; U: \power X @ \\
+	\t1	\phi \inducedFam U = \{~ Y: \phi @ Y \cap U ~\}
+\end{gendef}
+
+\begin{remark}
+If $\tau$ is a topology on $X$ then $\tau \inducedFam U$ is a topology on $U$.
+
+\begin{zed}
+	\forall \tau: top[\setX]; U: \power \setX @ \\
+	\t1	\tau \inducedFam U \in top[U]
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{inducedTopSp}}
+
+Let $(X, \tau) \inducedTopSp U$ denote the corresponding induced topological space.
+
+\begin{gendef}[X]
+	\_ \inducedTopSp \_: topSpace[X] \cross \power X \fun topSpaces[X]
+\where
+	\forall \tau: top[X]; U: \power X @ \\
+	\t1	(X, \tau) \inducedTopSp U = (U, \tau \inducedFam U)
+\end{gendef}
+
+\section{Product Topology}
+
+Let $(X, \tau)$ and $(Y, \sigma) $ be topological spaces.
+There is a natural topology on $X \cross Y$ generated by the products of the sets in $\tau$ and $\sigma$.
+
+\subsection{\zcmd{prodFam}}
+
+Let $X$ and $Y$ be sets and let $\phi$ and $\psi$ be families on them.
+The product of these families is the family that consists of the products of the sets in them and is a family on $X \cross Y$.
+Let $\phi \prodFam \psi$ denote the product of the families.
+
+\begin{gendef}[X,Y]
+	\_ \prodFam \_ : \family X \cross \family Y \fun \family(X \cross Y)
+\where
+	\forall \phi: \family~X; \psi: \family~Y @ \\
+	\t1	\phi \prodFam \psi = \{~ U: \phi; V: \psi @ U \cross V ~\}
+\end{gendef}
+
+\begin{remark}
+
+If $\tau$ and $sigma$ are topologies then $\tau \prodFam \sigma$ is not, in general, a topology.
+However, we can use it to generate a topology.
+
+\end{remark}
+
+\subsection{\zcmd{prodTop}}
+
+Let $\tau \prodTop \sigma$ denote the topology generated by $\tau \prodFam \sigma$.
+
+\begin{gendef}[X,Y]
+	\_ \prodTop \_: top[X] \cross top[Y] \fun top[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	\tau \prodTop \sigma = topGen(\tau \prodFam \sigma)
+\end{gendef}
+
+\subsection{\zcmd{prodTopSp}}
+
+Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
+
+\begin{gendef}[X,Y]
+	\_ \prodTopSp \_: topSpace[X] \cross topSpace[Y] \fun topSpace[X \cross Y]
+\where
+	\forall \tau: top[X]; \sigma: top[Y] @ \\
+	\t1	(X, \tau) \prodTopSp (Y, \sigma) = (X \cross Y, \tau \prodTop \sigma)
+\end{gendef}
+
+\printbibliography
+
+\end{document}% groups
+
+% binary operations
+%%pregen \binop
+\DeclareMathOperator{\binop}{binop}
+
+% binary operation homomorphisms
+\DeclareMathOperator{\homBinOp}{hom_{op}}
+
+% semigroups
+
+% the set of all semigroups
+%%pregen \semigroup
+\DeclareMathOperator{\semigroup}{semigroup}
+
+\DeclareMathOperator{\homSemigroup}{hom_{sg}}
+
+% monoids
+
+% the set of all monoids
+%%pregen \monoid
+\DeclareMathOperator{\monoid}{monoid}
+\DeclareMathOperator{\homMonoid}{hom_{mon}}
+
+% groups
+
+%%pregen \group
+\DeclareMathOperator{\group}{group}
+
+\DeclareMathOperator{\homGroup}{hom_{grp}}
+
+% group identity element
+\newcommand{\oneG}{1}
+
+%%inop \mulG \timesG 4
+\newcommand{\mulG}{\mathbin{*}}
+\newcommand{\timesG}{\mathbin{\times}}
+
+%%postop \invG \daggerG
+\newcommand{\invG}{^{-1}}
+\newcommand{\daggerG}{^{\dagger}}
+
+% Abelian groups
+
+%%pregen \abgroup
+\DeclareMathOperator{\abgroup}{abgroup}
+
+%%inop \addG 3
+\newcommand{\addG}{\mathbin{+}}
+
+\newcommand{\zeroG}{0}
+
+\DeclareMathOperator{\negG}{-}
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{groups}
+
+\title{Groups}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for groups and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+Groups are ubiquitous throughout mathematics and physics.
+This article defines the basic algebraic objects related to groups and their homomorphisms.
+
+\section{Binary Operations}
+
+Let $\genT$ be a set. We refer to the members of $\genT$ as its {\em elements}.
+A {\em binary operation} on $\genT$ is a function that maps pairs of elements to elements.
+
+\subsection{\zcmd{binop}}
+
+Let $\binop \genT$ denote the set of all binary operations on $\genT$.
+
+\begin{zed}
+\binop \genT == \genT \cross \genT \fun \genT
+\end{zed}
+
+\subsection{Infix Operator Symbols \zcmd{timesG}, \zcmd{mulG}, and \zcmd{addG}}
+
+The result of applying a binary operation to the pair of elements $(x, y)$ 
+is often denoted by an expression formed using an infix operator symbol,
+e.g. $x \timesG y$, $x \mulG y$ or $x \addG y$.
+
+\subsection{$MapPerservesOperation$}
+
+Let $\genT$ and $\genU$ be sets and let $A$ and $B$ be binary operations on them.
+Let $f$ be a function that maps $\genT$ to $\genU$.
+The function $f$ is said to {\em preserve the operations} if it maps the product of elements to 
+the product of the mapped elements.
+
+Let $MapPreservesOperation$ denote this situation.
+
+\begin{schema}{MapPreservesOperation}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \binop \genT \\
+B: \binop \genU
+\where
+\LET (\_ \mulG \_) == A; (\_ \timesG \_) == B @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		f(x \mulG y) = (f~x) \timesG (f~y)
+\end{schema}
+
+\subsection{\zcmd{homBinOp}}
+
+A map that preserves operations is said to be an {\em operation homomorphism}.
+
+Let $A$ and $B$ be binary operations. 
+Let $\homBinOp(A,B)$ denote the set of operation homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homBinOp: \binop \genT \cross \binop \genU  \fun \power (\genT \fun \genU)
+\where
+\homBinOp = (\lambda A: \binop \genT; B: \binop \genU @ \\
+\t1	\{~ f: \genT \fun \genU | MapPreservesOperation[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity map is an operation homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two operation homomorphisms is an operation homomorphism.
+\end{remark}
+
+\section{Semigroups}
+
+\subsection{$OperationIsAssociative$}
+
+A binary operation is said to be {\em associative} if the result of applying it to three elements
+is independent of the order in which it is applied pairwise.
+
+Let $OperationIsAssociative$ denote this situation.
+
+\begin{schema}{OperationIsAssociative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y, z: \genT @ \\
+\t2		(x \mulG y) \mulG z = x \mulG (y \mulG z)
+\end{schema}
+
+\subsection{\zcmd{semigroup}}
+
+Let $\semigroup \genT$ denote the set of all semigroups on the set of elements $\genT$.
+
+\begin{zed}
+\semigroup \genT == \{~ A: \binop \genT | OperationIsAssociative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{homSemigroup}}
+
+A {\em semigroup homomorphism} from $A$ to $B$ is a homomorphism of the underlying binary operation.
+
+Let $\homSemigroup(A, B)$ denote the set of all semigroup homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homSemigroup: \semigroup \genT \cross \semigroup \genU \fun \power (\genT \pfun \genU)
+\where
+\homSemigroup = \\
+\t1	(\lambda A: \semigroup \genT; B: \semigroup \genU @ \homBinOp(A, B))
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a semigroup homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two semigroup homomorphisms is another semigroup homomorphism.
+\end{remark}
+
+\section{Monoids}
+
+\subsection{$IdentityElement$}
+
+Let $\genT$ be a set, let $A$ be a binary operation over $\genT$, and let $e$ be an element of $\genT$.
+The element $e$ is said to be an {\em identity element} of $A$ if left and right 
+products with it leave all elements unchanged.
+
+Let $IdentityElement$ denote this situation.
+
+\begin{schema}{IdentityElement}[\genT]
+A: \binop \genT \\
+e: \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x: \genT @ \\
+\t2		e \mulG x = x = x \mulG e
+\end{schema}
+
+\subsection{$identity\_element$}
+
+Let $identity\_element$ denote the relation that associates a binary operation one of its identity elements.
+
+\begin{gendef}[\genT]
+identity\_element: \binop \genT \rel \genT
+\where
+identity\_element = \\
+\t1	\{~ IdentityElement[\genT] @ A \mapsto e ~\}
+\end{gendef}
+
+\begin{remark}
+If a binary operation has an identity element then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $\mulG$ be a binary operation. Suppose $e$ and $e'$ are identity elements.
+\begin{argue}
+e \\
+\t1	= e \mulG e'	& $e'$ is an identity element \\
+\t1	= e'			& $e$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since identity elements are unique if they exist, the relation from binary operations to identity elements is a partial function.
+
+\begin{zed}
+identity\_element \in \binop \setT \pfun \setT
+\end{zed}
+
+\end{remark}
+
+
+\subsection{Identity Element Symbols \zcmd{zeroG}, and \zcmd{oneG}}
+
+Identity elements are typically denoted by the symbols  $\zeroG$ or $\oneG$.
+
+\subsection{\zcmd{monoid}}
+
+Let $\genT$ be a set of elements.
+A {\em monoid} over $\genT$ is a semigroup over $\genT$ that has an identity element.
+
+Let $\monoid \genT$ denote the set of all monoids over $\genT$.
+
+\begin{zed}
+\monoid \genT == \{~ A: \semigroup \genT | \exists e: \genT @ IdentityElement[\genT] ~\}
+\end{zed}
+
+
+\subsection{$MapPreservesIdentity$}
+
+Let $A$ and $B$ be monoids and let $f$ map the elements of $A$ to the elements of $B$.
+The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
+to the identity element of $B$.
+
+Let $MapPreservesIdentity$ denote this situation.
+
+\begin{schema}{MapPreservesIdentity}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \monoid \genT \\
+B: \monoid \genU
+\where
+\LET e == identity\_element~A; \\
+\t1	e' == identity\_element~B @ \\
+\t2		f~e = e'
+\end{schema}
+
+\subsubsection{\zcmd{homMonoid}}
+
+A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
+that preserves identity.
+
+Let $\homMonoid(A, B)$ denote the set of all monoid homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
+\where
+\homMonoid = \\
+\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
+\t2		\{~ f: \homSemigroup(A, B) | \\
+\t3			MapPreservesIdentity[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a monoid homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two monoid homomorphisms is another monoid homomorphism.
+\end{remark}
+
+\section{Groups}
+
+\subsection{$InverseOperation$ and Postfix Operator symbol \zcmd{invG}}
+
+Let $\genT$ be a set of elements and let $A$ be a monoid on $\genT$.
+A function $inv \in \genT \fun \genT$ is said to be an {\em inverse operation} if it maps each element
+to an element whose product with it is the identity element.
+Typically, the expression $x \invG$ is used to denote the inverse of $x$.
+
+Let $InverseOperation$ denote this situation.
+
+\begin{schema}{InverseOperation}[\genT]
+A: \monoid \genT \\
+inv: \genT \fun \genT
+\where
+\LET (\_ \mulG \_) == A; \\
+\t1	\oneG == identity\_element~A; \\
+\t1	(\_ \invG) == inv @ \\
+\t2		\forall x: \genT @ \\
+\t3			x \mulG x \invG = \oneG = x \invG  \mulG x
+\end{schema}
+
+\subsection{$inverse\_operation$}
+
+Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
+
+\begin{gendef}[\genT]
+inverse\_operation: \monoid \genT \rel \genT \fun \genT
+\where
+inverse\_operation = \\
+\t1	\{~ InverseOperation[\genT] @ A \mapsto inv ~\}
+\end{gendef}
+
+\begin{remark}
+If a monoid has an inverse operation then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $x$ be any element.
+Suppose $x \invG$ and $x \daggerG$ are inverses of $x$.
+\begin{argue}
+x\daggerG \\
+\t1	= x\daggerG \mulG \oneG				& $\oneG$ is an identity element \\
+\t1	= x\daggerG \mulG (x \mulG x \invG)		& $x \invG$ is an inverse \\
+\t1	= (x\daggerG \mulG x) \mulG x \invG		& associativity \\
+\t1	= \oneG \mulG x \invG				& $x \daggerG$ is an inverse \\
+\t1	= x \invG							& $\oneG$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since if inverse operation exist they are unique, the relation between monoids and inverse operations
+is a partial function.
+
+\begin{zed}
+inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
+\end{zed}
+
+\end{remark}
+
+\subsection{$\group$}
+
+A {\em group} is a monoid that has an inverse operation.
+
+Let $\genT$ be a set of elements.
+Let $\group \genT$ denote the set of all groups over $\genT$.
+
+\begin{zed}
+\group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
+\end{zed}
+
+\subsubsection{$MapPreservesInverse$}
+
+Let $\genT$ and $\genU$ be sets of elements,
+let $A$ and $B$ be groups over $\genT$ and $\genU$, 
+and let $f$ map $\genT$ to $\genU$.
+The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
+to the inverses of the corresponding elements of $B$.
+
+Let $MapPreservesInverse$ denote this situation.
+
+\begin{schema}{MapPreservesInverse}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \group \genT \\
+B: \group \genU
+\where
+\LET (\_ \invG) == inverse\_operation~A; \\
+\t1	(\_ \daggerG) == inverse\_operation~B @ \\
+\t2		\forall x: \genT @ \\
+\t3			f(x \invG) = (f~x) \daggerG
+\end{schema}
+
+\subsubsection{\zcmd{homGroup}}
+
+Let $A$ and $B$ be groups.
+A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
+from $A$ to $B$ that preserves inverses.
+
+Let $\homGroup(A, B)$ denote the set of all group homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
+\where
+\homGroup = \\
+\t1	(\lambda A: \group \genT; B: \group \genU @ \\
+\t2		\{~ f: \homMonoid(A, B) | \\
+\t3			MapPreservesInverse[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a group homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two group homomorphisms is another group homomorphism.
+\end{remark}
+
+\subsection{$bij$}
+
+Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
+
+\begin{gendef}[\genT]
+	bij: \power (\genT \fun \genT)
+\where
+	bij = \genT \bij \genT
+\end{gendef}
+
+\begin{remark}
+The composition of bijections is a bijection.
+
+\begin{zed}
+	\forall f, g: bij[\setT] @ \\
+	\t1	f \circ g \in bij[\setT]
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+Composition is associative.
+
+\begin{zed}
+	\forall f, g, h: bij[\setT] @ \\
+	\t1	f \circ (g \circ h) = (f \circ g) \circ h
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The identity function $\id \setT$ acts as a left and right identity element under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	 \id \setT \circ f = f = f \circ \id \setT
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	f \circ f \inv = \id \setT = f \inv \circ f
+\end{zed}
+
+\end{remark}
+
+\subsection{$Bij$}
+
+The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
+Let $Bij[\genT]$ denote this group.
+
+\begin{gendef}[\genT]
+	Bij: bij[\genT] \cross bij[\genT] \fun bij[\genT]
+\where
+	Bij = (\lambda f, g: bij[\genT] @ f \circ g)
+\end{gendef}
+
+\begin{example}
+Let $\setT$ be any non-empty set.
+The composition operation $Bij[\setT]$ is a group over the set of bijections $bij[\setT]$ from $\setT$ to $\setT$.
+
+\begin{zed}
+\setT \neq \emptyset \implies \\
+\t1	Bij[\setT] \in \group bij[\setT]
+\end{zed}
+
+\end{example}
+
+\section{Abelian Groups}
+
+\subsection{OperationIsCommutative}
+
+Let $\genT$ be a set of elements.
+A binary operation $A$ over $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
+their order.
+
+Let $OperationIsCommutative$ denote this situation.
+
+\begin{schema}{OperationIsCommutative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		x \mulG y = y \mulG x
+\end{schema}
+
+\subsection{\zcmd{abgroup}}
+
+An {\em Abelian group} is a group in which the binary operation is commutative.
+Let $\genT$ be a set of elements.
+
+Let $\abgroup \genT$ denote the set of all Abelian groups over $\genT$.
+
+\begin{zed}
+\abgroup \genT == \{~ A: \group \genT | OperationIsCommutative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
+
+Often in an Abelian group the binary operation is denoted as addition $x \addG y$,
+the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
+
+\begin{example}
+Addition over the integers is an Abelian group.
+
+\begin{zed}
+	(\_ + \_) \in \abgroup \num
+\end{zed}
+
+\end{example}
+
+\printbibliography
+
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{real-numbers}[2018/08/05 Z Notation for real numbers package]
+
+\RequirePackage{amssymb}
+
+% real numbers
+
+% the set of real numbers
+\newcommand{\R}{\mathbb{R}}
+
+% the real number 0
+\newcommand{\zeroR}{0}
+
+% the real number 1
+\newcommand{\oneR}{1}
+
+% the negation prefix operator -x
+\DeclareMathOperator{\negR}{-}
+
+% the set of non-zero real numbers
+\newcommand{\Rnz}{\R_{*}}
+
+% the set of positive real numbers
+\newcommand{\Rpos}{\R_{+}}
+
+% the addition infix operator x + y
+%%inop \addR 3
+\newcommand{\addR}{\mathbin{+}}
+
+% the subtraction infix operator x - y
+%%inop \subR 3
+\newcommand{\subR}{\mathbin{-}}
+
+% the multiplication infix operator x * y
+%%inop \mulR 4
+\newcommand{\mulR}{\mathbin{*}}
+
+% the division infix operator x / y
+%%inop \divR 4
+\newcommand{\divR}{\mathbin{/}}
+
+% the multiplication infix operator restricted to non-zero real numbers
+%%inop \mulRnz 4
+\newcommand{\mulRnz}{\mathbin{\overline{*}}}
+
+% the inverse postfix operator defined on non-zero real numbers
+%%postop \invRnz
+\newcommand{\invRnz}{^{-1}}
+
+% the less than infix relation x < y
+%%inrel \ltR
+\newcommand{\ltR}{\mathrel{<}}
+
+% the less than or equal to infix relation x <= y
+%%inrel \leR
+\newcommand{\leR}{\mathrel{\leq}}
+
+% the greater than infix relation x > y
+%%inrel \gtR
+\newcommand{\gtR}{\mathrel{>}}
+
+% the greater than or equal to infix relation x > y
+%%inrel \geR
+\newcommand{\geR}{\mathrel{\geq}}
+
+% the set of all open sets of real numbers
+\newcommand{\openR}{\mathsf{open}}
+
+% the absolute value function abs(x) = |x|
+\DeclareMathOperator{\absR}{abs}
+
+% the positive square root function sqrt(x)
+\DeclareMathOperator{\sqrtR}{sqrt}
+
+\DeclareMathOperator{\intervalR}{interval}
+\DeclareMathOperator{\ballR}{ball}
+\DeclareMathOperator{\ballsR}{balls}
+\DeclareMathOperator{\neighR}{neigh}
+
+\newcommand{\tauR}{\tau_\R}
+\newcommand{\Rtau}{\R_\tau}
+
+\DeclareMathOperator{\limRR}{lim}
+\DeclareMathOperator{\limR}{lim}
+\DeclareMathOperator{\limFR}{lim}
+
+\DeclareMathOperator{\FunR}{F}
+\DeclareMathOperator{\FunPR}{F}
+
+\DeclareMathOperator{\CzeroR}{C^0}
+\DeclareMathOperator{\CzeroPR}{C^0}
+
+\DeclareMathOperator{\CnR}{C}
+\DeclareMathOperator{\CnPR}{C}
+
+\DeclareMathOperator{\diffRR}{diff}
+\DeclareMathOperator{\diffR}{diff}
+\DeclareMathOperator{\diffPR}{diff}
+
+\DeclareMathOperator{\smoothR}{C^{\infty}}
+\DeclareMathOperator{\smoothPR}{C^{\infty}}
+
+\DeclareMathOperator{\derivFR}{D}
+\DeclareMathOperator{\derivF}{D}
+\documentclass[11pt, oneside]{article}
+
+\usepackage{../../shared/preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{../sets/sets}
+\usepackage{../topological-spaces/topological-spaces}
+\usepackage{../groups/groups}
+\usepackage{real-numbers}
+
+\title{Real Numbers}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for the real numbers, $\R$, and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+The real numbers, $\R$, are foundational to many mathematical objects such as vector spaces and manifolds,
+but are not built-in to Z Notation.
+This article provides type declarations for $\R$ and related objects so that they can be used and type checked in formal Z specifications.
+
+No attempt has been made to provide complete, axiomatic definitions of all these objects since that would only be of use for proof checking.
+Although proof checking is highly desirable, it is beyond the scope of this article.
+The type declarations given here are intended to provide a basis for future axiomatization.
+
+\section{Real Numbers}
+
+Z notation does not predefine the set of real numbers, so we define it here.
+
+\subsection{\zcmd{R}}
+
+Let $\R$ denote the set of real numbers.
+We define it to be simply a given set.
+We'll add further axioms as needed below.
+
+\begin{zed}
+[\R]
+\end{zed}
+
+\subsection{\zcmd{addR}, \zcmd{zeroR}, \zcmd{negR}, and \zcmd{subR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \addR y$ denote addition,
+let $\zeroR$ denote zero,
+let $\negR x$ denote negation,
+and let $x \subR y$ denote subtraction.
+
+\begin{axdef}
+	\_ \addR \_: \R \cross \R \fun \R \\
+	\zeroR: \R \\
+	\negR: \R \fun \R
+\end{axdef}
+
+Although these real number objects are displayed using the same symbols as the corresponding integer objects,
+they represent distinct mathematical objects.
+This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
+because the underlying types of objects will, as a rule, be clear from the context.
+Visually distinct symbols will be used in cases where confusion is possible.
+
+The real numbers form an Abelian group under addition.
+
+\begin{zed}
+(\_ \addR \_) \in \abgroup \R
+\also
+\zeroR = identity\_element(\_ \addR \_)
+\also
+\negR = inverse\_operation(\_ \addR \_)
+\end{zed}
+
+Subtraction is defined in terms of addition and negative.
+
+\begin{axdef}
+	\_ \subR \_: \R \cross \R \fun \R
+	\where
+	\forall x, y: \R @ x \subR y = x \addR (\negR y)
+\end{axdef}
+
+\subsection{\zcmd{Rnz}}
+
+Let $\Rnz$ denote the set of non-zero real numbers,
+also referred to as the {\it punctured real number line}.
+
+\begin{zed}
+	\Rnz == \R \setminus \{ \zeroR \}
+\end{zed}
+
+\subsection{\zcmd{mulR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \mulR y$ denote multiplication.
+
+\begin{axdef}
+	\_ \mulR \_: \R \cross \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{mulRnz}, \zcmd{oneR}, \zcmd{invRnz}, and \zcmd{divR}}
+
+Let $(\_ \mulRnz \_)$ denote the restriction of $(\_ \mulR \_)$ to $\Rnz$.
+
+\begin{axdef}
+	\_ \mulRnz \_: \Rnz \cross \Rnz \fun \Rnz
+	\where
+	(\_ \mulRnz \_) = (\lambda x, y: \Rnz @ x \mulR y)
+\end{axdef}
+
+Let $x$ be real number and let $y$ be a non-zero real number.
+let $\oneR$ denote one,
+let $y \invRnz$ denote inverse,
+and let $x \divR y$ denote division.
+
+\begin{axdef}
+	\oneR: \Rnz \\
+	\_ \invRnz: \Rnz \fun \Rnz
+\end{axdef}
+
+The non-negative real numbers form an Abelian group under multiplication.
+
+\begin{zed}
+(\_ \mulRnz \_) \in \abgroup \Rnz
+\also
+\oneR = identity\_element(\_ \mulRnz \_)
+\also
+(\_ \invRnz) = inverse\_operation(\_ \mulRnz \_)
+\end{zed}
+
+Division is defined in terms of multiplicative inverse.
+
+\begin{axdef}
+	\_ \divR \_: \R \cross \Rnz \fun \R
+	\where
+	\forall x: \R; y: \Rnz @ x \divR y = x \mulR (y \invRnz)
+\end{axdef}
+
+Addition is distributive over multiplication.
+
+\begin{zed}
+	\forall x, y, z: \R @ (x \addR y) \mulR z = x \mulR z \addR y \mulR z
+\end{zed}
+
+\subsection{\zcmd{ltR}, \zcmd{leR}, \zcmd{gtR}, and \zcmd{geR}}
+
+Let $x \ltR y$, $x \leR y$, $x \gtR y$, and $x \geR y$ denote the usual comparison relations.
+
+\begin{axdef}
+	\_ \ltR \_: \R \rel \R \\
+	\_ \leR \_: \R \rel \R \\
+	\_ \gtR \_: \R \rel \R \\
+	\_ \geR \_: \R \rel \R
+\end{axdef}
+
+\subsection{\zcmd{absR}}
+
+Let $\absR(x)$ denote $\abs{x}$, the absolute value of $x$.
+
+\begin{axdef}
+	\absR: \R \fun \R
+\where
+	\forall x: \R @ \\
+	\t1	\absR(x) = \IF x \geR \zeroR \THEN x \ELSE \negR~x
+\end{axdef}
+
+\subsection{\zcmd{Rpos}}
+
+Let $\Rpos$ denote the set of positive real numbers.
+
+\begin{zed}
+	\Rpos == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+\subsection{\zcmd{sqrtR}}
+
+For non-negative $x$, let $\sqrtR(x)$ denote $\sqrt{x}$, the non-negative square root of $x$.
+
+\begin{axdef}
+	\sqrtR: \R \pfun \R
+\where
+	\sqrtR = \{~ x: \R | x \geR \zeroR @ x \mulR x \mapsto x ~\}
+\end{axdef}
+
+\section{Open Sets}
+
+\subsection{\zcmd{intervalR}}
+
+For any real numbers $a$ and $b$, let $\intervalR(a,b)$ denote $(a,b)$, the open interval bounded by $a$ and $b$.
+
+\begin{axdef}
+	\intervalR: \R \cross \R \fun \power \R
+\where
+	\forall a, b: \R @ \\
+	\t1	\intervalR(a,b) = \{~ x: \R | a \ltR x \ltR b ~\}
+\end{axdef}
+
+\begin{remark}
+If $a \geR b$ then $\intervalR(a,b) = \emptyset$.
+\end{remark}
+
+\subsection{\zcmd{ballR}}
+
+For any real numbers $x$ and $r$, let $\ballR(x,r)$ denote the set of all real numbers within distance $r$ of $x$.
+
+\begin{axdef}
+	\ballR: \R \cross \R \fun \power \R
+\where
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \{~ x': \R | \absR(x' \subR x) \ltR r ~\}
+\end{axdef}
+
+\begin{remark}
+Balls are intervals.
+
+\begin{zed}
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \intervalR(x \subR r, x \addR r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \gtR 0$ then $x$ is in $\ballR(x, r)$. 
+
+\begin{zed}
+	\forall x: \R; r: \Rpos @ \\
+	\t1	x \in \ballR(x,r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \leR 0$ then $\ballR(x,r)$ is empty.
+
+\begin{zed}
+	\forall x, r: \R | r \leR \zeroR @ \\
+	\t1	\ballR(x,r) = \emptyset
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{ballsR}}
+
+Let $\ballsR$ denote the set of all open balls in $\R$.
+
+\begin{axdef}
+	\ballsR: \family~\R
+\where
+	\ballsR = \{~ x, r: \R @ \ballR(x,r) ~\}
+\end{axdef}
+
+\subsection{\zcmd{openR}}
+
+A subset $U$ of $\R$ is said to be {\it open} if every point $x \in U$ is surrounded by some open ball $B \subset U$ that lies
+strictly within $U$.
+Let $\openR$ denote the set of all open subsets of $\R$.
+
+\begin{axdef}
+	\openR: \family~\R
+\where
+	\openR = \\
+	\t1	\{~ U:  \power \R | \\
+	\t2		\forall x: U @ \\
+	\t3			\exists B: \ballsR @ x \in B \subset U ~\}
+\end{axdef}
+
+\begin{remark}
+All balls are open.
+
+\begin{zed}
+	\ballsR \subset \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The empty set is open.
+
+\begin{zed}
+	\emptyset \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The set of all real numbers is open.
+
+\begin{zed}
+	\R \in \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{tauR}}
+
+The topology generated by the open balls of $\R$ is referred to as the {\it usual} or {\it standard} topology on $\R$ .
+Let $\tauR$ denote the usual topology on $\R$.
+
+\begin{axdef}
+	\tauR: top[\R]
+\where
+	\tauR = topGen[\R] \ballsR
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\tauR = \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{Rtau}}
+
+Let $\Rtau$ denote the topological space defined by $\R$ with the usual topology.
+
+\begin{axdef}
+	\Rtau: topSpaces[\R]
+\where
+	\Rtau = (\R, \tauR)
+\end{axdef}
+
+\begin{example}
+
+\begin{zed}
+	\Rtau \in topSpace[\R]
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{neighR}}
+
+Let $x$ be a real number.
+Any open set that contains $x$ is called a {\it neighbourhood} of it.
+Let $\neighR(x)$ denote the set of all neighbourhoods of $x$.
+
+\begin{axdef}
+	\neighR: \R \fun \family~\R
+\where
+	\forall x: \R @ \\
+	\t1	\neighR(x) = \{~ U: \openR | x \in U~\}
+\end{axdef}
+
+Clearly, every real number has an infinity of neighbourhoods.
+
+\begin{remark}
+Any open ball that contains $x$ is a neighbourhood of $x$.
+
+\begin{zed}
+	\forall x: \R; B: \ballsR | \\
+	\t1	x \in B @ \\
+	\t2		B \in \neighR(x)
+\end{zed}
+
+\end{remark}
+
+\section{Functions}
+
+The following sections define continuity, limits, and differentiability, which are point-wise properties of functions.
+These properties are {\it local} in the sense that in order to determine if they hold at a given point it is sufficient to
+consider the restriction of the function to an arbitrarily small neighbourhood of the point.
+It is therefore useful to first introduce the set of {\it locally defined} functions, 
+namely those functions that are defined in some neighbourhood of each point of  their domains.
+
+\subsection{\zcmd{FunR}}
+
+For $x$ a real number,
+let $\FunR(x)$ denote the set of all real-valued, partial functions on $\R$ that are locally defined at $x$.
+
+\begin{axdef}
+	\FunR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\FunR(x) = \{~ f: \R \pfun \R | \exists U: \neighR(x) @ U \subseteq \dom f ~\}
+\end{axdef}
+
+\begin{remark}
+The function $\sqrtR$ is not locally defined at $0$ because it's defined only for non-negative numbers,
+but every neighbourhood of $0$ contains some negative numbers.
+
+\begin{zed}
+	\sqrtR \notin \FunR(\zeroR)
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{FunPR}}
+
+For $U$ a subset of $\R$,
+let $\FunPR(U)$ denote the set of all real-valued functions on $U$ that are locally defined at each point of $U$.
+
+\begin{axdef}
+	\FunPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) = \{~ f: U \fun \R | \forall x: U @ f \in \FunR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \FunPR(U)$ then $U \in \openR$.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\section{Continuity}
+
+Let $f$ be a real-valued partial function on $\R$ 
+that is locally defined at $x$ and let $U$ be a neighbourhood of $x$
+contained within the domain of $f$.
+The function $f$ is said to be {\it continuous} at $x$ if 
+for any $\epsilon > 0$ there is some $\delta > 0$ for which 
+$f(x')$ is always within $\epsilon$ of $f(x)$
+when $x' \in U$ is within $\delta$ of $x$.
+\begin{argue}
+\forall \epsilon > 0 @ \exists \delta > 0 @ \forall x' \in U @ \\
+\t1	\abs{x' - x} < \delta \implies \abs{f(x') - f(x)} < \epsilon
+\end{argue}
+
+\begin{schema}{RealContinuous}
+	f: \R \pfun \R \\
+	x: \R
+\where
+	f \in \FunR(x)
+\also
+	\forall \epsilon: \Rpos @ \exists \delta: \Rpos@ \forall x': \dom f @ \\
+	\t1	\absR(x' \subR x) \ltR \delta \implies \absR(f(x') \subR f(x)) \ltR \epsilon
+\end{schema}
+
+\subsection{\zcmd{CzeroR}}
+
+Let $\CzeroR(x)$ denote the set of all real-valued partial functions on $\R$ that are continuous at $x$.
+\begin{axdef}
+	\CzeroR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CzeroR(x) = \{~ f: \FunR(x) | RealContinuous ~\}
+\end{axdef}
+
+\subsection{\zcmd{CzeroPR}}
+
+Let $U$ be any subset of $\R$. 
+Define $\CzeroPR(U)$ to be the set of all real-valued functions on $U$ that are continuous at each point in $U$.
+
+\begin{axdef}
+	\CzeroPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in   \CzeroR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \CzeroPR(U)$ then $U$ is open.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The $\epsilon-\delta$ definition of continuity given above is compatible with the definition
+of continuity for mappings between topological spaces when we consider $\Rtau$, the usual topology on $\R$,
+and $\Rtau \inducedTopSp U$, the topology induced on the subset $U$.
+
+\begin{zed}
+	\forall U: \openR @ \\
+	\t1	\CzeroPR(U) = \CzeroTT(\Rtau \inducedTopSp U, \Rtau)
+\end{zed}
+
+\end{remark}
+
+\section{Limits}
+
+Let $x$ and $l$ be real numbers and
+let $f$ be a real-valued partial function on $\R$ that is defined everywhere in some
+neighbourhood $U$ of $x$, except possibly at $x$.
+The function $f$ is said to approach the limit $l$ at $x$ if $f \oplus \{ x \mapsto l \}$ is continuous at $x$.
+$$
+	\lim_{x' \to x}{f(x')} = l
+$$
+
+\begin{schema}{Limit}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \oplus \{x \mapsto l\} \in \CzeroR(x)
+\end{schema}
+
+\subsection{\zcmd{limRR}}
+
+Let $\limRR(x,l)$ denote the set of all real-valued partial functions on $\R$ that approach the limit $l$ at $x$.
+
+\begin{axdef}
+	\limRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\limRR(x,l) = \{~ f: \R \pfun \R | Limit ~\}
+\end{axdef}
+
+\begin{theorem}
+If a function $f$ approaches some limit at $x$ then that limit is unique.
+\begin{zed}
+	\forall x, l, l': \R @ \\
+	\t1	\forall f : \limRR(x,l) \cap \limRR(x,l') @ \\
+	\t2		l = l'
+\end{zed}
+\end{theorem}
+
+\begin{proof}
+Suppose we are given real numbers
+\begin{argue}
+	x, l, l' \in \R 
+\end{argue}
+and a function
+\begin{argue}
+	f \in \limRR(x,l) \cap \limRR(x,l')
+\end{argue}
+Let $\epsilon$ be any positive real number
+\begin{argue}
+	\epsilon > 0
+\end{argue}
+Since $f$ approaches limits $l$ and $l'$ at $x$ there exists a real number $\delta > 0$ such that
+\begin{argue}
+	\forall x' \in \R |  \\
+	\t1	\zeroR \ltR \abs{x' \subR x}< \delta @ \\
+	\t2		 \abs{f(x') - l} < \epsilon \land \abs{f(x') - l'} < \epsilon
+\end{argue}
+For any such real number $x'$ we have
+\begin{argue}
+	\abs{l' - l} \\
+	\t1	= \abs{(f(x') - l) - (f(x') - l')} 			& add and subtract $f(x')$ \\
+	\t1	\leq \abs{f(x') - l} + \abs{f(x') - l'} 	& triangle inequality \\
+	\t1	= 2\epsilon					& definition of limits
+\end{argue}
+Since the above holds for any $\epsilon > 0$ we must have
+\begin{argue}
+	l = l'
+\end{argue}
+
+\end{proof}
+
+\subsection{\zcmd{limFR}}
+
+If $f$ approaches the limit $l$ at $x$ then let $\limFR(f,x)$ denote $l$.
+By the preceding theorem, $\limFR(f,x)$ is well-defined when it exists.
+
+\begin{axdef}
+	\limFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\limFR = \{~ Limit @ (f, x) \mapsto l ~\}
+\end{axdef}
+
+\section{Differentiability}
+
+Let $f$ be a real-valued partial function on $\R$, let $x$ be a real number,
+and let $f$ be defined on some neighbourhood $U$ of $x$.
+
+The function $f$ is said to be {\it differentiable} at $x$ if the following limit holds for some number denoted by $f'(x)$.
+$$
+\lim_{h \to 0} \frac{f(x+h) - f(x)}{h} = f'(x)
+$$
+
+\begin{remark}
+If $f$ is differentiable at $x$ then $f$ is continuous at $x$.
+\end{remark}
+
+The geometric intuition behind the concept of differentiability is that $f$ is differentiable at $x$
+when, very near $x$, the graph of $f$ is approximately a straight line through the point $(x, f(x))$ with slope $f'(x)$.
+$$
+f(x + h) \approx f(x) + f'(x) h \quad \text{when} \quad \abs{h} \approx 0
+$$
+The slope $f'(x)$ is called the {\it derivative} of $f$ at $x$
+and $f'$ is called the {\it derived function}.
+
+We can read this definition as saying that the approximate slope function $m(h)$ defined for 
+small enough, non-zero values of $h$ by
+$$
+	m(h) = \frac{f(x + h) - f(x)}{h}
+$$
+approaches the limit $l = f'(x)$ as $h \to 0$.
+$$
+	\lim_{h\to 0}{m(h)} = l = f'(x)
+$$
+
+\begin{schema}{Differentiable}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \in \CzeroR(x)
+\also
+	\LET m == (\lambda h: \Rnz | x \addR h \in \dom f @ (f(x \addR h) \subR f(x)) \divR h) @ \\
+	\t1	\limFR(m, \zeroR) = l
+\end{schema}
+
+\begin{remark}
+If $f$ is differentiable at $x$ then the limit $l$ is unique.
+\end{remark}
+
+\subsection{\zcmd{diffRR}}
+
+Let $\diffRR(x,l)$ denote the set of all functions $f$ that are differentiable at $x$ with $f'(x) = l$.
+
+\begin{axdef}
+	\diffRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\diffRR(x, l) = \{~ f: \R \pfun \R | Differentiable ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffR}}
+
+Let $\diffR(x)$ denote the set of all functions that are differentiable at $x$.
+
+\begin{axdef}
+	\diffR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\diffR(x) = \bigcup \{~ l: \R @ \diffRR(x,l) ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffPR}}
+
+Let $U$ be any subset of $\R$. 
+Let $\diffPR(U)$ denote the set of all functions on $U$
+that are differentiable at each point of $U$.
+
+\begin{axdef}
+	\diffPR: \power \R \fun \power(\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\diffPR(U) = \{~ f: \CzeroPR(U) | \forall x: U @ f \in \diffR(x) ~\}
+\end{axdef}
+
+\section{Derivatives}
+
+\subsection{\zcmd{derivFR}}
+
+Let $\derivFR(f,x)$ denote $f'(x)$, the derivative of $f$ at $x$.
+
+\begin{axdef}
+	\derivFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\derivFR = \{~ Differentiable @ (f,x) \mapsto l ~\}
+\end{axdef}
+
+\subsection{\zcmd{derivF}}
+
+Let $\derivF(f)$ denote $f'$, the derived function.
+
+\begin{axdef}
+	\derivF: (\R \pfun \R) \fun (\R \pfun \R)
+\where
+	\forall f: \R \pfun \R @ \\
+		\t1	\derivF f = (\lambda x: \R | f \in \diffR(x) @ \derivFR(f,x)) 
+\end{axdef}
+
+\begin{remark}
+If $f$ is differentiable on $U$ then $f'$ is not necessarily continuous on $U$.
+Counterexamples exist.
+\end{remark}
+
+\begin{remark}
+If $f$ is uniformly differentiable on $U$ then $f'$ is continuous on $U$.
+A further discussion of uniform differentiability is beyond the scope of this article.
+\end{remark}
+
+\section{Higher Order Derivatives}
+
+Let $n$ be a natural number and let $x$ be a real number.
+In differential geometry we normally deal with $C^n(x)$, the set of functions
+that possess continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\subsection{\zcmd{CnR}}
+
+Let $\CnR(n,x)$ denote the set of all functions that have continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\begin{axdef}
+	\CnR: \nat \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CnR(0,x) = \CzeroR(x)
+\also
+	\forall n: \nat; x: \R @ \\
+	\t1	\CnR(n + 1, x) = \{~ f: \diffR(x) | \derivF f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{CnPR}}
+
+Let $n$ be a natural number and let $U$ be a subset of $\R$.
+Let $\CnPR(n,U)$ denote the set of all functions on $U$ that have continuous derivatives of order $0, \ldots, n$
+at every point of $U$.
+
+\begin{axdef}
+	\CnPR: \nat \cross \power \R \fun \power(\R \pfun \R)
+\where
+	\forall n: \nat; U: \power \R @ \\
+	\t1	\CnPR(n,U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\section{Smoothness}
+
+\subsection{\zcmd{smoothR}}
+
+A function is said to be {\it smooth} if it possesses continuous derivatives of all orders.
+Let $x$ be a real number.
+Let $\smoothR(x)$ denote the set of all functions that are smooth at $x$.
+
+\begin{axdef}
+	\smoothR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\smoothR(x) = \{~ f: \FunR(x) | \forall n: \nat @ f \in \CnR(n, x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{smoothPR}}
+
+Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at every point of $U$.
+
+\begin{axdef}
+	\smoothPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\smoothPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \smoothR(x) ~\}
+\end{axdef}
+
+\printbibliography
+
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{complex-numbers}[2022/01/15 Z Notation for complex numbers]
+
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+
+% complex numbers
+
+% the set of complex numbers
+\newcommand{\C}{\mathbb{C}}
+
+% the real part of a complex number
+\DeclareMathOperator{\realC}{Re}
+
+% the imaginary part of a complex number
+\DeclareMathOperator{\imagC}{Im}
+
+% the complex number 0
+\newcommand{\zeroC}{0}
+
+% the complex number 1
+\newcommand{\oneC}{1}
+
+% the negation prefix operator -x
+\DeclareMathOperator{\negC}{-}
+
+% the set of non-zero complex numbers
+\newcommand{\Cnz}{\C_{*}}
+
+% the addition infix operator x + y
+%%inop \addC 3
+\newcommand{\addC}{\mathbin{+}}
+
+% the subtraction infix operator x - y
+%%inop \subC 3
+\newcommand{\subC}{\mathbin{-}}
+
+% the multiplication infix operator x * y
+%%inop \mulC 4
+\newcommand{\mulC}{\mathbin{*}}
+
+% the division infix operator x / y
+%%inop \divC 4
+\newcommand{\divC}{\mathbin{/}}
+
+% the multiplication infix operator restricted to non-zero real numbers
+%%inop \mulCnz 4
+\newcommand{\mulCnz}{\mathbin{*}}
+
+% the division infix operator restricted to non-zero real numbers
+%%inop \divCnz 4
+\newcommand{\divCnz}{\mathbin{/}}
+
+% the inverse postfix operator defined on non-zero real numbers
+%%postop \invCnz
+\newcommand{\invCnz}{^{-1}}
+
+% the set of all open sets of complex numbers
+\newcommand{\openC}{\mathsf{open}}
+
+% the norm function norm(x) = |x|
+\DeclareMathOperator{\normC}{norm}
