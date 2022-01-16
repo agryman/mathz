@@ -231,7 +231,7 @@
 \newcommand{\genY}{\mathsf{y}}
 \newcommand{\genZ}{\mathsf{z}}
 
-% arbitrary sets used in theorems, remarks, and example involving generic constructs
+% arbitrary sets used in theorems, remarks, and examples involving generic constructs
 \newcommand{\setT}{\mathsf{T}}
 \newcommand{\setU}{\mathsf{U}}
 \newcommand{\setV}{\mathsf{V}}
@@ -1376,7 +1376,7 @@ and let $x \subR y$ denote subtraction.
 	\negR: \R \fun \R
 \end{axdef}
 
-Although these real number objects are displayed the same symbols as the corresponding integer objects,
+Although these real number objects are displayed using the same symbols as the corresponding integer objects,
 they represent distinct mathematical objects.
 This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
 because the underlying types of objects will, as a rule, be clear from the context.

@@ -1,11 +1,11 @@
 \documentclass[11pt, oneside]{article}
 
-\usepackage{../../shared/preamble}
+\usepackage{preamble}
 \addbibresource{../../shared/references.bib}
 
-\usepackage{../sets/sets}
-\usepackage{../topological-spaces/topological-spaces}
-\usepackage{../groups/groups}
+\usepackage{sets}
+\usepackage{topological-spaces}
+\usepackage{groups}
 \usepackage{real-numbers}
 
 \usepackage{complex-numbers}
@@ -35,32 +35,44 @@ The type declarations given here are intended to provide a basis for future axio
 
 \section{Complex Numbers}
 
-Z notation does not predefine the set of complex numbers, so we define it here.
+Z Notation does not predefine the set of complex numbers, so we define
+them and operations on them here.
 
-\subsection{\zcmd{C}}
+Although complex number operations are displayed using the same symbols as the 
+analogous real number operations,
+they are distinct mathematical objects.
+This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
+because the underlying types of the objects will, as a rule, be clear from the context.
+Visually distinct symbols will be used in cases where confusion is possible.
 
-Let $\C$ denote the set of complex numbers.
-We define it to be simply the set of pairs of real numbers.
-Note that it would be more correct to define complex numbers as a new free type based on
-pairs of real numbers since otherwise we have no way to prevent 
-accidentally conflating plain pairs of real numbers with complex numbers.
-We'll take this risk for the moment.
-We'll add further axioms as needed below.
+\subsection{$COMPLEX$}
+
+A complex number can be thought of a pair of real numbers.
+However, it is not correct to view any pair of real numbers as a complex number.
+Therefore to denote a complex number we map a pair of real numbers
+into the free type $COMPLEX$.
 
 \begin{zed}
 	COMPLEX ::= complex \ldata \R \cross \R \rdata
 \end{zed}
 
-We introduce the usual notation for the set of complex numbers.
+Here the function $complex$ is a constructor that constructs a
+complex number from a pair of real numbers.
+
+\subsection{\zcmd{C}}
+
+We introduce the usual notation $\C = COMPLEX$ for the set of complex numbers.
 
 \begin{zed}
 \C == COMPLEX
 \end{zed}
 
+\subsection{$Complex$}
+
 Given real numbers $x$ and $y$, we can construct the complex number
 $z = complex(x,y)$.
 The real numbers $x$ and $y$ are referred to as the \textit{real} and \textit{imaginary} parts of $z$.
-It's useful to introduce schema $Complex$ that relates the complex number $z$ to its
+It's useful to introduce the schema $Complex$ that relates the complex number $z$ to its
 real and imaginary parts $x$ and $y$.
 
 \begin{schema}{Complex}
@@ -70,11 +82,15 @@ real and imaginary parts $x$ and $y$.
 	z = complex(x, y)
 \end{schema}
 
-Let $real\_complex(z)$ denote the real part of $z$.
+\subsection{$real\_complex$}
+
+Let $real\_complex(z)$ denote the real part $x$ of $z$.
 
 \begin{zed}
 	real\_complex == \{~ Complex @ z \mapsto x ~\}
 \end{zed}
+
+\subsection{\zcmd{realC}}
 
 We introduce the usual notation $x = \realC(z)$ for the real part of $z$.
 
@@ -82,11 +98,15 @@ We introduce the usual notation $x = \realC(z)$ for the real part of $z$.
 	\realC == real\_complex
 \end{zed}
 
-Let $imag\_complex(z)$ denote the imaginary part of $z$.
+\subsection{$imag\_complex$}
+
+Let $imag\_complex(z)$ denote the imaginary part $y$ of $z$.
 
 \begin{zed}
 	imag\_complex == \{~ Complex @ z \mapsto y ~\}
 \end{zed}
+
+\subsection{\zcmd{imagC}}
 
 We introduce the usual notation $y = \imagC(z)$ for the imaginary part of $z$.
 
@@ -94,10 +114,9 @@ We introduce the usual notation $y = \imagC(z)$ for the imaginary part of $z$.
 	\imagC == imag\_complex
 \end{zed}
 
-\subsection{\zcmd{addC}, \zcmd{zeroC}, \zcmd{negC}, and \zcmd{subC}}
+\subsection{$AddComplex$}
 
-We can \textit{add} the complex numbers $z_1$ and $z_2$ to give the
-complex number $z'$.
+We can \textit{add} the complex numbers $z_1$ and $z_2$ to give their sum $z'$.
 Let the schema $AddComplex$ denote this situation.
 
 \begin{schema}{AddComplex}
@@ -109,11 +128,15 @@ Let the schema $AddComplex$ denote this situation.
 	y' = y_1 \addR y_2
 \end{schema}
 
+\subsection{$add\_complex$}
+
 Let $add\_complex(z_1, z_2)$ denote the result of adding $z_1$ and $z_2$.
 
 \begin{zed}
 	add\_complex == \{~ AddComplex @ (z_1, z_2) \mapsto z' ~\}
 \end{zed}
+
+\subsection{\zcmd{addC}}
 
 We introduce the usual notation $z' = z_1 \addC z_2$ for addition in $\C$.
 
@@ -121,17 +144,23 @@ We introduce the usual notation $z' = z_1 \addC z_2$ for addition in $\C$.
 	(\_ \addC \_) == add\_complex
 \end{zed}
 
+\subsection{$zero\_complex$}
+
 Let $zero\_complex$ denote the \textit{zero} of $\C$.
 
 \begin{zed}
 	zero\_complex == complex (\zeroR, \zeroR)
 \end{zed}
 
+\subsection{\zcmd{zeroC}}
+
 We introduce the usual notation $\zeroC \in \C$ for the zero of $\C$.
 
 \begin{zed}
 	\zeroC == zero\_complex
 \end{zed}
+
+\subsection{$NegComplex$}
 
 We can \textit{negate} the complex number $z$ to give its negative $z'$.
 Let the schema $NegComplex$ denote this situation.
@@ -145,18 +174,26 @@ Let the schema $NegComplex$ denote this situation.
 	y' = \negR y
 \end{schema}
 
+\subsection{$neg\_complex(z)$}
+
 Let $neg\_complex(z)$ denote the negative of $z$.
 
 \begin{zed}
 	neg\_complex == \{~ NegComplex @ z \mapsto z' ~\}
 \end{zed}
 
+\subsection{\zcmd{negC}}
+
 We introduce the usual notation $z' = \negC z$ for the negative of $z$.
 \begin{zed}
 	\negC == neg\_complex
 \end{zed}
 
-The complex numbers form an Abelian group under addition.
+\subsection{The Additive Abelian Group $\C$}
+
+\begin{theorem}
+
+The complex numbers $\C$ form an Abelian group under addition.
 
 \begin{zed}
 (\_ \addC \_) \in \abgroup \C
@@ -166,8 +203,12 @@ The complex numbers form an Abelian group under addition.
 \negC = inverse\_operation(\_ \addC \_)
 \end{zed}
 
+\end{theorem}
+
+\subsection{$SubComplex$}
+
 We can \textit{subtract} the complex number $z_1$ from $z_2$
-to give the difference $z'$.
+to give their difference $z'$.
 Let the schema $SubComplex$ denote this situation.
 
 \begin{schema}{SubComplex}
@@ -180,11 +221,15 @@ Let the schema $SubComplex$ denote this situation.
 	y' = y_1 \subR y_2
 \end{schema}
 
-Let $sub\_complex(z_1, z_2)$ denote $z_1$ subtract $z_2$.
+\subsection{$sub\_complex$}
+
+Let $sub\_complex(z_1, z_2)$ denote the difference of $z_1$ and $z_2$.
 
 \begin{zed}
 	sub\_complex == \{~ SubComplex @ (z_1, z_2) \mapsto z' ~\}
 \end{zed}
+
+\subsection{\zcmd{subC}}
 
 We introduce the usual notation $z' = z_1 \subC z_2$ for subtraction in $\C$.
 
@@ -192,19 +237,15 @@ We introduce the usual notation $z' = z_1 \subC z_2$ for subtraction in $\C$.
 	(\_ \subC \_) == sub\_complex
 \end{zed}
 
-Although these complex number objects are displayed using the same symbols as the corresponding real number objects,
-they represent distinct mathematical objects.
-This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
-because the underlying types of the objects will, as a rule, be clear from the context.
-Visually distinct symbols will be used in cases where confusion is possible.
-
-\subsection{\zcmd{Cnz}}
+\subsection{$nonzero\_complex$}
 
 Let $nonzero\_complex$ denote the set of nonzero complex numbers.
 
 \begin{zed}
 	nonzero\_complex == \C \setminus \{ \zeroC \}
 \end{zed}
+
+\subsection{\zcmd{Cnz}}
 
 We introduce the usual notation $\Cnz \subseteq \C$ to denote the set of nonzero complex numbers,
 also referred to as the \textit{punctured complex number plane}.
@@ -213,9 +254,9 @@ also referred to as the \textit{punctured complex number plane}.
 	\Cnz == nonzero\_complex
 \end{zed}
 
-\subsection{\zcmd{mulC}}
+\subsection{$MulComplex$}
 
-We can \textit{multiply} the complex numbers $z_1$ times $z_2$ to give the product $z'$.
+We can \textit{multiply} the complex numbers $z_1$ times $z_2$ to give their product $z'$.
 Let the schema $MulComplex$ denote this situation.
 
 \begin{schema}{MulComplex}
@@ -228,11 +269,15 @@ Let the schema $MulComplex$ denote this situation.
 	y' = x_1 \mulR y_2 \addR y_1 \mulR x_2
 \end{schema}
 
+\subsection{$mul\_complex$}
+
 Let $mul\_complex(z_1, z_2)$ denote $z_1$ multiplied by $z_2$.
 
 \begin{zed}
 	mul\_complex == \{~ MulComplex @ (z_1, z_2) \mapsto z' ~\}
 \end{zed}
+
+\subsection{\zcmd{mulC}}
 
 We introduce the usual notation $z' = z_1 \mulC z_2$ for multiplication in $\C$.
 
@@ -240,7 +285,7 @@ We introduce the usual notation $z' = z_1 \mulC z_2$ for multiplication in $\C$.
 	(\_ \mulC \_) == mul\_complex
 \end{zed}
 
-\subsection{\zcmd{mulCnz}, \zcmd{oneC}, \zcmd{invCnz}, and \zcmd{divC}}
+\subsection{$MulNonzeroComplex$}
 
 We can restrict multiplication in $\C$ to $\Cnz$.
 Let the schema $MulNonzeroComplex$ denote this situation.
@@ -253,11 +298,15 @@ Let the schema $MulNonzeroComplex$ denote this situation.
 	z_2 \in \Cnz
 \end{schema}
 
+\subsection{$mul\_nonzero\_complex$}
+
 Let $mul\_nonzero\_complex(z_1, z_2)$ denote the product of nonzero complex numbers.
 
 \begin{zed}
 	mul\_nonzero\_complex == \{~ MulNonzeroComplex @ (z_1, z_2) \mapsto z' ~\}
 \end{zed}
+
+\subsection{\zcmd{mulCnz}}
 
 We introduce the usual notation $z' = z_1 \mulCnz z_2$ to denote the product.
 
@@ -265,17 +314,23 @@ We introduce the usual notation $z' = z_1 \mulCnz z_2$ to denote the product.
 	(\_ \mulCnz \_) == mul\_nonzero\_complex
 \end{zed}
 
+\subsection{$one\_complex$}
+
 Let $one\_complex$ denote the multiplicative unit in $\C$.
 
 \begin{zed}
 	one\_complex == complex(\oneR, \zeroR)
 \end{zed}
 
+\subsection{\zcmd{oneC}}
+
 We introduce the usual notation $\oneC \in \C$ for the unit of $\C$.
 
 \begin{zed}
 	\oneC == one\_complex
 \end{zed}
+
+\subsection{$InvNonzeroComplex$}
 
 We can \textit{invert}
 the nonzero complex number $z$ to get its inverse or reciprocal $z'$.
@@ -287,17 +342,23 @@ Let the schema $InvNonzeroComplex$ denote this situation.
 	z \mulCnz z' = \oneC
 \end{schema}
 
+\subsection{$inv\_nonzero\_complex$}
+
 Let $z' = inv\_nonzero\_complex(z)$ denote the inverse of $z$.
 
 \begin{zed}
 	inv\_nonzero\_complex == \{~ InvNonzeroComplex @ z \mapsto z' ~\}
 \end{zed}
 
-We introduce the usual notation $z' = z \invCnz$.
+\subsection{\zcmd{invCnz}}
+
+We introduce the usual notation $z' = z \invCnz$ for the inverse.
 
 \begin{zed}
 	(\_ \invCnz) == inv\_nonzero\_complex
 \end{zed}
+
+\subsection{$DivNonzeroComplex$}
 
 We can \textit{divide} the nonzero complex numbers $z_1$ by $z_2$ to get their quotient $z'$.
 Let the schema $DivNonzeroComplex$ denote this situation.
@@ -308,11 +369,15 @@ Let the schema $DivNonzeroComplex$ denote this situation.
 	z_1 = z' \mulCnz z_2
 \end{schema}
 
+\subsection{$div\_nonzero\_complex$}
+
 Let $z' = div\_nonzero\_complex(z_1, z_2)$ denote $z_1$ divided by $z_2$.
 
 \begin{zed}
 	div\_nonzero\_complex == \{~ DivNonzeroComplex @ (z_1, z_2) \mapsto z' ~\}
 \end{zed}
+
+\subsection{\zcmd{divCnz}}
 
 We introduce the usual notation $z_1 \divCnz z_2$ to denote division.
 
@@ -320,7 +385,10 @@ We introduce the usual notation $z_1 \divCnz z_2$ to denote division.
 	(\_ \divCnz \_) == div\_nonzero\_complex
 \end{zed}
 
-The nonzero complex numbers form an Abelian group under multiplication.
+\subsection{The Multiplicative Abelian Group $\Cnz$}
+
+\begin{theorem}
+The nonzero complex numbers $\Cnz$ form an Abelian group under multiplication.
 
 \begin{zed}
 (\_ \mulCnz \_) \in \abgroup \Cnz
@@ -330,9 +398,13 @@ The nonzero complex numbers form an Abelian group under multiplication.
 (\_ \invCnz) = inverse\_operation(\_ \mulCnz \_)
 \end{zed}
 
-\subsection{\zcmd{normC}}
+\end{theorem}
 
-The $norm$ of a complex number $z$ is a non-negative real number $r$.
+\subsection{$NormComplex$}
+
+The $norm$ of a complex number $z$ is a non-negative real number $r$
+equal to the Euclidean length of its underlying pair of real numbers regarded
+as a vector in the Euclidean plane.
 Let the schema $NormComplex$ denote this situation.
 
 \begin{schema}{NormComplex}
@@ -341,6 +413,22 @@ Let the schema $NormComplex$ denote this situation.
 \where
 	r = \sqrtR(x \mulR x \addR y \mulR y)
 \end{schema}
+
+\subsection{$norm\_complex$}
+
+Let $r = norm\_complex(z)$ be the norm of $z$.
+
+\begin{zed}
+	norm\_complex == \{~ NormComplex @ z \mapsto r ~\}
+\end{zed}
+
+\subsection{\zcmd{normC}}
+
+We introduce the usual notation $r = \normC(z)$ to denote the norm of $z$.
+
+\begin{zed}
+	\normC == norm\_complex
+\end{zed}
 
 \printbibliography
 

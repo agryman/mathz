@@ -6,3 +6,4 @@
 ./formal-specifications/formal-specifications.sh
 ./vector-spaces/vector-spaces.sh
 ./manifolds/manifolds.sh
+./complex-numbers/complex-numbers.sh
