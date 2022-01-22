@@ -1,11 +1,11 @@
 \documentclass[11pt, oneside]{article}
 
-\usepackage{../../shared/preamble}
+\usepackage{preamble}
 \addbibresource{../../shared/references.bib}
 
-\usepackage{../sets/sets}
-\usepackage{../topological-spaces/topological-spaces}
-\usepackage{../groups/groups}
+\usepackage{sets}
+\usepackage{topological-spaces}
+\usepackage{groups}
 \usepackage{real-numbers}
 
 \title{Real Numbers}
@@ -731,6 +731,119 @@ Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at eve
 	\forall U: \power \R @ \\
 	\t1	\smoothPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \smoothR(x) ~\}
 \end{axdef}
+
+\section{Important Constants and Functions}
+
+This section defines several important constants and functions.
+
+\subsection{$integer\_as\_real$}
+
+The real numbers contains a natural copy of the integers.
+Let $integer\_as\_real$ denote this embedding.
+
+\begin{axdef}
+	integer\_as\_real : \num \bij \R
+\end{axdef}
+
+\subsection{\zcmd{realZ}}
+
+We introduce the notation $\realZ x = integer\_as\_real~x$ for this embedding.
+
+\begin{zed}
+	\realZ == integer\_as\_real
+\end{zed}
+
+The real numbers $\zeroR$ and $\oneR$ are the images of the corresponding integers under this
+embedding.
+
+\begin{zed}
+	\realZ 0 = \zeroR
+\also
+	\realZ 1 = \oneR
+\end{zed}
+
+\subsection{$IntegerTimesReal$}
+
+We can use the embedding to define the product $y = n * x$ where $n$ is an integer
+and $x$ and $y$ are real numbers.
+
+\begin{schema}{IntegerTimesReal}
+	n : \num \\
+	x, y : \R
+\where
+	y = (\realZ n) \mulR x
+\end{schema}
+
+\subsection{$integer\_times\_real$}
+
+Let $y = integer\_times\_real(n, y)$ denote this multiplication operation.
+
+\begin{zed}
+	integer\_times\_real == \{~ IntegerTimesReal @ (n, x) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{mulZR}}
+
+We introduce the notation $n \mulZR x = integer\_times\_real(n, x)$.
+
+\begin{zed}
+	(\_ \mulZR \_) == integer\_times\_real
+\end{zed}
+
+\subsection{$RealDivInteger$}
+
+Similarly, we can define division of a real number $x$ by a nonzero integer $n$
+to give the quotient $y = x / n$.
+
+\begin{schema}{RealDivInteger}
+	n : \num \\
+	x, y : \R
+\where
+	n \neq 0
+\also
+	y = x \divR (\realZ n)
+\end{schema}
+
+\subsection{$real\_div\_integer$}
+
+Let $y = real\_div\_integer(x, n)$ denote this division operation.
+
+\begin{zed}
+	real\_div\_integer == \{~ RealDivInteger @ (x, n) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{divRZ}}
+
+We introduce the notation $y = x \divRZ n$.
+
+\begin{zed}
+	(\_ \divRZ \_) == real\_div\_integer
+\end{zed}
+
+\subsection{\zcmd{sinR}}
+
+Let $\sinR(x)$ denote the usual trigonometric sine function of the real number $x$.
+
+\begin{axdef}
+	\sinR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{cosR}}
+
+Let $\cosR(x)$ denote the usual trigonometric cosine function of the real number $x$.
+
+\begin{axdef}
+	\cosR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{piR}}
+
+Let $\piR$ denote the usual ratio of the perimeter of a circle to its diameter.
+
+\begin{axdef}
+	\piR : \R
+\end{axdef}
+
 
 \printbibliography
 
