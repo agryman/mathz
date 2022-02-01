@@ -1315,14 +1315,48 @@ Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
 
 \DeclareMathOperator{\derivFR}{D}
 \DeclareMathOperator{\derivF}{D}
+
+\DeclareMathOperator{\realZ}{\mathsf{real}}
+\DeclareMathOperator{\sinR}{sin}
+\DeclareMathOperator{\cosR}{cos}
+\newcommand{\piR}{\pi}
+
+% the multiplication infix operator x * y for integers times reals
+%%inop \mulZR 4
+\newcommand{\mulZR}{\mathbin{*}}
+
+% the division infix operator x / y for reals divided by integers
+%%inop \divRZ 4
+\newcommand{\divRZ}{\mathbin{/}}
+
+% the real plane
+\newcommand{\Rtwo}{\R^2}
+
+% the origin of the real plane
+\newcommand{\zeroRtwo}{\mathbf{0}}
+
+% addition of points in the real plane
+%%inop \addRtwo 3
+\newcommand{\addRtwo}{\mathbin{+}}
+
+% scalar multiplication of points in the real plane
+%%inop \smulRtwo 4
+\newcommand{\smulRtwo}{\mathbin{*}}
+
+% scalar multiplication of points in the real plane by an integer
+%%inop \smulZRtwo 4
+\newcommand{\smulZRtwo}{\mathbin{*}}
+
+% sum of a sequence of points in the real plane
+\newcommand{\sumRtwo}{\Sigma}
 \documentclass[11pt, oneside]{article}
 
-\usepackage{../../shared/preamble}
+\usepackage{preamble}
 \addbibresource{../../shared/references.bib}
 
-\usepackage{../sets/sets}
-\usepackage{../topological-spaces/topological-spaces}
-\usepackage{../groups/groups}
+\usepackage{sets}
+\usepackage{topological-spaces}
+\usepackage{groups}
 \usepackage{real-numbers}
 
 \title{Real Numbers}
@@ -2048,6 +2082,322 @@ Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at eve
 	\forall U: \power \R @ \\
 	\t1	\smoothPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \smoothR(x) ~\}
 \end{axdef}
+
+\section{Important Constants and Functions}
+
+This section defines several important constants and functions.
+
+\subsection{$integer\_as\_real$}
+
+The real numbers contains a natural copy of the integers.
+Let $integer\_as\_real$ denote this embedding.
+
+\begin{axdef}
+	integer\_as\_real : \num \bij \R
+\end{axdef}
+
+\subsection{\zcmd{realZ}}
+
+We introduce the notation $\realZ x = integer\_as\_real~x$ for this embedding.
+
+\begin{zed}
+	\realZ == integer\_as\_real
+\end{zed}
+
+The real numbers $\zeroR$ and $\oneR$ are the images of the corresponding integers under this
+embedding.
+
+\begin{zed}
+	\realZ 0 = \zeroR
+\also
+	\realZ 1 = \oneR
+\end{zed}
+
+\subsection{$IntegerTimesReal$}
+
+We can use the embedding to define the product $y = n * x$ where $n$ is an integer
+and $x$ and $y$ are real numbers.
+
+\begin{schema}{IntegerTimesReal}
+	n : \num \\
+	x, y : \R
+\where
+	y = (\realZ n) \mulR x
+\end{schema}
+
+\subsection{$integer\_times\_real$}
+
+Let $y = integer\_times\_real(n, y)$ denote this multiplication operation.
+
+\begin{zed}
+	integer\_times\_real == \{~ IntegerTimesReal @ (n, x) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{mulZR}}
+
+We introduce the notation $n \mulZR x = integer\_times\_real(n, x)$.
+
+\begin{zed}
+	(\_ \mulZR \_) == integer\_times\_real
+\end{zed}
+
+\subsection{$RealDivInteger$}
+
+Similarly, we can define division of a real number $x$ by a nonzero integer $n$
+to give the quotient $y = x / n$.
+
+\begin{schema}{RealDivInteger}
+	n : \num \\
+	x, y : \R
+\where
+	n \neq 0
+\also
+	y = x \divR (\realZ n)
+\end{schema}
+
+\subsection{$real\_div\_integer$}
+
+Let $y = real\_div\_integer(x, n)$ denote this division operation.
+
+\begin{zed}
+	real\_div\_integer == \{~ RealDivInteger @ (x, n) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{divRZ}}
+
+We introduce the notation $y = x \divRZ n$.
+
+\begin{zed}
+	(\_ \divRZ \_) == real\_div\_integer
+\end{zed}
+
+\subsection{\zcmd{sinR}}
+
+Let $\sinR(x)$ denote the usual trigonometric sine function of the real number $x$.
+
+\begin{axdef}
+	\sinR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{cosR}}
+
+Let $\cosR(x)$ denote the usual trigonometric cosine function of the real number $x$.
+
+\begin{axdef}
+	\cosR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{piR}}
+
+Let $\piR$ denote the usual ratio of the perimeter of a circle to its diameter.
+
+\begin{axdef}
+	\piR : \R
+\end{axdef}
+
+\section{The Real Plane}
+
+In order to define what it means for an arrangement of test tubes to be balanced,
+we need to use some concepts from Euclidean geometry and classical mechanics.
+Classical mechanics is phrased in terms of real coordinate systems.
+We therefore start by defining the usual real plane and its coordinates.
+
+\subsection{\zcmd{Rtwo}}
+
+We model the real plane as pairs of real numbers.
+Let $\Rtwo$ denote the real plane.
+
+\begin{zed}
+	\Rtwo == \R \cross \R
+\end{zed}
+
+\subsection{$zero\_real\_plane$}
+
+Let the point $zero\_real\_plane \in \Rtwo$ denote the origin of the real plane.
+
+\begin{zed}
+	zero\_real\_plane == (\zeroR, \zeroR)
+\end{zed}
+
+\subsection{\zcmd{zeroRtwo}}
+
+We introduce the usual notation $\zeroRtwo = zero\_real\_plane$ for the origin of the real plane.
+
+\begin{zed}
+	\zeroRtwo == zero\_real\_plane
+\end{zed}
+
+\subsection{$RealPlane$}
+
+Let $point \in \Rtwo$ be a point in the real plane.
+Its Cartesian coordinates are denoted by $x$ and $y$.
+Let the schema $RealPlane$ denote this situation.
+
+\begin{schema}{RealPlane}
+	point: \Rtwo \\
+	x, y : \R
+\where
+	point = (x, y)
+\end{schema}
+
+\subsection{$ScaleRealPlane$}
+
+Let $a \in \R$ be a scaling factor and let $point \in \Rtwo$ be a point.
+Let $point' = a * point$ be  $point$ scaled by $a$.
+Let the schema $ScaleRealPlane$ denote this situation.
+
+\begin{schema}{ScaleRealPlane}
+	a : \R \\
+	RealPlane \\
+	RealPlane'
+\where
+	x' = a \mulR x
+\also
+	y' = a \mulR x
+\end{schema}
+
+\subsection{$scale\_real\_plane$}
+
+Let $point' = scale\_real\_plane(a, point)$ denote the operation of scalar multiplication.
+
+\begin{zed}
+	scale\_real\_plane == \{~ ScaleRealPlane @ (a, point) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{smulRtwo}}
+
+We introduce the notation $a \smulRtwo point = scale\_real\_plane(a, point)$
+for scalar multiplication.
+
+\begin{zed}
+	(\_ \smulRtwo \_) == scale\_real\_plane
+\end{zed}
+
+\subsection{$ScaleIntRealPlane$}
+
+It is convenient to allow scaling of points in the real plane by integers.
+Let $n \in \num$ be a scaling factor and let $point \in \Rtwo$ be a point.
+Let $point' = n * point$ be  $point$ scaled by $n$.
+Let the schema $ScaleIntRealPlane$ denote this situation.
+
+\begin{schema}{ScaleIntRealPlane}
+	n : \num \\
+	RealPlane \\
+	RealPlane'
+\where
+	x' = n \mulZR x
+\also
+	y' = n \mulZR x
+\end{schema}
+
+\subsection{$scale\_int\_real\_plane$}
+
+Let $point' = scale\_int\_real\_plane(n, point)$ denote the operation of scalar multiplication
+by an integer.
+
+\begin{zed}
+	scale\_int\_real\_plane == \{~ ScaleIntRealPlane @ (n, point) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{smulZRtwo}}
+
+We introduce the notation $n \smulZRtwo point = scale\_int\_real\_plane(n, point)$
+for scalar multiplication.
+
+\begin{zed}
+	(\_ \smulZRtwo \_) == scale\_int\_real\_plane
+\end{zed}
+
+\subsection{$AddRealPlane$}
+
+Let $point_1$ and $point_2$ be points.
+We can define their sum $point' = point_1 + point_2$ by component-wise addition.
+Let the schema $AddRealPlane$ denote this situation.
+
+\begin{schema}{AddRealPlane}
+	RealPlane_1 \\
+	RealPlane_2 \\
+	RealPlane'
+\where
+	x' = x_1 \addR x_2
+\also
+	y' = y_1 \addR y_2
+\end{schema}
+
+\subsection{$add\_real\_plane$}
+
+Let $add\_real\_plane(point_1, point_2) = point_1 + point_2$ denote addition of points in the
+real plane.
+
+\begin{zed}
+	add\_real\_plane == \{~ AddRealPlane @ (point_1, point_2) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{addRtwo}}
+
+We introduce the usual notation $point_1 \addRtwo point_2 = add\_real\_plane(point_1, point_2)$
+to denote addition of points in the real plane.
+
+\begin{zed}
+	(\_ \addRtwo \_) == add\_real\_plane
+\end{zed}
+
+\subsection{$sum\_real\_plane$}
+
+Given a sequence $a$ of zero or more points in the real plane,
+we define its sum $sum\_real\_plane(a)$ recursively as follows.
+
+\begin{axdef}
+	sum\_real\_plane : \seq \Rtwo \fun \Rtwo
+\where
+	sum\_real\_plane(\langle \rangle) = \zeroRtwo
+\also
+	\forall point : \Rtwo; a : \seq \Rtwo @ \\
+	\t1	sum\_real\_plane(\langle point \rangle \cat a) = point \addRtwo sum\_real\_plane(a)
+\end{axdef}
+
+\subsection{\zcmd{sumRtwo}}
+
+We introduce the notation $\sumRtwo(a) = sum\_real\_plane(a)$.
+
+\begin{zed}
+	\sumRtwo == sum\_real\_plane
+\end{zed}
+
+\subsection{$PolarRealPlane$}
+
+Let $(x, y)$ be the Cartesian coordinates of a point in the plane.
+Let $r$ denote the distance of the point from the origin and
+let $a$ denote the counter-clockwise angle of the point from the $x$-axis.
+The pair $(r, a)$ is called the \textit{polar coordinates} of the point.
+Conversely, given an pair $(r, a)$ we can compute the corresponding
+Cartesian coordinates.
+Let the schema $PolarRealPlane$ denote this situation.
+
+\begin{schema}{PolarRealPlane}
+	RealPlane \\
+	r, a : \R
+\where
+	x = r \mulR \cosR a
+\also
+	y = r \mulR \sinR a
+\end{schema}
+
+\subsection{$polar\_to\_cartesian$}
+
+Let the function $polar\_to\_cartesian(r, a) = (x, y)$ denote the mapping from
+polar to Cartesian coordinates.
+
+\begin{zed}
+	polar\_to\_cartesian == \{~ PolarRealPlane @ (r, a) \mapsto (x, y) ~\}
+\end{zed}
+
+Note that this function is not one-to-one for the following reasons.
+\begin{itemize}
+	\item The pairs $(r, a + 2k\pi)$ for any $k \in \num$ map to the same points.
+	\item The pairs $(r, a)$ and $(-r, a + \pi)$ map to the same points.
+	\item The pairs $(0, a)$ and $(0, a')$ map to the same points.
+\end{itemize}
 
 \printbibliography
 

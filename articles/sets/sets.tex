@@ -83,6 +83,46 @@ Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 	\t1	f \restrictU T = T \dres f
 \end{gendef}
 
+\subsection{$bit$}
+
+Let $bit$ denote the set of \textit{binary digits}, namely the set $\{ 0, 1\} \subseteq \num$.
+
+\begin{zed}
+	bit == \{ 0, 1 \}
+\end{zed}
+
+\subsection{\zcmd{B}}
+
+We introduce the notation $\B = bit$.
+
+\begin{zed}
+	\B == bit
+\end{zed}
+
+\subsection{$indicator\_function$}
+
+Let $\genT$ be a set, 
+let $X$ be a subset of $\genT$, and 
+let $a \in \genT$ be some element.
+The \textit{indicator function} or \textit{characteristic function} of $X$ maps $a$ to 1 if $a \in X$ and 0 otherwise.
+Let $indicator\_function(X) \in \genT \fun \B$ denote this function.
+
+\begin{gendef}[\genT]
+	indicator\_function : \power \genT \fun \genT \fun \B
+\where
+	\forall X : \power \genT @ \\
+		\t1 indicator\_function(X) = \\
+			\t2 (\lambda a : \genT @ \IF a \in X \THEN 1 \ELSE 0)
+\end{gendef}
+
+\subsection{\zcmd{indF}}
+
+We introduce the notation $\indF[\genT](X) = indicator\_function[\genT](X)$.
+
+\begin{zed}
+	\indF[\genT] == indicator\_function[\genT]
+\end{zed}
+
 \printbibliography
 
 \end{document}
