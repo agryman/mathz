@@ -1013,6 +1013,34 @@ We introduce the notation $\sumRtwo(a) = sum\_real\_plane(a)$.
 	\sumRtwo == sum\_real\_plane
 \end{zed}
 
+\subsection{\zcmd{addFRtwo}}
+
+Let $\genT$ be any set and let $f$ and $g$ be partial functions from $\genT$ to $\Rtwo$.
+Let $h(x) = f(x) + g(x)$ denote their pointwise sum on their common domain of definition.
+Let the schema $AddFunctionsRealPlane$ denote this situation.
+
+\begin{schema}{AddFunctionsRealPlane}[\genT]
+	f, g, h : \genT \pfun \Rtwo
+\where
+	h = (\lambda x : \dom f \cap \dom g @ f~x \addRtwo g~x)
+\end{schema}
+
+Let the function $add\_functions\_real\_plane(f, g) = h$ map two functions with values in $\Rtwo$ to their pointwise sum.
+
+\begin{gendef}[\genT]
+	add\_functions\_real\_plane : (\genT \pfun \Rtwo) \cross (\genT \pfun \Rtwo) \fun (\genT \pfun \Rtwo)
+\where
+	add\_functions\_real\_plane = \\
+	\t1	\{~ AddFunctionsRealPlane[\genT] @ (f, g) \mapsto h ~\}
+\end{gendef}
+
+We introduce the notation $f \addFRtwo g = add\_functions\_real\_plane(f, g)$.
+
+\begin{zed}
+	(\_ \addFRtwo \_)[\genT] == add\_functions\_real\_plane[\genT]
+\end{zed}
+
+
 \subsection{$PolarRealPlane$}
 
 Let $(x, y)$ be the Cartesian coordinates of a point in the plane.

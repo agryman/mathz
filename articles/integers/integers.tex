@@ -1,0 +1,68 @@
+\documentclass[11pt, oneside]{article}
+
+\usepackage{preamble}
+\addbibresource{../../shared/references.bib}
+
+\usepackage{sets}
+\usepackage{groups}
+\usepackage{integers}
+
+\title{Integers}
+\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article contains Z Notation type declarations for the integers, $\num$, and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\section{Introduction}
+
+The integers, $\num$, are built-in to Z Notation.
+This article provides type declarations for some related objects so that they can be used and type checked in formal Z specifications.
+
+\section{Integers}
+
+\subsection{$AddIntegerSequences$}
+
+Let $l$ be a natural number and
+let $x$ and $y$ be two integer sequences of length $l$.
+Their sum $z = x + y$ is the integer sequence of length $l$ defined by point-wise addition of 
+of the terms in $x$ and $y$.
+Let the schema $AddIntegerSequences$ denote this situation.
+
+\begin{schema}{AddIntegerSequences}
+	l : \nat \\
+	x, y, z : \seq \num
+\where
+	l = \# x = \# y
+\also
+	z = (\lambda i : 1 \upto l @ x~i + y~i)
+\end{schema}
+\begin{itemize}
+	\item The sequence $z$ is defined by pointwise addition of the sequences $x$ and $y$.
+\end{itemize}
+
+\subsection{$add\_int\_seq$}
+
+Let the function $add\_int\_seq(x, y) = z$ be the sum of two equal-length integer sequences.
+
+\begin{zed}
+	add\_int\_seq == \{~ AddIntegerSequences @ (x, y) \mapsto z ~\}
+\end{zed}
+
+\subsection{\zcmd{addSeqZ}}
+
+We introduce the notation $x \addSeqZ y = add\_int\_seq(x, y)$.
+
+\begin{zed}
+	(\_ \addSeqZ \_) == add\_int\_seq
+\end{zed}
+
+\printbibliography
+
+\end{document}
