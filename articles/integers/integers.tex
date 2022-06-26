@@ -20,18 +20,179 @@ This article contains Z Notation type declarations for the integers, $\num$, and
 It has been type checked by \fuzz.
 \end{abstract}
 
+\tableofcontents
+
 \section{Introduction}
 
 The integers, $\num$, are built-in to Z Notation.
 This article provides type declarations for some related objects so that they can be used and type checked in formal Z specifications.
 
-\section{Integers}
+\section{Divisibility and Prime Numbers}
 
-\subsection{$AddIntegerSequences$}
+\subsection{Divisibility}
+
+This section specifies divisibility of integers.
+
+\subsubsection{$Divides$}
+
+Given integers $x$ and $y$ we say the $x$ \textit{divides} $y$ if there is some integer $q$ such 
+that $q x = y$.
+Let the schema $Divides$ denote this situation.
+
+\begin{schema}{Divides}
+	x, y, q : \num
+\where
+	q * x = y
+\end{schema}
+\begin{itemize}
+	\item $y$ is a multiple of $x$.
+\end{itemize}
+
+\subsubsection{$divides$}
+
+Let $divides$ denote the divisibility relation between integers
+where $(x,y) \in divides$ means that $x$ divides $y$.
+
+\begin{axdef}
+	divides : \num \rel \num
+\where
+	divides = \{~ Divides @ x \mapsto y ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{divides}}
+
+We introduce the usual notation $x \divides y$ to denote that $(x, y) \in divides$.
+\begin{zed}
+(\_ \divides \_) == divides
+\end{zed}
+
+\begin{example}
+The integer $7$ divides $42$ because $6 * 7 = 42$.
+
+\begin{zed}
+	7 \divides 42
+\end{zed}
+\end{example}
+
+\begin{remark}
+Every integer $x$ divides $0$ because $0 * x = 0$.
+
+\begin{zed}
+	\forall x : \num @ x \divides 0
+\end{zed}
+\end{remark}
+
+\subsubsection{$Divisor$}
+
+Let $x$ be a nonzero integer that divides the integer $y$.
+We say that $x$ is a \textit{divisor} of $y$.
+Let the schema $Divisor$ denote this situation.
+
+\begin{schema}{Divisor}
+	x, y : \num
+\where
+	x \neq 0
+\also
+	x \divides y
+\end{schema}
+\begin{itemize}
+	\item $x$ is nonzero.
+	\item $x$ divides $y$.
+\end{itemize}
+
+\subsubsection{$divisors$}
+
+Let the set $divisors(y)$ denote the set of all divisors of the integer $y$.
+
+\begin{axdef}
+	divisors : \num \fun \power \num
+\where
+	\forall y : \num @ \\
+	\t1	divisors(y) = \{~ x : \num | Divisor ~\}
+\end{axdef}
+
+\begin{example}
+The integer $6$ has the following divisors.
+
+\begin{zed}
+	divisors(6) = \{-6, -3, -2, -1, 1, 2, 3, 6 \}
+\end{zed}
+\end{example}
+
+\subsubsection{$positive\_divisors$}
+
+Let the set $positive\_divisors(y)$ denote the set of all positive divisors of the integer $y$.
+
+\begin{axdef}
+	positive\_divisors : \num \fun \power \nat_1
+\where
+	\forall y : \num @ \\
+	\t1	positive\_divisors(y) = divisors(y) \cap \nat_1
+\end{axdef}
+
+\begin{example}
+The integer $6$ has the following positive divisors.
+
+\begin{zed}
+	positive\_divisors(6) = \{1, 2, 3, 6 \}
+\end{zed}
+\end{example}
+
+\subsection{Prime Numbers}
+
+\subsubsection{$Prime$}
+
+An integer $p$ is \textit{prime} if it is greater than one 
+and only has one and itself as positive divisors.
+Let the schema $Prime$ denote this situation.
+
+\begin{schema}{Prime}
+	p: \nat
+\where
+	p > 1
+\also
+	positive\_divisors(p) = \{ 1, p \}
+\end{schema}
+\begin{itemize}
+	\item $p$ is greater than $1$.
+	\item $1$ and $p$ are the only positive divisors of $p$.
+\end{itemize}
+
+\begin{example}
+The integer $2$ is prime.
+
+\begin{zed}
+	\LET p == 2 @ Prime
+\end{zed}
+\end{example}
+
+\subsubsection{$primes$}
+
+Let $primes$ denote the set of all primes.
+
+\begin{axdef}
+	primes : \power \nat_1
+\where
+	primes = \{~ Prime @ p ~\}
+\end{axdef}
+
+\begin{example}
+The natural numbers $2, 3, 5,$ and $7$ are primes.
+
+\begin{zed}
+	\{2, 3, 5, 7\} \subseteq primes
+\end{zed}
+\end{example}
+
+\section{Integer Sequences}
+
+\subsection{Addition of Integer Sequences}
+
+\subsubsection{$AddIntegerSequences$}
 
 Let $l$ be a natural number and
 let $x$ and $y$ be two integer sequences of length $l$.
-Their sum $z = x + y$ is the integer sequence of length $l$ defined by point-wise addition of 
+Their sum $z = x + y$ is the integer sequence of length $l$ defined by pointwise addition
 of the terms in $x$ and $y$.
 Let the schema $AddIntegerSequences$ denote this situation.
 
@@ -47,15 +208,17 @@ Let the schema $AddIntegerSequences$ denote this situation.
 	\item The sequence $z$ is defined by pointwise addition of the sequences $x$ and $y$.
 \end{itemize}
 
-\subsection{$add\_int\_seq$}
+\subsubsection{$add\_int\_seq$}
 
 Let the function $add\_int\_seq(x, y) = z$ be the sum of two equal-length integer sequences.
 
-\begin{zed}
-	add\_int\_seq == \{~ AddIntegerSequences @ (x, y) \mapsto z ~\}
-\end{zed}
+\begin{axdef}
+	add\_int\_seq : \seq \num \cross \seq \num \pfun \seq \num
+\where
+	add\_int\_seq = \{~ AddIntegerSequences @ (x, y) \mapsto z ~\}
+\end{axdef}
 
-\subsection{\zcmd{addSeqZ}}
+\subsubsection{\zcmd{addSeqZ}}
 
 We introduce the notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 

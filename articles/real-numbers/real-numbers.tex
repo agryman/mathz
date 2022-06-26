@@ -21,6 +21,8 @@ This article contains Z Notation type declarations for the real numbers, $\R$, a
 It has been type checked by \fuzz.
 \end{abstract}
 
+\tableofcontents
+
 \section{Introduction}
 
 The real numbers, $\R$, are foundational to many mathematical objects such as vector spaces and manifolds,
@@ -117,11 +119,11 @@ let $y \invRnz$ denote inverse,
 and let $x \divR y$ denote division.
 
 \begin{axdef}
-	\oneR: \Rnz \\
+	\oneR, \twoR: \Rnz \\
 	\_ \invRnz: \Rnz \fun \Rnz
 \end{axdef}
 
-The non-negative real numbers form an Abelian group under multiplication.
+The nonzero real numbers form an Abelian group under multiplication.
 
 \begin{zed}
 (\_ \mulRnz \_) \in \abgroup \Rnz
@@ -167,13 +169,47 @@ Let $\absR(x)$ denote $\abs{x}$, the absolute value of $x$.
 	\t1	\absR(x) = \IF x \geR \zeroR \THEN x \ELSE \negR~x
 \end{axdef}
 
-\subsection{\zcmd{Rpos}}
+\subsection{\zcmd{Rpos} and Friends}
 
 Let $\Rpos$ denote the set of positive real numbers.
 
 \begin{zed}
 	\Rpos == \{~ x: \R | x \gtR \zeroR ~\}
 \end{zed}
+
+Similarly, we have the following useful subsets of $\R$.
+
+\begin{zed}
+	\Rneg == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rltz == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rltz = \Rneg
+\end{zed}
+\end{remark}
+
+\begin{zed}
+	\Rlez == \{~ x: \R | x \leR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgez == \{~ x: \R | x \geR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgtz == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rgtz = \Rpos
+\end{zed}
+\end{remark}
 
 \subsection{\zcmd{sqrtR}}
 
@@ -738,28 +774,28 @@ This section defines several important constants and functions.
 
 \subsection{$integer\_as\_real$}
 
-The real numbers contains a natural copy of the integers.
+The real numbers contain a natural copy of the integers.
 Let $integer\_as\_real$ denote this embedding.
 
 \begin{axdef}
 	integer\_as\_real : \num \inj \R
 \end{axdef}
 
-\subsection{\zcmd{realZ}}
+\subsection{\zcmd{asZR}}
 
-We introduce the notation $\realZ x = integer\_as\_real~x$ for this embedding.
+We introduce the notation $\asZR x = integer\_as\_real~x$ for this embedding.
 
 \begin{zed}
-	\realZ == integer\_as\_real
+	\asZR == integer\_as\_real
 \end{zed}
 
 The real numbers $\zeroR$ and $\oneR$ are the images of the corresponding integers under this
 embedding.
 
 \begin{zed}
-	\realZ 0 = \zeroR
+	\asZR 0 = \zeroR
 \also
-	\realZ 1 = \oneR
+	\asZR 1 = \oneR
 \end{zed}
 
 \subsection{$IntegerTimesReal$}
@@ -771,7 +807,7 @@ and $x$ and $y$ are real numbers.
 	n : \num \\
 	x, y : \R
 \where
-	y = (\realZ n) \mulR x
+	y = (\asZR n) \mulR x
 \end{schema}
 
 \subsection{$integer\_times\_real$}
@@ -801,7 +837,7 @@ to give the quotient $y = x / n$.
 \where
 	n \neq 0
 \also
-	y = x \divR (\realZ n)
+	y = x \divR (\asZR n)
 \end{schema}
 
 \subsection{$real\_div\_integer$}
@@ -843,6 +879,28 @@ Let $\piR$ denote the usual ratio of the perimeter of a circle to its diameter.
 \begin{axdef}
 	\piR : \R
 \end{axdef}
+
+\subsection{$sum\_real$}
+
+Given a sequence $a$ of zero or more real numbers,
+we define its sum $sum\_real(a)$ recursively as follows.
+
+\begin{axdef}
+	sum\_real : \seq \R \fun \R
+\where
+	sum\_real(\langle \rangle) = \zeroR
+\also
+	\forall x : \R; a : \seq \R @ \\
+	\t1	sum\_real(\langle x \rangle \cat a) = x \addR sum\_real(a)
+\end{axdef}
+
+\subsection{\zcmd{sumR}}
+
+We introduce the notation $\sumR(a) = sum\_real(a)$.
+
+\begin{zed}
+	\sumR == sum\_real
+\end{zed}
 
 \section{The Real Plane}
 
@@ -1075,6 +1133,88 @@ Note that this function is not one-to-one for the following reasons.
 	\item The pairs $(r, a)$ and $(-r, a + \pi)$ map to the same points.
 	\item The pairs $(0, a)$ and $(0, a')$ map to the same points.
 \end{itemize}
+
+\subsection{The Dot Product}
+
+Given two points $v_1 = (x_1,y_1), v_2 = (x_2, y_2) \in \Rtwo$, 
+their \textit{dot product} $v_1 \cdot v_2$ is defined as follows.
+\begin{equation}
+	v_1 \cdot v_2 = x_1 x_2 + y_1 y_2
+\end{equation}
+Let the schema $DotRealPlane$ denote this situation where $product = v_1 \cdot v_2$.
+
+\begin{schema}{DotRealPlane}
+	RealPlane_1 \\
+	RealPlane_2 \\
+	product: \R
+\where
+	product = x_1 \mulR x_2 \addR y_1 \mulR y_2
+\end{schema}
+
+Let the function $dot\_real\_plane(v_1, v_2) = v_1 \cdot v_2$ map a pair of points to their dot product.
+
+\begin{axdef}
+	dot\_real\_plane: \Rtwo \cross \Rtwo \fun \R
+\where
+	dot\_real\_plane = \{~ DotRealPlane @ (point_1, point_2) \mapsto product ~\}
+\end{axdef}
+
+We introduce the usual notation $v_1 \dotRtwo v_2 = dot\_real\_plane(v_1, v_2)$.
+
+\begin{zed}
+	(\_ \dotRtwo \_) == dot\_real\_plane
+\end{zed}
+
+\subsection{Norm}
+
+The \textit{norm} of a point in the plane is defined to be the square root of its dot product with itself.
+Let the schema $NormRealPlane$ denote this situation where $norm$ denotes the norm of the point.
+
+\begin{schema}{NormRealPlane}
+	RealPlane \\
+	norm: \Rgez
+\where
+	norm = \sqrtR(point \dotRtwo point)
+\end{schema}
+
+Let the function $norm\_real\_plane(point) = norm$ map a point to its norm.
+
+\begin{axdef}
+	norm\_real\_plane: \Rtwo \fun \Rgez
+\where
+	norm\_real\_plane = \{~ NormRealPlane @ point \mapsto norm ~\}
+\end{axdef}
+
+We introduce the notation $\normRtwo(point) = norm\_real\_plane(point)$.
+
+\begin{zed}
+	\normRtwo == norm\_real\_plane
+\end{zed}
+
+\subsection{The Unit Circle}
+
+A point in the plane is said to be a \textit{unit vector} when it has norm $1$.
+The set of all unit vectors make up the \textit{unit circle}.
+Let the schema $UnitCircle$ denote this situation.
+
+\begin{schema}{UnitCircle}
+	RealPlane
+\where
+	\normRtwo(point) = \oneR
+\end{schema}
+
+Let $unit\_circle$ denote the set of all unit vectors in the real plane.
+
+\begin{axdef}
+	unit\_circle: \power \Rtwo
+\end{axdef}
+
+We introduce the usual notation $\sphereOne = unit\_circle$.
+
+\begin{zed}
+	\sphereOne == unit\_circle
+\end{zed}
+
 
 \printbibliography
 

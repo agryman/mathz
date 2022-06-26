@@ -14,14 +14,32 @@
 % the real number 1
 \newcommand{\oneR}{1}
 
+% the real number 2
+\newcommand{\twoR}{2}
+
 % the negation prefix operator -x
 \DeclareMathOperator{\negR}{-}
 
-% the set of non-zero real numbers
+% the set of nonzero real numbers
 \newcommand{\Rnz}{\R_{*}}
 
 % the set of positive real numbers
 \newcommand{\Rpos}{\R_{+}}
+
+% the set of negative real numbers
+\newcommand{\Rneg}{\R_{-}}
+
+% the set of less than zero real numbers
+\newcommand{\Rltz}{\R_{< 0}}
+
+% the set of less than or equal to zero real numbers
+\newcommand{\Rlez}{\R_{\leq 0}}
+
+% the set of greater than or equal to zero real numbers
+\newcommand{\Rgez}{\R_{\geq 0}}
+
+% the set of greater than zero real numbers
+\newcommand{\Rgtz}{\R_{> 0}}
 
 % the addition infix operator x + y
 %%inop \addR 3
@@ -41,7 +59,7 @@
 
 % the multiplication infix operator restricted to non-zero real numbers
 %%inop \mulRnz 4
-\newcommand{\mulRnz}{\mathbin{\overline{*}}}
+\newcommand{\mulRnz}{\mathbin{*}}
 
 % the inverse postfix operator defined on non-zero real numbers
 %%postop \invRnz
@@ -62,6 +80,9 @@
 % the greater than or equal to infix relation x > y
 %%inrel \geR
 \newcommand{\geR}{\mathrel{\geq}}
+
+% sum of a sequence of real numbers
+\newcommand{\sumR}{\Sigma}
 
 % the set of all open sets of real numbers
 \newcommand{\openR}{\mathsf{open}}
@@ -103,9 +124,13 @@
 \DeclareMathOperator{\derivFR}{D}
 \DeclareMathOperator{\derivF}{D}
 
-\DeclareMathOperator{\realZ}{\mathsf{real}}
+\DeclareMathOperator{\asZR}{\mathsf{real}}
+
 \DeclareMathOperator{\sinR}{sin}
 \DeclareMathOperator{\cosR}{cos}
+\DeclareMathOperator{\tanR}{tan}
+\DeclareMathOperator{\expR}{exp}
+\DeclareMathOperator{\logR}{log}
 \newcommand{\piR}{\pi}
 
 % the multiplication infix operator x * y for integers times reals
@@ -140,3 +165,19 @@
 % addition of functions to the real plane
 %%inop \addFRtwo 3
 \newcommand{\addFRtwo}{\mathbin{+}}
+
+% the real 3-space
+\newcommand{\Rthree}{\R^3}
+
+% dot product of points in the real plane
+%%inop \dotRtwo 4
+\newcommand{\dotRtwo}{\mathbin{\cdot}}
+
+% the norm of a point in the real plane
+\DeclareMathOperator{\normRtwo}{norm}
+
+% the unit sphere in the real plane
+\newcommand{\sphereOne}{S^1}
+
+% the unit sphere in real space
+\newcommand{\sphereTwo}{S^2}

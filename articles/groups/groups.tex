@@ -1,9 +1,9 @@
 \documentclass[11pt, oneside]{article}
 
-\usepackage{../../shared/preamble}
-\addbibresource{../../shared/references.bib}
+\usepackage{preamble}
+\addbibresource{references.bib}
 
-\usepackage{../sets/sets}
+\usepackage{sets}
 \usepackage{groups}
 
 \title{Groups}
@@ -18,6 +18,8 @@
 This article contains Z Notation type declarations for groups and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -217,7 +219,7 @@ B: \monoid \genU
 \t2		f~e = e'
 \end{schema}
 
-\subsubsection{\zcmd{homMonoid}}
+\subsection{\zcmd{homMonoid}}
 
 A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
 that preserves identity.
@@ -312,7 +314,7 @@ Let $\group \genT$ denote the set of all groups over $\genT$.
 \group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
 \end{zed}
 
-\subsubsection{$MapPreservesInverse$}
+\subsection{$MapPreservesInverse$}
 
 Let $\genT$ and $\genU$ be sets of elements,
 let $A$ and $B$ be groups over $\genT$ and $\genU$, 
@@ -333,7 +335,7 @@ B: \group \genU
 \t3			f(x \invG) = (f~x) \daggerG
 \end{schema}
 
-\subsubsection{\zcmd{homGroup}}
+\subsection{\zcmd{homGroup}}
 
 Let $A$ and $B$ be groups.
 A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism

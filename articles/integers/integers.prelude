@@ -924,6 +924,10 @@ Addition over the integers is an Abelian group.
 \end{document}\NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{integers}[2022/02/01 Z Notation for integers package]
 
+% the divisibility infix relation x | y for integers
+\newcommand{\divides}{\mathrel{\mid}}
+%%inrel \divides
+
 % the addition infix operator x + y for integer sequences
 %%inop \addSeqZ 3
 \newcommand{\addSeqZ}{\mathbin{+}}
