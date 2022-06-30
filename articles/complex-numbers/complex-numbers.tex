@@ -1,8 +1,10 @@
 \documentclass[11pt, oneside]{article}
 
 \usepackage{preamble}
+\usepackage{biblatex}
 \addbibresource{../../shared/references.bib}
 
+\usepackage{formal-specifications}
 \usepackage{sets}
 \usepackage{topological-spaces}
 \usepackage{groups}
@@ -11,7 +13,7 @@
 \usepackage{complex-numbers}
 
 \title{Complex Numbers}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
+\author{Arthur Ryman, {\texttt{arthur.ryman@gmail.com} }}
 \date{\today}
 
 \begin{document}
@@ -19,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-This article contains Z Notation type declarations for the complex numbers, $\C$, and some related objects.
+This article contains \ZN type declarations for the complex numbers, $\C$, and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
 
@@ -28,7 +30,7 @@ It has been type checked by \fuzz.
 \section{Introduction}
 
 The complex numbers, $\C$, are foundational to many mathematical objects such as vector spaces and manifolds,
-but are not built-in to Z Notation.
+but are not built into Z Notation.
 This article provides type declarations for $\C$ and related objects so that they can be used and type checked in formal Z specifications.
 
 No attempt has been made to provide complete, axiomatic definitions of all these objects since that would only be of use for proof checking.

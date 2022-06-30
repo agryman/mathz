@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{../../shared/references.bib}
+
+\begin{document}
+Let's cite! The Einstein's journal paper \cite{einstein} and the Dirac's 
+book \cite{dirac} are physics related items. 
+
+\printbibliography
+
+\end{document}
