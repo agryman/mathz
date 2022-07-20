@@ -29,7 +29,7 @@ and greater confidence in the correctness of mathematical and physical theories 
 \section{Introduction}
 
 \ZN\ is a formal specification language invented for the purpose of software development.
-By \emph{formal} I mean that the language has a precise syntax and semantics so that 
+By \emph{formal} I mean that the language has a precisely defined syntax and semantics so that 
 the  \emph{correctness} of a specification written in such a language can be checked, to some degree,
 by a computer program.
 I use the \fuzz\ type checker for specifications written using \ZN.
@@ -38,9 +38,10 @@ It is fair to say that formal specification languages never achieved widespread 
 The use of a formal specification language imposes additional cost at the start of a project and the pool of developers
 who have the required skills is limited.
 Because of these challenges, the use of formal specification languages has been confined to projects where the
-additional upfront cost can be justified, for example developing safety-critical systems where downstream errors
+additional upfront cost can be justified, for example in the development safety-critical systems where downstream errors
 are very expensive to resolve.
-Nevertheless, I have personally found \ZN\ to be a very useful tool and have returned to it repeatedly over the years.
+Nevertheless, I have personally found \ZN\ to be a very useful tool for organizing one's thoughts
+and have returned to it repeatedly over the years.
 
 The upfront cost objection merits further examination.
 It is well known that the cost of removing a detect increases as development proceeds.
@@ -51,20 +52,35 @@ I therefore regard the cost objection as dubious.
 
 However, the skill objection is very real.
 It therefore seems to be a good idea to keep a specification language as simple as possible and to make it as
-similar as possible to the elementary mathematics that most developers normally acquire in the course of their education.
+similar as possible to the standard mathematics that most developers normally acquire in the course of their education.
 
 The thing I find most appealing about \ZN\ is that it has a very firm and simple mathematical foundation.
 Indeed, one can view \ZN\ as a formal language for writing mathematics. 
 However, \ZN\ differs from informal mathematical notation in that it is based on \emph{typed set theory}.
-Recall that typed set theory was invented by Bertrand Russel as a way to avoid certain paradoxes in logic.
+Recall that typed set theory was invented by Bertrand Russel as a way to avoid certain logical paradoxes
+that arose in the foundations of mathematics.
 For example, see \href{https://en.wikipedia.org/wiki/Russell's_paradox}{Russel's paradox}.
 This point makes \ZN\ more suitable for specifying software where data types are the norm.
 It also makes \ZN\ more checkable. Indeed, specifications written in \ZN\ can be type checked, a process
 that can catch many common errors and omissions.
 
+There is an interesting parallel between mathematics and programming languages with respect to the role of types.
+Working mathematicians implicitly use the Zermelo-Fraenkel axioms for set theory which neither defines nor uses the concept of a type.
+Similarly, the two most popular programming languages today are JavaScript and Python 
+both of which do have data types but neither of which
+require variables to be declared as being of any specific type. 
+However, many JavaScript and Python developers appreciate the benefits of type declarations which are required in languages such as
+Java, C++, and C\#, and this has led to the introduction of type support in JavaScript and Python. 
+The \href{https://www.typescriptlang.org}{TypeScript} language is a version of JavaScript that supports type declarations. 
+Python has steadily improved type hint support through a sequence of Python
+Enhancement Proposals, e.g. \href{https://peps.python.org/pep-0484/}{PEP 484 - Type Hints}.
+It is fair to say that \ZN\ is a formal syntax for informal mathematics together with type declarations.
+I think of \ZN\ as being a statically-typed, nonexecutable functional programming language.
+
+
 The \ZN\ system consists of a core language and a small, but useful, \emph{mathematical toolkit}.
-The core language covers basic logic, sets, and type constructors.
-The mathematical toolkit builds on the core language and defines more advanced mathematical objects such as sequences and
+The core language covers the integers, basic logic, sets, and type constructors for power sets, Cartesian products, and schemas.
+The mathematical toolkit builds on the core language and defines more advanced mathematical objects such as sequences, bags, and
 functions.
 
 While the mathematical toolkit is adequate for specifying typical software systems, it is missing definitions for more advanced
@@ -74,13 +90,24 @@ The consequence of this omission is that anyone trying to use \ZN\ for specifyin
 a lot of basic definitions first.
 The main goal of the \mathz\ project is to do this work once and then reuse it as the basis for more advanced specifications.
 
-One serious limitation of \ZN\ is that it lacks a formal proof checker.
-This means that in practice a formal specification written in \ZN\ consists primarily of formal definitions and constraints, and perhaps some
+One cosmetic limitation of \ZN\ is that it cannot fully reproduce the elaborate notation that mathematicians freely invent in their articles.
+In \ZN\ mathematical operators are either infix, prefix, or postfix whereas in informal mathematics operators may also be 
+\emph{super}-fix, \emph{sub}-fix, or \emph{surround}-fix not to mention two-dimensional notations such as binomial coefficients,
+3j symbols and 6j symbols.
+One can simulate some of these notations through clever use of \LaTeX\ but perhaps that is not the point.
+Perhaps \ZN\ should be kept simple so that the definitions are easy to understand as opposed to being easy to write.
+One can always augment a \ZN\ specification with informal mathematical notation.
+Another possibility is to use symbolic computation libraries such as \href{https://www.sympy.org}{SymPy} that can render mathematical objects using arbitrary \LaTeX.
+
+A more serious shortcoming of \ZN\ is that it lacks a formal proof checker.
+This means that in practice a formal specification written in \ZN\ consists primarily of formal definitions and constraints, with perhaps some
 informal proofs.
-The lack of a proof checker means that arguably some of the most important content of mathematical writing is outside the scope of
+The lack of a built-in proof checker means that arguably some of the most important content of mathematical writing is outside the scope of
 \ZN.
-However, this omission could be partially mitigated by combining \ZN\ with one of the many available proof checkers, some of which
-have been successfully used with it. More on this later.
+However, this omission could be partially mitigated by combining \ZN\ with one of the many available proof checkers, some of which,
+such as Z/EVES, have been successfully used with it. 
+See \href{https://www.csm.ornl.gov/~sheldon/bucket/ze_userguide.pdf}{The Z/EVES 2.0 User's Guide}.
+More on this later.
 
 In summary, the attractiveness of using \ZN\ for more advanced mathematics is that it is fairly close to standard mathematical notation but can also
 be type checked and, potentially, proof checked.
