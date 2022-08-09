@@ -223,6 +223,25 @@
 % style file for sets.tex
 
 % formal parameters for generic constructions
+\newcommand{\genA}{\mathsf{a}}
+\newcommand{\genB}{\mathsf{b}}
+\newcommand{\genC}{\mathsf{c}}
+\newcommand{\genD}{\mathsf{d}}
+\newcommand{\genE}{\mathsf{e}}
+\newcommand{\genF}{\mathsf{f}}
+\newcommand{\genG}{\mathsf{g}}
+\newcommand{\genH}{\mathsf{h}}
+\newcommand{\genI}{\mathsf{i}}
+\newcommand{\genJ}{\mathsf{j}}
+\newcommand{\genK}{\mathsf{k}}
+\newcommand{\genL}{\mathsf{l}}
+\newcommand{\genM}{\mathsf{m}}
+\newcommand{\genN}{\mathsf{n}}
+\newcommand{\genO}{\mathsf{o}}
+\newcommand{\genP}{\mathsf{p}}
+\newcommand{\genQ}{\mathsf{q}}
+\newcommand{\genR}{\mathsf{r}}
+\newcommand{\genS}{\mathsf{s}}
 \newcommand{\genT}{\mathsf{t}}
 \newcommand{\genU}{\mathsf{u}}
 \newcommand{\genV}{\mathsf{v}}
@@ -232,6 +251,25 @@
 \newcommand{\genZ}{\mathsf{z}}
 
 % arbitrary sets used in theorems, remarks, and examples involving generic constructs
+\newcommand{\setA}{\mathsf{A}}
+\newcommand{\setB}{\mathsf{B}}
+\newcommand{\setC}{\mathsf{C}}
+\newcommand{\setD}{\mathsf{D}}
+\newcommand{\setE}{\mathsf{E}}
+\newcommand{\setF}{\mathsf{F}}
+\newcommand{\setG}{\mathsf{G}}
+\newcommand{\setH}{\mathsf{H}}
+\newcommand{\setI}{\mathsf{I}}
+\newcommand{\setJ}{\mathsf{J}}
+\newcommand{\setK}{\mathsf{K}}
+\newcommand{\setL}{\mathsf{L}}
+\newcommand{\setM}{\mathsf{M}}
+\newcommand{\setN}{\mathsf{N}}
+\newcommand{\setO}{\mathsf{O}}
+\newcommand{\setP}{\mathsf{P}}
+\newcommand{\setQ}{\mathsf{Q}}
+\newcommand{\setR}{\mathsf{R}}
+\newcommand{\setS}{\mathsf{S}}
 \newcommand{\setT}{\mathsf{T}}
 \newcommand{\setU}{\mathsf{U}}
 \newcommand{\setV}{\mathsf{V}}
@@ -241,8 +279,8 @@
 \newcommand{\setZ}{\mathsf{Z}}
 
 % families of sets
-%%pregen \family
-\newcommand{\family}{\mathcal{F}}
+%%pregen \Fam
+\DeclareMathOperator{\Fam}{\mathcal{F}}
 
 % the induced family infix operator
 %%inop \inducedFam 6
@@ -257,10 +295,11 @@
 
 % the function restriction infix operator
 %%inop \restrictU 6
-\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
+\newcommand{\restrictU}{\mathbin{|}}
 
 % the set of binary digits
 \newcommand{\B}{\mathbb{B}}
 
 % the indicator function of a set
-\newcommand{\indF}{\mathbf{1}}
+%%pregen \indF
+\DeclareMathOperator{\indF}{\mathbf{1}}

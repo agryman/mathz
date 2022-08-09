@@ -1,91 +1,36 @@
-\documentclass[11pt, oneside]{article}
-
-\usepackage{preamble}
-\addbibresource{../../shared/references.bib}
+\documentclass{amsart}
 
 \usepackage{sets}
 
-\title{Sets}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
+\usepackage{biblatex}
+\addbibresource{../../shared/references.bib}
+\usepackage{parskip}
+\usepackage{preamble}
 
 \begin{document}
 
-\maketitle
+\title{Sets}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
-This article contains Z Notation type declarations for concepts related to sets.
+This article contains \ZN\ definitions for 
+concepts related to sets.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\maketitle
 
 \tableofcontents
 
 \section{Introduction}
 
-Typed set theory forms the mathematical foundation of Z Notation
-and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
-This articles augments the tool-kit with some additional concepts.
+Typed set theory forms the mathematical foundation of \ZN\
+and many set theory concepts are defined in its built-in mathematical toolkit. 
+This articles augments the toolkit with some additional concepts.
 
-\section{Arbitrary Sets}
-
-\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
-
-Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
-These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
-by arbitrary sets.
-
-\begin{zed}
-	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
-\end{zed}
-
-\section{Formal Arguments to Generic Constructions}
-
-The following typographically distinctive symbols will be used as formal arguments to generic constructions:
-$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
-They denote arbitrary sets.
-
-\section{Families}
-
-\subsection{\zcmd{family}}
-
-Let $\genT$ be a set.
-A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
-Let $\family \genT$ denote the set of all families of subsets of $X$.
-
-\begin{zed}
-	\family \genT == \power(\power \genT)
-\end{zed}
-
-\section{Functions}
-
-
-\subsection{\zcmd{const}}
-
-Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
-The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
-Let $\const(c)$ denote the constant mapping.
-
-\begin{gendef}[\genT, \genU]
-	\const: \genU \fun (\genT \fun \genU)
-\where
-	\forall c: \genU @ \\
-	\t1	\const(c) = (\lambda x: \genT @ c)
-\end{gendef}
-
-
-\subsection{\zcmd{restrictU}}
-
-Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
-Let $f \restrictU T$ denote the restriction of $f$ to $T$.
-
-\begin{gendef}[\genT, \genU]
-	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
-\where
-	\forall f: \genT \fun \genU; T: \power \genT @ \\
-	\t1	f \restrictU T = T \dres f
-\end{gendef}
-
-\subsection{$bit$}
+\section{Binary Digits}
 
 Let $bit$ denote the set of \textit{binary digits}, namely the set $\{ 0, 1\} \subseteq \num$.
 
@@ -93,37 +38,229 @@ Let $bit$ denote the set of \textit{binary digits}, namely the set $\{ 0, 1\} \s
 	bit == \{ 0, 1 \}
 \end{zed}
 
-\subsection{\zcmd{B}}
-
 We introduce the notation $\B = bit$.
 
 \begin{zed}
 	\B == bit
 \end{zed}
 
-\subsection{$indicator\_function$}
+\section{Arbitrary Sets}
 
-Let $\genT$ be a set, 
-let $X$ be a subset of $\genT$, and 
-let $a \in \genT$ be some element.
-The \textit{indicator function} or \textit{characteristic function} of $X$ maps $a$ to 1 if $a \in X$ and 0 otherwise.
-Let $indicator\_function(X) \in \genT \fun \B$ denote this function.
+\ZN\ supports generic constructions which take arbitrary sets as parameters.
+It is often of interest to state theorems, remarks, and examples about generic constructions that hold for arbitrary sets.
+However, \ZN\ does not allow universal quantification over the set of all sets since this leads to the Russell paradox.
+In fact, typed set theory was motivated by a desire to avoid the Russell paradox.
 
-\begin{gendef}[\genT]
-	indicator\_function : \power \genT \fun \genT \fun \B
-\where
-	\forall X : \power \genT @ \\
-		\t1 indicator\_function(X) = \\
-			\t2 (\lambda a : \genT @ \IF a \in X \THEN 1 \ELSE 0)
-\end{gendef}
+As a workaround, we adopt the convention of stating theorems, remarks, and example that hold for arbitrary sets in terms
+of predefined given sets with the understanding that these sets are completely unconstrained by additional axioms.
 
-\subsection{\zcmd{indF}}
+It is an error to use any of these predefined sets outside of the statement of a theorem, remark, or example.
 
-We introduce the notation $\indF[\genT](X) = indicator\_function[\genT](X)$.
+Let $\setA, \setB, \dots \setZ$ denote these predefined arbitrary sets.
 
 \begin{zed}
-	\indF[\genT] == indicator\_function[\genT]
+	[\setA, \setB, \setC, \setD, \setE, \setF, \setG, \setH, \setI, \setJ, \setK, \setL, \setM, 
+	\setN, \setO, \setP, \setQ, \setR, \setS, \setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
+
+For example, consider the following statement which holds for arbitrary sets $\setX$.
+
+\begin{remark}
+Equality is reflexive.
+\begin{zed}
+	\forall x: \setX @ x = x
+\end{zed}
+\end{remark}
+
+\section{Formal Generic Parameters}
+
+Formal generic parameters appear in the definition of generic schemas and constants where
+they are used as placeholders for arbitrary sets.
+As a purely stylistic convention, we use the following typographically distinctive symbols as formal generic parameters:
+\begin{equation*}
+	\genA, \genB, \dots, \genZ
+\end{equation*}
+
+\section{Families of Subsets}
+
+Let $\genT$ be a set.
+A \textit{family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $Fam[\genT]$ denote the set of all families of subsets of $\genT$.
+
+\begin{zed}
+	Fam[\genT] == \power(\power \genT)
+\end{zed}
+
+\begin{example}
+The set consisting of the empty set and $\setX$ is a family of subsets of $\setX$.
+\begin{zed}
+	\{ \emptyset, \setX \} \in Fam[\setX]
+\end{zed}
+\end{example}
+
+Let the prefix generic symbol $\Fam \genT$ denote the family of subsets of $\genT$ .
+
+\begin{zed}
+	\Fam \genT == Fam[\genT]
+\end{zed}
+
+\section{Functions}
+
+\subsection{Constant Functions}
+
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given element.
+The mapping $f(x) = c$ that sends every element $x \in \genT$ to $c$ is called the \textit{constant function} on $\genT$ with value $c$.
+
+\begin{schema}{ConstantFunction}[\genT, \genU]
+	c: \genU \\
+	f: \genT \fun \genU
+\where
+	f = (\lambda x: \genT @ c)
+\end{schema}
+
+Let the function $constant\_function~c = f$ denote the constant function $f: \genT \fun \genU$ with value $c$.
+
+\begin{zed}
+	constant\_function[\genT, \genU] == \{~ConstantFunction[\genT, \genU] @ c \mapsto f ~\}
+\end{zed}
+
+\begin{remark}
+The mapping $constant\_function$ maps each element $c \in \setU$ to a function $\setT \fun \setU$.
+\begin{zed}
+	constant\_function[\setT, \setU] \in \setU \fun (\setT \fun \setU)
+\end{zed}
+\end{remark}
+
+Let the notation $\const c$ denote the constant function defined by $c$.
+
+\begin{zed}
+	\const[\genT, \genU] == constant\_function[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\forall c: \setU; x: \setT @ \const[\setT, \setU] c~x = c
+\end{zed}
+\end{remark}
+
+\subsection{Function Restriction}
+
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$ be a subset.
+Let $g$ denote the restriction of $f$ to $T$.
+
+\begin{schema}{FunctionRestriction}[\genT, \genU]
+	f: \genT \fun \genU \\
+	T: \power \genT \\
+	g: \genT \pfun \genU
+\where
+	g = T \dres f
+\end{schema}
+
+Let the function  $g = restriction(f, T)$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	restriction[\genT, \genU] == \{~ FunctionRestriction[\genT, \genU] @ (f, T) \mapsto g ~\}
+\end{zed}
+
+Let the generic infix operator $f \restrictU T$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	(\_ \restrictU \_)[\genT, \genU] == restriction[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+Function restriction is domain restriction with arguments reversed.
+\begin{zed}
+	\forall FunctionRestriction[\setT, \setU] @ \\
+	\t1	f \restrictU T = T \dres f
+\end{zed}
+\end{remark}
+
+\subsection{Indicator Functions}
+
+Let $\genT$ be a set and let $X \subseteq \genT$ be a subset.
+The \textit{indicator function}  $f$  of $X$ maps each element $a \in \genT$ to 1 if $a \in X$ and 0 otherwise.
+The indicator function is also referred to as the \textit{characteristic function} of $X$.
+
+\begin{schema}{IndicatorFunction}[\genT]
+	X: \power \genT \\
+	f: \genT \fun \B
+\where
+	f = (\lambda a: \genT @ \IF a \in X \THEN 1 \ELSE 0)
+\end{schema}
+
+Let $indicator\_function~X = f$ denote the indicator function of $X$.
+
+\begin{zed}
+	indicator\_function[\genT] == \{~ IndicatorFunction[\genT] @ X \mapsto f ~\}
+\end{zed}
+
+\begin{remark}
+For each subset $X \subseteq \setT$, the indicator function of $X$ is a binary function on $\setT$.
+\begin{zed}
+	indicator\_function[\setT] \in \power \setT \fun \setT \fun \B
+\end{zed}
+\end{remark}
+
+We introduce the prefix generic symbol $(\indF \_)$ where $(\indF \genT)X = indicator\_function[\genT] X$.
+
+\begin{zed}
+	\indF \genT == indicator\_function[\genT]
+\end{zed}
+
+\begin{remark}
+The domain of the range restriction of the indicator function of a set $X$ to the range $\{1\}$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1	\dom((\indF \setT)X \rres \{1\}) = X
+\end{zed}
+\end{remark}
+
+\section{The Support of a Function}
+
+Let $\genT$ be a set and let $f: \genT \fun \num$ be an integer-valued function.
+The \textit{support} $S$ of $f$ is the set of elements $x \in \genT$ where $f~x \neq 0$.
+
+\begin{schema}{FunctionSupport}[\genT]
+	f: \genT \fun \num \\
+	S: \power \genT
+\where
+	S = \{~ x: \genT | f~x \neq 0 ~\}
+\end{schema}
+
+Let the function $S = support~f$ denote the support of $f$.
+
+\begin{zed}
+	support[\genT] == \{~ FunctionSupport[\genT] @ f \mapsto S ~\}
+\end{zed}
+
+\begin{example}
+The support of the indicator function of a set $X$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1 support((\indF \setT)X) = X
+\end{zed}
+\end{example}
+
+An integer-valued function is said to have \textit{finite support} if its support is a finite set.
+
+\begin{schema}{FiniteSupport}[\genT]
+	FunctionSupport[\genT]
+\where
+	S \in \finset \genT
+\end{schema}
+
+Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $\genT$ that have finite support.
+
+\begin{zed}
+	finite\_support[\genT] == \{~ FiniteSupport[\genT] @ f ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	finite\_support[\setT] \subseteq \setT \fun \num
+\end{zed}
+\end{remark}
 
 \printbibliography
 
