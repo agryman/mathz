@@ -1,25 +1,26 @@
-\documentclass[11pt, oneside]{article}
+\documentclass{amsart}
 
-\usepackage{preamble}
+\usepackage{mathz-sets}
+\usepackage{mathz-topological-spaces}
+\usepackage{mathz-groups}
+\usepackage{mathz-real-numbers}
+\usepackage{mathz-preamble}
+
 \addbibresource{../../shared/references.bib}
-
-\usepackage{sets}
-\usepackage{topological-spaces}
-\usepackage{groups}
-\usepackage{real-numbers}
-
-\title{Real Numbers}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
 
 \begin{document}
 
-\maketitle
+\title{Real Numbers}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
 This article contains Z Notation type declarations for the real numbers, $\R$, and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\maketitle
 
 \tableofcontents
 
@@ -284,7 +285,7 @@ If $r \leR 0$ then $\ballR(x,r)$ is empty.
 Let $\ballsR$ denote the set of all open balls in $\R$.
 
 \begin{axdef}
-	\ballsR: \family~\R
+	\ballsR: \Fam \R
 \where
 	\ballsR = \{~ x, r: \R @ \ballR(x,r) ~\}
 \end{axdef}
@@ -296,7 +297,7 @@ strictly within $U$.
 Let $\openR$ denote the set of all open subsets of $\R$.
 
 \begin{axdef}
-	\openR: \family~\R
+	\openR: \Fam \R
 \where
 	\openR = \\
 	\t1	\{~ U:  \power \R | \\
@@ -375,7 +376,7 @@ Any open set that contains $x$ is called a {\it neighbourhood} of it.
 Let $\neighR(x)$ denote the set of all neighbourhoods of $x$.
 
 \begin{axdef}
-	\neighR: \R \fun \family~\R
+	\neighR: \R \fun \Fam \R
 \where
 	\forall x: \R @ \\
 	\t1	\neighR(x) = \{~ U: \openR | x \in U~\}
@@ -1214,7 +1215,6 @@ We introduce the usual notation $\sphereOne = unit\_circle$.
 \begin{zed}
 	\sphereOne == unit\_circle
 \end{zed}
-
 
 \printbibliography
 

@@ -1,4 +1,7 @@
-% style file for sets.tex
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-sets}[2022/02/01 Z Notation for sets package]
+
+% sets
 
 % formal parameters for generic constructions
 \newcommand{\genA}{\mathsf{a}}
@@ -62,11 +65,11 @@
 
 % the induced family infix operator
 %%inop \inducedFam 6
-\newcommand{\inducedFam}{\mathbin{|_\family}}
+\newcommand{\inducedFam}{\mathbin{|_{\Fam}}}
 
 % the product family infix operator
 %%inop \prodFam 5
-\newcommand{\prodFam}{\mathbin{\cross_\family}}
+\newcommand{\prodFam}{\mathbin{\cross_{\Fam}}}
 
 % the constant function
 \DeclareMathOperator{\const}{const}
