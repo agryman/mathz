@@ -62,7 +62,7 @@ Let $\setA, \setB, \dots \setZ$ denote these predefined arbitrary sets.
 	\setN, \setO, \setP, \setQ, \setR, \setS, \setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
 
-For example, consider the following statement which holds for arbitrary sets $\setX$.
+For example, consider the following statement which holds for the arbitrary set $\setX$.
 
 \begin{remark}
 Equality is reflexive.
@@ -141,6 +141,57 @@ Let the notation $\const c$ denote the constant function defined by $c$.
 	\forall c: \setU; x: \setT @ \const[\setT, \setU] c~x = c
 \end{zed}
 \end{remark}
+
+\subsection{Delta Functions}
+
+Let $\genT$ be a set and let $x, y \in \genT$. 
+Define the \textit{equality indicator bit} $z$ to be $1$ if $x = y$ and $0$ otherwise.
+
+\begin{schema}{EqualityIndicator}[\genT]
+	x, y: \genT \\
+	z: \B
+\where
+	z = \IF x = y \THEN 1 \ELSE 0
+\end{schema}
+
+Define the delta function $delta(x, y) = z$.
+
+\begin{zed}
+	delta[\genT] == \{~ EqualityIndicator[\genT] @ (x, y) \mapsto z ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	delta[\setX] \in \setX \cross \setX \fun \B
+\end{zed}
+\end{remark}
+
+\begin{example}
+\begin{zed}
+	delta(0, 0) = 1
+\also
+	delta(0, 1) = 0
+\end{zed}
+\end{example}
+
+\begin{theorem}
+\begin{zed}
+	\forall x: \setX @ \\
+	\t1	delta(x, x) = 1
+\end{zed}
+\end{theorem}
+
+We introduce the usual notation $\deltaF \genT = delta[\genT]$.
+
+\begin{zed}
+	\deltaF \genT == delta[\genT]
+\end{zed}
+
+\begin{example}
+\begin{zed}
+	(\deltaF \num) (0,1) = 0
+\end{zed}
+\end{example}
 
 \subsection{Function Restriction}
 

@@ -2,7 +2,9 @@
 cd $(dirname $0)
 pwd
 cat ../../shared/fuzzlib\
- ../sets/sets.sty\
+ ../sets/mathz-sets.sty\
  ../sets/sets.tex\
- groups.sty > groups.prelude
+ ../integers/mathz-integers.sty\
+ ../integers/integers.tex\
+ mathz-groups.sty > groups.prelude
 fuzz -p groups.prelude groups

@@ -2,13 +2,13 @@
 cd $(dirname $0)
 pwd
 cat ../../shared/fuzzlib\
- ../sets/sets.sty\
+ ../sets/mathz-sets.sty\
  ../sets/sets.tex\
- ../groups/groups.sty\
+ ../groups/mathz-groups.sty\
  ../groups/groups.tex\
- ../topological-spaces/topological-spaces.sty\
+ ../topological-spaces/mathz-topological-spaces.sty\
  ../topological-spaces/topological-spaces.tex\
- ../real-numbers/real-numbers.sty\
+ ../real-numbers/mathz-real-numbers.sty\
  ../real-numbers/real-numbers.tex\
- manifolds.sty > manifolds.prelude
+ mathz-manifolds.sty > manifolds.prelude
 fuzz -p manifolds.prelude manifolds

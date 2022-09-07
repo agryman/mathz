@@ -220,9 +220,32 @@
 %%tame \plus \cat head last tail front rev \filter \dcat
 %%tame first second \mapsto \dom \ran \dres \rres \ndres \nrres 
 %%tame \inv \limg\rimg \oplus \comp \circ
-% style file for sets.tex
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{amsmath}
+\ProvidesPackage{mathz-sets}[2022/02/01 Z Notation for sets package]
+
+% sets
 
 % formal parameters for generic constructions
+\newcommand{\genA}{\mathsf{a}}
+\newcommand{\genB}{\mathsf{b}}
+\newcommand{\genC}{\mathsf{c}}
+\newcommand{\genD}{\mathsf{d}}
+\newcommand{\genE}{\mathsf{e}}
+\newcommand{\genF}{\mathsf{f}}
+\newcommand{\genG}{\mathsf{g}}
+\newcommand{\genH}{\mathsf{h}}
+\newcommand{\genI}{\mathsf{i}}
+\newcommand{\genJ}{\mathsf{j}}
+\newcommand{\genK}{\mathsf{k}}
+\newcommand{\genL}{\mathsf{l}}
+\newcommand{\genM}{\mathsf{m}}
+\newcommand{\genN}{\mathsf{n}}
+\newcommand{\genO}{\mathsf{o}}
+\newcommand{\genP}{\mathsf{p}}
+\newcommand{\genQ}{\mathsf{q}}
+\newcommand{\genR}{\mathsf{r}}
+\newcommand{\genS}{\mathsf{s}}
 \newcommand{\genT}{\mathsf{t}}
 \newcommand{\genU}{\mathsf{u}}
 \newcommand{\genV}{\mathsf{v}}
@@ -232,6 +255,25 @@
 \newcommand{\genZ}{\mathsf{z}}
 
 % arbitrary sets used in theorems, remarks, and examples involving generic constructs
+\newcommand{\setA}{\mathsf{A}}
+\newcommand{\setB}{\mathsf{B}}
+\newcommand{\setC}{\mathsf{C}}
+\newcommand{\setD}{\mathsf{D}}
+\newcommand{\setE}{\mathsf{E}}
+\newcommand{\setF}{\mathsf{F}}
+\newcommand{\setG}{\mathsf{G}}
+\newcommand{\setH}{\mathsf{H}}
+\newcommand{\setI}{\mathsf{I}}
+\newcommand{\setJ}{\mathsf{J}}
+\newcommand{\setK}{\mathsf{K}}
+\newcommand{\setL}{\mathsf{L}}
+\newcommand{\setM}{\mathsf{M}}
+\newcommand{\setN}{\mathsf{N}}
+\newcommand{\setO}{\mathsf{O}}
+\newcommand{\setP}{\mathsf{P}}
+\newcommand{\setQ}{\mathsf{Q}}
+\newcommand{\setR}{\mathsf{R}}
+\newcommand{\setS}{\mathsf{S}}
 \newcommand{\setT}{\mathsf{T}}
 \newcommand{\setU}{\mathsf{U}}
 \newcommand{\setV}{\mathsf{V}}
@@ -241,111 +283,355 @@
 \newcommand{\setZ}{\mathsf{Z}}
 
 % families of sets
-%%pregen \family
-\newcommand{\family}{\mathcal{F}}
+%%pregen \Fam
+\DeclareMathOperator{\Fam}{\mathcal{F}}
 
 % the induced family infix operator
 %%inop \inducedFam 6
-\newcommand{\inducedFam}{\mathbin{|_\family}}
+\newcommand{\inducedFam}{\mathbin{|_{\Fam}}}
 
 % the product family infix operator
 %%inop \prodFam 5
-\newcommand{\prodFam}{\mathbin{\cross_\family}}
+\newcommand{\prodFam}{\mathbin{\cross_{\Fam}}}
 
 % the constant function
 \DeclareMathOperator{\const}{const}
 
 % the function restriction infix operator
 %%inop \restrictU 6
-\newcommand{\restrictU}{\mathbin{|_{\mathsf{fun}}}}
-\documentclass[11pt, oneside]{article}
+\newcommand{\restrictU}{\mathbin{|}}
 
-\usepackage{../../shared/preamble}
+% the set of binary digits
+\newcommand{\B}{\mathbb{B}}
+
+% the indicator function of a set
+%%pregen \indF
+\DeclareMathOperator{\indF}{\mathbf{1}}
+
+% the delta function of a set
+%%pregen \deltaF
+\DeclareMathOperator{\deltaF}{\delta}
+\documentclass{amsart}
+
+\usepackage{mathz-sets}
+\usepackage{mathz-preamble}
+\usepackage{amsmath}
+
 \addbibresource{../../shared/references.bib}
-
-\usepackage{sets}
-
-\title{Sets}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
 
 \begin{document}
 
-\maketitle
+\title{Sets}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
-This article contains Z Notation type declarations for concepts related to sets.
+This article contains \ZN\ definitions for 
+concepts related to sets.
 It has been type checked by \fuzz.
 \end{abstract}
 
+\maketitle
+
+\tableofcontents
+
 \section{Introduction}
 
-Typed set theory forms the mathematical foundation of Z Notation
-and many concepts relating to set theory are defined by its built-in mathematical tool-kit. 
-This articles augments the tool-kit with some additional concepts.
+Typed set theory forms the mathematical foundation of \ZN\
+and many set theory concepts are defined in its built-in mathematical toolkit. 
+This articles augments the toolkit with some additional concepts.
+
+\section{Binary Digits}
+
+Let $bit$ denote the set of \textit{binary digits}, namely the set $\{ 0, 1\} \subseteq \num$.
+
+\begin{zed}
+	bit == \{ 0, 1 \}
+\end{zed}
+
+We introduce the notation $\B = bit$.
+
+\begin{zed}
+	\B == bit
+\end{zed}
 
 \section{Arbitrary Sets}
 
-\subsection{\zcmd{setT}, \zcmd{setU}, \dots, \zcmd{setZ}}
+\ZN\ supports generic constructions which take arbitrary sets as parameters.
+It is often of interest to state theorems, remarks, and examples about generic constructions that hold for arbitrary sets.
+However, \ZN\ does not allow universal quantification over the set of all sets since this leads to the Russell paradox.
+In fact, typed set theory was motivated by a desire to avoid the Russell paradox.
 
-Let $\setT$, $\setU$, and $\setZ$ denote arbitrary sets.
-These will be used throughout in the statement of theorems, remarks, and examples that are parameterized
-by arbitrary sets.
+As a workaround, we adopt the convention of stating theorems, remarks, and example that hold for arbitrary sets in terms
+of predefined given sets with the understanding that these sets are completely unconstrained by additional axioms.
+
+It is an error to use any of these predefined sets outside of the statement of a theorem, remark, or example.
+
+Let $\setA, \setB, \dots \setZ$ denote these predefined arbitrary sets.
 
 \begin{zed}
-	[\setT, \setU, \setV, \setW, \setX, \setY, \setZ]
+	[\setA, \setB, \setC, \setD, \setE, \setF, \setG, \setH, \setI, \setJ, \setK, \setL, \setM, 
+	\setN, \setO, \setP, \setQ, \setR, \setS, \setT, \setU, \setV, \setW, \setX, \setY, \setZ]
 \end{zed}
 
-\section{Formal Arguments to Generic Constructions}
+For example, consider the following statement which holds for the arbitrary set $\setX$.
 
-The following typographically distinctive symbols will be used as formal arguments to generic constructions:
-$\genT, \genU, \genV, \genW, \genX, \genY, \genZ$. 
-They denote arbitrary sets.
+\begin{remark}
+Equality is reflexive.
+\begin{zed}
+	\forall x: \setX @ x = x
+\end{zed}
+\end{remark}
 
-\section{Families}
+\section{Formal Generic Parameters}
 
-\subsection{\zcmd{family}}
+Formal generic parameters appear in the definition of generic schemas and constants where
+they are used as placeholders for arbitrary sets.
+As a purely stylistic convention, we use the following typographically distinctive symbols as formal generic parameters:
+\begin{equation*}
+	\genA, \genB, \dots, \genZ
+\end{equation*}
+
+\section{Families of Subsets}
 
 Let $\genT$ be a set.
-A {\it family} of subsets of $\genT$ is a set of subsets of $\genT$.
-Let $\family \genT$ denote the set of all families of subsets of $X$.
+A \textit{family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $Fam[\genT]$ denote the set of all families of subsets of $\genT$.
 
 \begin{zed}
-	\family \genT == \power(\power \genT)
+	Fam[\genT] == \power(\power \genT)
+\end{zed}
+
+\begin{example}
+The set consisting of the empty set and $\setX$ is a family of subsets of $\setX$.
+\begin{zed}
+	\{ \emptyset, \setX \} \in Fam[\setX]
+\end{zed}
+\end{example}
+
+Let the prefix generic symbol $\Fam \genT$ denote the family of subsets of $\genT$ .
+
+\begin{zed}
+	\Fam \genT == Fam[\genT]
 \end{zed}
 
 \section{Functions}
 
+\subsection{Constant Functions}
 
-\subsection{\zcmd{const}}
+Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given element.
+The mapping $f(x) = c$ that sends every element $x \in \genT$ to $c$ is called the \textit{constant function} on $\genT$ with value $c$.
 
-Let $\genT$ and $\genU$ be sets and let $c \in \genU$ be some given point.
-The mapping that sends every point of $\genT$ to $c$ is called the {\it constant mapping} defined by $c$.
-Let $\const(c)$ denote the constant mapping.
-
-\begin{gendef}[\genT, \genU]
-	\const: \genU \fun (\genT \fun \genU)
+\begin{schema}{ConstantFunction}[\genT, \genU]
+	c: \genU \\
+	f: \genT \fun \genU
 \where
-	\forall c: \genU @ \\
-	\t1	\const(c) = (\lambda x: \genT @ c)
-\end{gendef}
+	f = (\lambda x: \genT @ c)
+\end{schema}
 
+Let the function $constant\_function~c = f$ denote the constant function $f: \genT \fun \genU$ with value $c$.
 
-\subsection{\zcmd{restrictU}}
+\begin{zed}
+	constant\_function[\genT, \genU] == \{~ConstantFunction[\genT, \genU] @ c \mapsto f ~\}
+\end{zed}
 
-Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$.
-Let $f \restrictU T$ denote the restriction of $f$ to $T$.
+\begin{remark}
+The mapping $constant\_function$ maps each element $c \in \setU$ to a function $\setT \fun \setU$.
+\begin{zed}
+	constant\_function[\setT, \setU] \in \setU \fun (\setT \fun \setU)
+\end{zed}
+\end{remark}
 
-\begin{gendef}[\genT, \genU]
-	\_ \restrictU \_: (\genT \fun \genU) \cross \power \genT \fun (\genT \pfun \genU)
+Let the notation $\const c$ denote the constant function defined by $c$.
+
+\begin{zed}
+	\const[\genT, \genU] == constant\_function[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\forall c: \setU; x: \setT @ \const[\setT, \setU] c~x = c
+\end{zed}
+\end{remark}
+
+\subsection{Delta Functions}
+
+Let $\genT$ be a set and let $x, y \in \genT$. 
+Define the \textit{equality indicator bit} $z$ to be $1$ if $x = y$ and $0$ otherwise.
+
+\begin{schema}{EqualityIndicator}[\genT]
+	x, y: \genT \\
+	z: \B
 \where
-	\forall f: \genT \fun \genU; T: \power \genT @ \\
+	z = \IF x = y \THEN 1 \ELSE 0
+\end{schema}
+
+Define the delta function $delta(x, y) = z$.
+
+\begin{zed}
+	delta[\genT] == \{~ EqualityIndicator[\genT] @ (x, y) \mapsto z ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	delta[\setX] \in \setX \cross \setX \fun \B
+\end{zed}
+\end{remark}
+
+\begin{example}
+\begin{zed}
+	delta(0, 0) = 1
+\also
+	delta(0, 1) = 0
+\end{zed}
+\end{example}
+
+\begin{theorem}
+\begin{zed}
+	\forall x: \setX @ \\
+	\t1	delta(x, x) = 1
+\end{zed}
+\end{theorem}
+
+We introduce the usual notation $\deltaF \genT = delta[\genT]$.
+
+\begin{zed}
+	\deltaF \genT == delta[\genT]
+\end{zed}
+
+\begin{example}
+\begin{zed}
+	(\deltaF \num) (0,1) = 0
+\end{zed}
+\end{example}
+
+\subsection{Function Restriction}
+
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$ be a subset.
+Let $g$ denote the restriction of $f$ to $T$.
+
+\begin{schema}{FunctionRestriction}[\genT, \genU]
+	f: \genT \fun \genU \\
+	T: \power \genT \\
+	g: \genT \pfun \genU
+\where
+	g = T \dres f
+\end{schema}
+
+Let the function  $g = restriction(f, T)$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	restriction[\genT, \genU] == \{~ FunctionRestriction[\genT, \genU] @ (f, T) \mapsto g ~\}
+\end{zed}
+
+Let the generic infix operator $f \restrictU T$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	(\_ \restrictU \_)[\genT, \genU] == restriction[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+Function restriction is domain restriction with arguments reversed.
+\begin{zed}
+	\forall FunctionRestriction[\setT, \setU] @ \\
 	\t1	f \restrictU T = T \dres f
-\end{gendef}
+\end{zed}
+\end{remark}
+
+\subsection{Indicator Functions}
+
+Let $\genT$ be a set and let $X \subseteq \genT$ be a subset.
+The \textit{indicator function}  $f$  of $X$ maps each element $a \in \genT$ to 1 if $a \in X$ and 0 otherwise.
+The indicator function is also referred to as the \textit{characteristic function} of $X$.
+
+\begin{schema}{IndicatorFunction}[\genT]
+	X: \power \genT \\
+	f: \genT \fun \B
+\where
+	f = (\lambda a: \genT @ \IF a \in X \THEN 1 \ELSE 0)
+\end{schema}
+
+Let $indicator\_function~X = f$ denote the indicator function of $X$.
+
+\begin{zed}
+	indicator\_function[\genT] == \{~ IndicatorFunction[\genT] @ X \mapsto f ~\}
+\end{zed}
+
+\begin{remark}
+For each subset $X \subseteq \setT$, the indicator function of $X$ is a binary function on $\setT$.
+\begin{zed}
+	indicator\_function[\setT] \in \power \setT \fun \setT \fun \B
+\end{zed}
+\end{remark}
+
+We introduce the prefix generic symbol $(\indF \_)$ where $(\indF \genT)X = indicator\_function[\genT] X$.
+
+\begin{zed}
+	\indF \genT == indicator\_function[\genT]
+\end{zed}
+
+\begin{remark}
+The domain of the range restriction of the indicator function of a set $X$ to the range $\{1\}$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1	\dom((\indF \setT)X \rres \{1\}) = X
+\end{zed}
+\end{remark}
+
+\section{The Support of a Function}
+
+Let $\genT$ be a set and let $f: \genT \fun \num$ be an integer-valued function.
+The \textit{support} $S$ of $f$ is the set of elements $x \in \genT$ where $f~x \neq 0$.
+
+\begin{schema}{FunctionSupport}[\genT]
+	f: \genT \fun \num \\
+	S: \power \genT
+\where
+	S = \{~ x: \genT | f~x \neq 0 ~\}
+\end{schema}
+
+Let the function $S = support~f$ denote the support of $f$.
+
+\begin{zed}
+	support[\genT] == \{~ FunctionSupport[\genT] @ f \mapsto S ~\}
+\end{zed}
+
+\begin{example}
+The support of the indicator function of a set $X$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1 support((\indF \setT)X) = X
+\end{zed}
+\end{example}
+
+An integer-valued function is said to have \textit{finite support} if its support is a finite set.
+
+\begin{schema}{FiniteSupport}[\genT]
+	FunctionSupport[\genT]
+\where
+	S \in \finset \genT
+\end{schema}
+
+Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $\genT$ that have finite support.
+
+\begin{zed}
+	finite\_support[\genT] == \{~ FiniteSupport[\genT] @ f ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	finite\_support[\setT] \subseteq \setT \fun \num
+\end{zed}
+\end{remark}
 
 \printbibliography
 
-\end{document}% continuous mappings between topological spaces
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-topological-spaces}[2022/02/01 Z Notation for topological spaces package]
+\RequirePackage{amsmath}
+
+% continuous mappings between topological spaces
 \DeclareMathOperator{\CzeroTT}{C^0}
 
 % topological decoration on operators
@@ -362,25 +648,29 @@ Let $f \restrictU T$ denote the restriction of $f$ to $T$.
 % the product topological space infix operator
 \newcommand{\prodTopSp}{\mathbin{\cross_\topology}}
 %%inop \prodTopSp 5
-\documentclass[11pt, oneside]{article}
+\documentclass{amsart}
 
-\usepackage{../../shared/preamble}
+\usepackage{mathz-sets}
+\usepackage{mathz-topological-spaces}
+\usepackage{mathz-preamble}
+
 \addbibresource{../../shared/references.bib}
-
-\usepackage{../sets/sets}
-\usepackage{topological-spaces}
-
-\title{Topological Spaces}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
 
 \begin{document}
 
-\maketitle
+\title{Topological Spaces}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
-This article defines topological spaces and related concepts.
+This article contains Z Notation definitions for topological spaces and related concepts.
+It has been type checked by \fuzz.
 \end{abstract}
+
+\maketitle
+
+\tableofcontents
 
 \section{Topological Spaces}
 
@@ -389,7 +679,7 @@ This article defines topological spaces and related concepts.
 A {\it topology} $\tau$ on $X$ is a family of subsets of $X$, referred to as the {\it open} subsets of $X$, that satisfy the following axioms.
 
 \begin{schema}{Topology}[X]
-	\tau: \family X
+	\tau: \Fam X
 \where
 	\emptyset \in \tau
 \also
@@ -412,7 +702,7 @@ A {\it topology} $\tau$ on $X$ is a family of subsets of $X$, referred to as the
 Let $top[X]$ denote the set of all topologies on $X$.
 
 \begin{gendef}[X]
-	top: \power(\family X)
+	top: \power(\Fam X)
 \where
 	top = \{~ Topology[X] @ \tau ~\}
 \end{gendef}
@@ -420,7 +710,7 @@ Let $top[X]$ denote the set of all topologies on $X$.
 Let $tops[X]$ denote the set of all topologies on subsets $U \subseteq X$.
 
 \begin{gendef}[X]
-	tops: \power(\family X)
+	tops: \power(\Fam X)
 \where
 	tops = \bigcup \{~ U: \power X @ top[U] ~\}
 \end{gendef}
@@ -432,7 +722,7 @@ The {\it indiscrete} topology on $X$ consists of just $X$ and $\emptyset$.
 Let $discrete[X]$ and $indiscrete[X]$ denote the discrete and indiscrete topologies on $X$.
 
 \begin{gendef}[X]
-	discrete, indiscrete: \family X
+	discrete, indiscrete: \Fam X
 \where
 	discrete = \power X
 \also
@@ -465,9 +755,9 @@ The set $B$ is referred to as a {\it basis} for the topology it generates.
 Let $topGen[X]~B$ denote the topology on $X$ generated by the basis $B$.
 
 \begin{gendef}[X]
-	topGen: \family X \fun top[X]
+	topGen: \Fam X \fun top[X]
 \where
-	\forall B: \family X @ \\
+	\forall B: \Fam X @ \\
 	\t1	topGen~B = \bigcap \{~ \tau: top[X] | B \subseteq \tau ~\}
 \end{gendef}
 
@@ -511,9 +801,9 @@ Let $\setX$ be an arbitrary set.
 Let $topSpaces[t]$ dentote the set of all topological spaces $(X,\tau)$ where $X$ is a subset of $t$.
 
 \begin{gendef}[t]
-	topSpaces: \power t \rel \family t
+	topSpaces: \power t \rel \Fam t
 \where
-	topSpaces = \{~ X: \power t; \tau: \family t | \tau \in top[X] ~\}
+	topSpaces = \{~ X: \power t; \tau: \Fam t | \tau \in top[X] ~\}
 \end{gendef}
 
 \begin{remark}
@@ -605,9 +895,9 @@ The family of subsets of $U$ {\it induced} by $\phi$ is the set of intersections
 Let $\phi \inducedFam U$ denote the family on $U$ induced by $\phi$.
 
 \begin{gendef}[X]
-	\_ \inducedFam \_:  \family X \cross \power X \fun \family X
+	\_ \inducedFam \_:  \Fam X \cross \power X \fun \Fam X
 \where
-	\forall \phi: \family X; U: \power X @ \\
+	\forall \phi: \Fam X; U: \power X @ \\
 	\t1	\phi \inducedFam U = \{~ Y: \phi @ Y \cap U ~\}
 \end{gendef}
 
@@ -644,9 +934,9 @@ The product of these families is the family that consists of the products of the
 Let $\phi \prodFam \psi$ denote the product of the families.
 
 \begin{gendef}[X,Y]
-	\_ \prodFam \_ : \family X \cross \family Y \fun \family(X \cross Y)
+	\_ \prodFam \_ : \Fam X \cross \Fam Y \fun \Fam(X \cross Y)
 \where
-	\forall \phi: \family~X; \psi: \family~Y @ \\
+	\forall \phi: \Fam X; \psi: \Fam Y @ \\
 	\t1	\phi \prodFam \psi = \{~ U: \phi; V: \psi @ U \cross V ~\}
 \end{gendef}
 
@@ -681,7 +971,12 @@ Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
 
 \printbibliography
 
-\end{document}% groups
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-groups}[2022/02/01 Z Notation for groups package]
+
+\RequirePackage{amsmath}
+
+% groups
 
 % binary operations
 %%pregen \binop
@@ -734,26 +1029,29 @@ Let $(X, \tau) \prodTop (Y, \sigma)$ denote the product topological space.
 \newcommand{\zeroG}{0}
 
 \DeclareMathOperator{\negG}{-}
-\documentclass[11pt, oneside]{article}
+\documentclass{amsart}
 
-\usepackage{../../shared/preamble}
+\usepackage{mathz-sets}
+\usepackage{mathz-groups}
+\usepackage{mathz-preamble}
+
 \addbibresource{../../shared/references.bib}
-
-\usepackage{../sets/sets}
-\usepackage{groups}
-
-\title{Groups}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
 
 \begin{document}
 
-\maketitle
+\title{Groups}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
 This article contains Z Notation type declarations for groups and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\maketitle
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -953,7 +1251,7 @@ B: \monoid \genU
 \t2		f~e = e'
 \end{schema}
 
-\subsubsection{\zcmd{homMonoid}}
+\subsection{\zcmd{homMonoid}}
 
 A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
 that preserves identity.
@@ -1048,7 +1346,7 @@ Let $\group \genT$ denote the set of all groups over $\genT$.
 \group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
 \end{zed}
 
-\subsubsection{$MapPreservesInverse$}
+\subsection{$MapPreservesInverse$}
 
 Let $\genT$ and $\genU$ be sets of elements,
 let $A$ and $B$ be groups over $\genT$ and $\genU$, 
@@ -1069,7 +1367,7 @@ B: \group \genU
 \t3			f(x \invG) = (f~x) \daggerG
 \end{schema}
 
-\subsubsection{\zcmd{homGroup}}
+\subsection{\zcmd{homGroup}}
 
 Let $A$ and $B$ be groups.
 A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
@@ -1227,14 +1525,32 @@ Addition over the integers is an Abelian group.
 % the real number 1
 \newcommand{\oneR}{1}
 
+% the real number 2
+\newcommand{\twoR}{2}
+
 % the negation prefix operator -x
 \DeclareMathOperator{\negR}{-}
 
-% the set of non-zero real numbers
+% the set of nonzero real numbers
 \newcommand{\Rnz}{\R_{*}}
 
 % the set of positive real numbers
 \newcommand{\Rpos}{\R_{+}}
+
+% the set of negative real numbers
+\newcommand{\Rneg}{\R_{-}}
+
+% the set of less than zero real numbers
+\newcommand{\Rltz}{\R_{< 0}}
+
+% the set of less than or equal to zero real numbers
+\newcommand{\Rlez}{\R_{\leq 0}}
+
+% the set of greater than or equal to zero real numbers
+\newcommand{\Rgez}{\R_{\geq 0}}
+
+% the set of greater than zero real numbers
+\newcommand{\Rgtz}{\R_{> 0}}
 
 % the addition infix operator x + y
 %%inop \addR 3
@@ -1254,7 +1570,7 @@ Addition over the integers is an Abelian group.
 
 % the multiplication infix operator restricted to non-zero real numbers
 %%inop \mulRnz 4
-\newcommand{\mulRnz}{\mathbin{\overline{*}}}
+\newcommand{\mulRnz}{\mathbin{*}}
 
 % the inverse postfix operator defined on non-zero real numbers
 %%postop \invRnz
@@ -1275,6 +1591,9 @@ Addition over the integers is an Abelian group.
 % the greater than or equal to infix relation x > y
 %%inrel \geR
 \newcommand{\geR}{\mathrel{\geq}}
+
+% sum of a sequence of real numbers
+\newcommand{\sumR}{\Sigma}
 
 % the set of all open sets of real numbers
 \newcommand{\openR}{\mathsf{open}}
@@ -1316,9 +1635,13 @@ Addition over the integers is an Abelian group.
 \DeclareMathOperator{\derivFR}{D}
 \DeclareMathOperator{\derivF}{D}
 
-\DeclareMathOperator{\realZ}{\mathsf{real}}
+\DeclareMathOperator{\asZR}{\mathsf{real}}
+
 \DeclareMathOperator{\sinR}{sin}
 \DeclareMathOperator{\cosR}{cos}
+\DeclareMathOperator{\tanR}{tan}
+\DeclareMathOperator{\expR}{exp}
+\DeclareMathOperator{\logR}{log}
 \newcommand{\piR}{\pi}
 
 % the multiplication infix operator x * y for integers times reals
@@ -1349,28 +1672,51 @@ Addition over the integers is an Abelian group.
 
 % sum of a sequence of points in the real plane
 \newcommand{\sumRtwo}{\Sigma}
-\documentclass[11pt, oneside]{article}
 
-\usepackage{preamble}
+% addition of functions to the real plane
+%%inop \addFRtwo 3
+\newcommand{\addFRtwo}{\mathbin{+}}
+
+% the real 3-space
+\newcommand{\Rthree}{\R^3}
+
+% dot product of points in the real plane
+%%inop \dotRtwo 4
+\newcommand{\dotRtwo}{\mathbin{\cdot}}
+
+% the norm of a point in the real plane
+\DeclareMathOperator{\normRtwo}{norm}
+
+% the unit sphere in the real plane
+\newcommand{\sphereOne}{S^1}
+
+% the unit sphere in real space
+\newcommand{\sphereTwo}{S^2}
+\documentclass{amsart}
+
+\usepackage{mathz-sets}
+\usepackage{mathz-topological-spaces}
+\usepackage{mathz-groups}
+\usepackage{mathz-real-numbers}
+\usepackage{mathz-preamble}
+
 \addbibresource{../../shared/references.bib}
-
-\usepackage{sets}
-\usepackage{topological-spaces}
-\usepackage{groups}
-\usepackage{real-numbers}
-
-\title{Real Numbers}
-\author{Arthur Ryman, {\tt arthur.ryman@gmail.com}}
-\date{\today}
 
 \begin{document}
 
-\maketitle
+\title{Real Numbers}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
 
 \begin{abstract}
 This article contains Z Notation type declarations for the real numbers, $\R$, and some related objects.
 It has been type checked by \fuzz.
 \end{abstract}
+
+\maketitle
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -1468,11 +1814,11 @@ let $y \invRnz$ denote inverse,
 and let $x \divR y$ denote division.
 
 \begin{axdef}
-	\oneR: \Rnz \\
+	\oneR, \twoR: \Rnz \\
 	\_ \invRnz: \Rnz \fun \Rnz
 \end{axdef}
 
-The non-negative real numbers form an Abelian group under multiplication.
+The nonzero real numbers form an Abelian group under multiplication.
 
 \begin{zed}
 (\_ \mulRnz \_) \in \abgroup \Rnz
@@ -1518,13 +1864,47 @@ Let $\absR(x)$ denote $\abs{x}$, the absolute value of $x$.
 	\t1	\absR(x) = \IF x \geR \zeroR \THEN x \ELSE \negR~x
 \end{axdef}
 
-\subsection{\zcmd{Rpos}}
+\subsection{\zcmd{Rpos} and Friends}
 
 Let $\Rpos$ denote the set of positive real numbers.
 
 \begin{zed}
 	\Rpos == \{~ x: \R | x \gtR \zeroR ~\}
 \end{zed}
+
+Similarly, we have the following useful subsets of $\R$.
+
+\begin{zed}
+	\Rneg == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rltz == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rltz = \Rneg
+\end{zed}
+\end{remark}
+
+\begin{zed}
+	\Rlez == \{~ x: \R | x \leR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgez == \{~ x: \R | x \geR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgtz == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rgtz = \Rpos
+\end{zed}
+\end{remark}
 
 \subsection{\zcmd{sqrtR}}
 
@@ -1599,7 +1979,7 @@ If $r \leR 0$ then $\ballR(x,r)$ is empty.
 Let $\ballsR$ denote the set of all open balls in $\R$.
 
 \begin{axdef}
-	\ballsR: \family~\R
+	\ballsR: \Fam \R
 \where
 	\ballsR = \{~ x, r: \R @ \ballR(x,r) ~\}
 \end{axdef}
@@ -1611,7 +1991,7 @@ strictly within $U$.
 Let $\openR$ denote the set of all open subsets of $\R$.
 
 \begin{axdef}
-	\openR: \family~\R
+	\openR: \Fam \R
 \where
 	\openR = \\
 	\t1	\{~ U:  \power \R | \\
@@ -1690,7 +2070,7 @@ Any open set that contains $x$ is called a {\it neighbourhood} of it.
 Let $\neighR(x)$ denote the set of all neighbourhoods of $x$.
 
 \begin{axdef}
-	\neighR: \R \fun \family~\R
+	\neighR: \R \fun \Fam \R
 \where
 	\forall x: \R @ \\
 	\t1	\neighR(x) = \{~ U: \openR | x \in U~\}
@@ -2089,28 +2469,28 @@ This section defines several important constants and functions.
 
 \subsection{$integer\_as\_real$}
 
-The real numbers contains a natural copy of the integers.
+The real numbers contain a natural copy of the integers.
 Let $integer\_as\_real$ denote this embedding.
 
 \begin{axdef}
-	integer\_as\_real : \num \bij \R
+	integer\_as\_real : \num \inj \R
 \end{axdef}
 
-\subsection{\zcmd{realZ}}
+\subsection{\zcmd{asZR}}
 
-We introduce the notation $\realZ x = integer\_as\_real~x$ for this embedding.
+We introduce the notation $\asZR x = integer\_as\_real~x$ for this embedding.
 
 \begin{zed}
-	\realZ == integer\_as\_real
+	\asZR == integer\_as\_real
 \end{zed}
 
 The real numbers $\zeroR$ and $\oneR$ are the images of the corresponding integers under this
 embedding.
 
 \begin{zed}
-	\realZ 0 = \zeroR
+	\asZR 0 = \zeroR
 \also
-	\realZ 1 = \oneR
+	\asZR 1 = \oneR
 \end{zed}
 
 \subsection{$IntegerTimesReal$}
@@ -2122,7 +2502,7 @@ and $x$ and $y$ are real numbers.
 	n : \num \\
 	x, y : \R
 \where
-	y = (\realZ n) \mulR x
+	y = (\asZR n) \mulR x
 \end{schema}
 
 \subsection{$integer\_times\_real$}
@@ -2152,7 +2532,7 @@ to give the quotient $y = x / n$.
 \where
 	n \neq 0
 \also
-	y = x \divR (\realZ n)
+	y = x \divR (\asZR n)
 \end{schema}
 
 \subsection{$real\_div\_integer$}
@@ -2194,6 +2574,28 @@ Let $\piR$ denote the usual ratio of the perimeter of a circle to its diameter.
 \begin{axdef}
 	\piR : \R
 \end{axdef}
+
+\subsection{$sum\_real$}
+
+Given a sequence $a$ of zero or more real numbers,
+we define its sum $sum\_real(a)$ recursively as follows.
+
+\begin{axdef}
+	sum\_real : \seq \R \fun \R
+\where
+	sum\_real(\langle \rangle) = \zeroR
+\also
+	\forall x : \R; a : \seq \R @ \\
+	\t1	sum\_real(\langle x \rangle \cat a) = x \addR sum\_real(a)
+\end{axdef}
+
+\subsection{\zcmd{sumR}}
+
+We introduce the notation $\sumR(a) = sum\_real(a)$.
+
+\begin{zed}
+	\sumR == sum\_real
+\end{zed}
 
 \section{The Real Plane}
 
@@ -2364,6 +2766,34 @@ We introduce the notation $\sumRtwo(a) = sum\_real\_plane(a)$.
 	\sumRtwo == sum\_real\_plane
 \end{zed}
 
+\subsection{\zcmd{addFRtwo}}
+
+Let $\genT$ be any set and let $f$ and $g$ be partial functions from $\genT$ to $\Rtwo$.
+Let $h(x) = f(x) + g(x)$ denote their pointwise sum on their common domain of definition.
+Let the schema $AddFunctionsRealPlane$ denote this situation.
+
+\begin{schema}{AddFunctionsRealPlane}[\genT]
+	f, g, h : \genT \pfun \Rtwo
+\where
+	h = (\lambda x : \dom f \cap \dom g @ f~x \addRtwo g~x)
+\end{schema}
+
+Let the function $add\_functions\_real\_plane(f, g) = h$ map two functions with values in $\Rtwo$ to their pointwise sum.
+
+\begin{gendef}[\genT]
+	add\_functions\_real\_plane : (\genT \pfun \Rtwo) \cross (\genT \pfun \Rtwo) \fun (\genT \pfun \Rtwo)
+\where
+	add\_functions\_real\_plane = \\
+	\t1	\{~ AddFunctionsRealPlane[\genT] @ (f, g) \mapsto h ~\}
+\end{gendef}
+
+We introduce the notation $f \addFRtwo g = add\_functions\_real\_plane(f, g)$.
+
+\begin{zed}
+	(\_ \addFRtwo \_)[\genT] == add\_functions\_real\_plane[\genT]
+\end{zed}
+
+
 \subsection{$PolarRealPlane$}
 
 Let $(x, y)$ be the Cartesian coordinates of a point in the plane.
@@ -2399,9 +2829,94 @@ Note that this function is not one-to-one for the following reasons.
 	\item The pairs $(0, a)$ and $(0, a')$ map to the same points.
 \end{itemize}
 
+\subsection{The Dot Product}
+
+Given two points $v_1 = (x_1,y_1), v_2 = (x_2, y_2) \in \Rtwo$, 
+their \textit{dot product} $v_1 \cdot v_2$ is defined as follows.
+\begin{equation}
+	v_1 \cdot v_2 = x_1 x_2 + y_1 y_2
+\end{equation}
+Let the schema $DotRealPlane$ denote this situation where $product = v_1 \cdot v_2$.
+
+\begin{schema}{DotRealPlane}
+	RealPlane_1 \\
+	RealPlane_2 \\
+	product: \R
+\where
+	product = x_1 \mulR x_2 \addR y_1 \mulR y_2
+\end{schema}
+
+Let the function $dot\_real\_plane(v_1, v_2) = v_1 \cdot v_2$ map a pair of points to their dot product.
+
+\begin{axdef}
+	dot\_real\_plane: \Rtwo \cross \Rtwo \fun \R
+\where
+	dot\_real\_plane = \{~ DotRealPlane @ (point_1, point_2) \mapsto product ~\}
+\end{axdef}
+
+We introduce the usual notation $v_1 \dotRtwo v_2 = dot\_real\_plane(v_1, v_2)$.
+
+\begin{zed}
+	(\_ \dotRtwo \_) == dot\_real\_plane
+\end{zed}
+
+\subsection{Norm}
+
+The \textit{norm} of a point in the plane is defined to be the square root of its dot product with itself.
+Let the schema $NormRealPlane$ denote this situation where $norm$ denotes the norm of the point.
+
+\begin{schema}{NormRealPlane}
+	RealPlane \\
+	norm: \Rgez
+\where
+	norm = \sqrtR(point \dotRtwo point)
+\end{schema}
+
+Let the function $norm\_real\_plane(point) = norm$ map a point to its norm.
+
+\begin{axdef}
+	norm\_real\_plane: \Rtwo \fun \Rgez
+\where
+	norm\_real\_plane = \{~ NormRealPlane @ point \mapsto norm ~\}
+\end{axdef}
+
+We introduce the notation $\normRtwo(point) = norm\_real\_plane(point)$.
+
+\begin{zed}
+	\normRtwo == norm\_real\_plane
+\end{zed}
+
+\subsection{The Unit Circle}
+
+A point in the plane is said to be a \textit{unit vector} when it has norm $1$.
+The set of all unit vectors make up the \textit{unit circle}.
+Let the schema $UnitCircle$ denote this situation.
+
+\begin{schema}{UnitCircle}
+	RealPlane
+\where
+	\normRtwo(point) = \oneR
+\end{schema}
+
+Let $unit\_circle$ denote the set of all unit vectors in the real plane.
+
+\begin{axdef}
+	unit\_circle: \power \Rtwo
+\end{axdef}
+
+We introduce the usual notation $\sphereOne = unit\_circle$.
+
+\begin{zed}
+	\sphereOne == unit\_circle
+\end{zed}
+
 \printbibliography
 
-\end{document}% real vector spaces
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-vector-spaces}[2022/02/01 Z Notation for vector spaces package]
+\RequirePackage{amsmath}
+
+% real vector spaces
 
 % the abstract zero vector
 \newcommand{\zeroV}{\mathbf{0}}

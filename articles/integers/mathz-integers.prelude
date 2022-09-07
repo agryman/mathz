@@ -628,303 +628,6 @@ Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $
 \printbibliography
 
 \end{document}\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{mathz-integers}[2022/02/01 Z Notation for integers package]
-
-% the exponentiation infix operator x ** n
-%%inop \expN 5
-\newcommand{\expN}{\mathbin{**}}
-
-%%inop \foo 3
-\newcommand{\foo}{\mathbin{+}}
-
-% the divisibility infix relation x | y for integers
-%%inrel \divides
-\newcommand{\divides}{\mathrel{\mid}}
-
-% the addition infix operator x + y for integer sequences
-%%inop \addSeqZ 3
-\newcommand{\addSeqZ}{\mathbin{+}}
-\documentclass{amsart}
-
-\usepackage{mathz-integers}
-\usepackage{mathz-preamble}
-
-\addbibresource{../../shared/references.bib}
-
-\begin{document}
-
-\title{Integers}
-\author{Arthur Ryman}
-\email[Arthur Ryman]{arthur.ryman@gmail.com}
-\date{\today}
-
-\begin{abstract}
-This article contains \ZN\ definitions for 
-concepts related to the integers, $\num$.
-It has been type checked by \fuzz.
-\end{abstract}
-
-\maketitle
-
-\tableofcontents
-
-\section{Introduction}
-
-The integers $\num$ are built-in to \ZN.
-This article provides definitions for some related objects so that they can be used and type checked in formal Z specifications.
-
-\section{Exponentiation}
-
-Let $x \in \num$ and $n \in \nat$. Then $x$ raised to the exponent $n$ is the product of $x$ multiplied by itself $n$ times,
-with the convention that for $n = 0$ the result is $1$.
-Let $exp(x, n)$ denote the result.
-
-\begin{axdef}
-	exp: \num \cross \nat \fun \num
-\where
-	\forall x: \num @ exp(x, 0) = 1
-\also
-	\forall x: \num; n: \nat_1 @ exp(x, n) = x * exp(x, n - 1)
-\end{axdef}
-
-\begin{example}
-\begin{zed}
-	exp(5,2) = 25
-\end{zed}
-\end{example}
-
-\begin{remark}
-\begin{zed}
-	\forall x: \num @ \\
-	\t1	exp(x, 0) = 1
-\end{zed}
-\end{remark}
-
-\begin{remark}
-\begin{zed}
-	\forall x: \num @ \\
-	\t1	exp(x, 1) = x
-\end{zed}
-\end{remark}
-
-\begin{remark}
-\begin{zed}
-	\forall x: \num; n, m: \nat @ \\
-	\t1	exp(x, n + m) = exp(x, n) * exp(x, m)
-\end{zed}
-\end{remark}
-
-\begin{remark}
-\begin{zed}
-	\forall x, y: \num; n: \nat @ \\
-	\t1	exp(x * y, n) = exp(x, n) * exp(y, n)
-\end{zed}
-\end{remark}
-
-Exponentiation is normally denoted $x^n$ but \ZN\ cannot reproduce that.
-Instead we use the infix operator notation that is common to programming languages such as FORTRAN and Python.
-Define the notation $x \expN n = exp(x, n)$.
-
-\begin{zed}
-	(\_ \expN \_) == exp
-\end{zed}
-
-\begin{example}
-\begin{zed}
-	5 \expN 2 = 25
-\end{zed}
-\end{example}
-
-\section{Divisibility}
-
-This section defines \textit{divisibility} of integers.
-
-Given integers $x$ and $y$ we say that $x$ \textit{divides} $y$ if there is some integer $q$ such 
-that $q x = y$.
-
-\begin{schema}{Divides}
-	x, y, q : \num
-\where
-	q * x = y
-\end{schema}
-
-Let $divides$ denote the divisibility relation between integers
-where $(x,y) \in divides$ means that $x$ divides $y$.
-
-\begin{zed}
-	divides == \{~ Divides @ x \mapsto y ~\}
-\end{zed}
-
-\begin{remark}
-\begin{zed}
-	divides \in \num \rel \num
-\end{zed}
-\end{remark}
-
-We introduce the usual infix notation $x \divides y$ to denote that $(x, y) \in divides$.
-\begin{zed}
-(\_ \divides \_) == divides
-\end{zed}
-
-\begin{example}
-The integer $7$ divides $42$ because $6 * 7 = 42$.
-
-\begin{zed}
-	7 \divides 42
-\end{zed}
-\end{example}
-
-\begin{remark}
-Every integer $x$ divides $0$ because $0 * x = 0$.
-
-\begin{zed}
-	\forall x : \num @ x \divides 0
-\end{zed}
-\end{remark}
-
-\section{Divisors}
-
-Let $x$ be a nonzero integer that divides the integer $y$.
-We say that $x$ is a \textit{divisor} of $y$.
-
-\begin{schema}{Divisor}
-	Divides
-\where
-	x \neq 0
-\end{schema}
-
-Let the relation $(x, y) \in is\_divisor\_of$ denote that $x$ is a divisor of $y$.
-
-\begin{zed}
-	is\_divisor\_of == \{~ Divisor @ x \mapsto y ~\}
-\end{zed}
-
-Let the set $divisors(y)$ denote the set of all divisors of the integer $y$.
-
-\begin{zed}
-	divisors == (\lambda y: \num @ \{~ x : \num | (x, y) \in is\_divisor\_of  ~\})
-\end{zed}
-
-\begin{remark}
-\begin{zed}
-	divisors \in \num \fun \power \num
-\end{zed}
-\end{remark}
-
-\begin{example}
-The integer $6$ has the following divisors.
-
-\begin{zed}
-	divisors(6) = \{-6, -3, -2, -1, 1, 2, 3, 6 \}
-\end{zed}
-\end{example}
-
-Let the set $positive\_divisors(y)$ denote the set of all positive divisors of the integer $y$.
-
-\begin{zed}
-	positive\_divisors == (\lambda y: \num @ divisors(y)  \cap \nat_1)
-\end{zed}
-
-\begin{remark}
-\begin{zed}
-	positive\_divisors \in \num \fun \power \nat_1
-\end{zed}
-\end{remark}
-
-\begin{example}
-The integer $6$ has the following positive divisors.
-\begin{zed}
-	positive\_divisors(6) = \{1, 2, 3, 6 \}
-\end{zed}
-\end{example}
-
-\section{Prime Numbers}
-
-An integer $p$ is \textit{prime} if it is greater than one 
-and only has one and itself as positive divisors.
-
-\begin{schema}{Prime}
-	p: \num
-\where
-	p > 1
-\also
-	positive\_divisors(p) = \{ 1, p \}
-\end{schema}
-\begin{itemize}
-	\item $p$ is greater than $1$.
-	\item $1$ and $p$ are the only positive divisors of $p$.
-\end{itemize}
-
-\begin{example}
-The integer $2$ is prime.
-
-\begin{zed}
-	\LET p == 2 @ \\
-	\t1	Prime
-\end{zed}
-\end{example}
-
-Let $primes$ denote the set of all primes.
-
-\begin{zed}
-	primes == \{~ Prime @ p ~\}
-\end{zed}
-
-\begin{remark}
-\begin{zed}
-	primes \subset \nat_1
-\end{zed}
-\end{remark}
-
-\begin{example}
-The natural numbers $2, 3, 5,$ and $7$ are primes.
-
-\begin{zed}
-	\{2, 3, 5, 7\} \subseteq primes
-\end{zed}
-\end{example}
-
-\section{Addition of Integer Sequences}
-
-Let $l$ be a natural number and
-let $x$ and $y$ be two integer sequences of length $l$.
-Their sum $z = x + y$ is the integer sequence of length $l$ defined by pointwise addition
-of the terms in $x$ and $y$.
-
-\begin{schema}{AddIntegerSequences}
-	l : \nat \\
-	x, y, z : \seq \num
-\where
-	l = \# x = \# y
-\also
-	z = (\lambda i : 1 \upto l @ x~i + y~i)
-\end{schema}
-\begin{itemize}
-	\item The sequence $z$ is defined by pointwise addition of the sequences $x$ and $y$.
-\end{itemize}
-
-Let the function $add\_int\_seq(x, y) = z$ be the sum of two equal-length integer sequences.
-
-\begin{zed}
-	add\_int\_seq == \{~ AddIntegerSequences @ (x, y) \mapsto z ~\}
-\end{zed}
-
-\begin{remark}
-Addition is a partial function on the set of all pairs of integer sequences.
-\begin{zed}
-	add\_int\_seq \in \seq \num \cross \seq \num \pfun \seq \num
-\end{zed}
-\end{remark}
-
-We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
-
-\begin{zed}
-	(\_ \addSeqZ \_) == add\_int\_seq
-\end{zed}
-
-\printbibliography
-
-\end{document}\NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{mathz-groups}[2022/02/01 Z Notation for groups package]
 
 \RequirePackage{amsmath}
@@ -936,7 +639,7 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 \DeclareMathOperator{\binop}{binop}
 
 % binary operation homomorphisms
-\DeclareMathOperator{\homBinOp}{hom}
+\DeclareMathOperator{\homBinOp}{hom_{op}}
 
 % semigroups
 
@@ -963,14 +666,6 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 % group identity element
 \newcommand{\oneG}{1}
 
-%%inop \mulA \mulB 4
-\newcommand{\mulA}{\mathbin{*}}
-\newcommand{\mulB}{\mathbin{*}}
-
-% variables used for mathematical structures
-\newcommand{\strucA}{\mathbf{A}}
-\newcommand{\strucB}{\mathbf{B}}
-
 %%inop \mulG \timesG 4
 \newcommand{\mulG}{\mathbin{*}}
 \newcommand{\timesG}{\mathbin{\times}}
@@ -990,3 +685,493 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 \newcommand{\zeroG}{0}
 
 \DeclareMathOperator{\negG}{-}
+\documentclass{amsart}
+
+\usepackage{mathz-sets}
+\usepackage{mathz-groups}
+\usepackage{mathz-preamble}
+
+\addbibresource{../../shared/references.bib}
+
+\begin{document}
+
+\title{Groups}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains Z Notation type declarations for groups and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+Groups are ubiquitous throughout mathematics and physics.
+This article defines the basic algebraic objects related to groups and their homomorphisms.
+
+\section{Binary Operations}
+
+Let $\genT$ be a set. We refer to the members of $\genT$ as its {\em elements}.
+A {\em binary operation} on $\genT$ is a function that maps pairs of elements to elements.
+
+\subsection{\zcmd{binop}}
+
+Let $\binop \genT$ denote the set of all binary operations on $\genT$.
+
+\begin{zed}
+\binop \genT == \genT \cross \genT \fun \genT
+\end{zed}
+
+\subsection{Infix Operator Symbols \zcmd{timesG}, \zcmd{mulG}, and \zcmd{addG}}
+
+The result of applying a binary operation to the pair of elements $(x, y)$ 
+is often denoted by an expression formed using an infix operator symbol,
+e.g. $x \timesG y$, $x \mulG y$ or $x \addG y$.
+
+\subsection{$MapPerservesOperation$}
+
+Let $\genT$ and $\genU$ be sets and let $A$ and $B$ be binary operations on them.
+Let $f$ be a function that maps $\genT$ to $\genU$.
+The function $f$ is said to {\em preserve the operations} if it maps the product of elements to 
+the product of the mapped elements.
+
+Let $MapPreservesOperation$ denote this situation.
+
+\begin{schema}{MapPreservesOperation}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \binop \genT \\
+B: \binop \genU
+\where
+\LET (\_ \mulG \_) == A; (\_ \timesG \_) == B @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		f(x \mulG y) = (f~x) \timesG (f~y)
+\end{schema}
+
+\subsection{\zcmd{homBinOp}}
+
+A map that preserves operations is said to be an {\em operation homomorphism}.
+
+Let $A$ and $B$ be binary operations. 
+Let $\homBinOp(A,B)$ denote the set of operation homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homBinOp: \binop \genT \cross \binop \genU  \fun \power (\genT \fun \genU)
+\where
+\homBinOp = (\lambda A: \binop \genT; B: \binop \genU @ \\
+\t1	\{~ f: \genT \fun \genU | MapPreservesOperation[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity map is an operation homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two operation homomorphisms is an operation homomorphism.
+\end{remark}
+
+\section{Semigroups}
+
+\subsection{$OperationIsAssociative$}
+
+A binary operation is said to be {\em associative} if the result of applying it to three elements
+is independent of the order in which it is applied pairwise.
+
+Let $OperationIsAssociative$ denote this situation.
+
+\begin{schema}{OperationIsAssociative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y, z: \genT @ \\
+\t2		(x \mulG y) \mulG z = x \mulG (y \mulG z)
+\end{schema}
+
+\subsection{\zcmd{semigroup}}
+
+Let $\semigroup \genT$ denote the set of all semigroups on the set of elements $\genT$.
+
+\begin{zed}
+\semigroup \genT == \{~ A: \binop \genT | OperationIsAssociative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{homSemigroup}}
+
+A {\em semigroup homomorphism} from $A$ to $B$ is a homomorphism of the underlying binary operation.
+
+Let $\homSemigroup(A, B)$ denote the set of all semigroup homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homSemigroup: \semigroup \genT \cross \semigroup \genU \fun \power (\genT \pfun \genU)
+\where
+\homSemigroup = \\
+\t1	(\lambda A: \semigroup \genT; B: \semigroup \genU @ \homBinOp(A, B))
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a semigroup homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two semigroup homomorphisms is another semigroup homomorphism.
+\end{remark}
+
+\section{Monoids}
+
+\subsection{$IdentityElement$}
+
+Let $\genT$ be a set, let $A$ be a binary operation over $\genT$, and let $e$ be an element of $\genT$.
+The element $e$ is said to be an {\em identity element} of $A$ if left and right 
+products with it leave all elements unchanged.
+
+Let $IdentityElement$ denote this situation.
+
+\begin{schema}{IdentityElement}[\genT]
+A: \binop \genT \\
+e: \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x: \genT @ \\
+\t2		e \mulG x = x = x \mulG e
+\end{schema}
+
+\subsection{$identity\_element$}
+
+Let $identity\_element$ denote the relation that associates a binary operation one of its identity elements.
+
+\begin{gendef}[\genT]
+identity\_element: \binop \genT \rel \genT
+\where
+identity\_element = \\
+\t1	\{~ IdentityElement[\genT] @ A \mapsto e ~\}
+\end{gendef}
+
+\begin{remark}
+If a binary operation has an identity element then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $\mulG$ be a binary operation. Suppose $e$ and $e'$ are identity elements.
+\begin{argue}
+e \\
+\t1	= e \mulG e'	& $e'$ is an identity element \\
+\t1	= e'			& $e$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since identity elements are unique if they exist, the relation from binary operations to identity elements is a partial function.
+
+\begin{zed}
+identity\_element \in \binop \setT \pfun \setT
+\end{zed}
+
+\end{remark}
+
+
+\subsection{Identity Element Symbols \zcmd{zeroG}, and \zcmd{oneG}}
+
+Identity elements are typically denoted by the symbols  $\zeroG$ or $\oneG$.
+
+\subsection{\zcmd{monoid}}
+
+Let $\genT$ be a set of elements.
+A {\em monoid} over $\genT$ is a semigroup over $\genT$ that has an identity element.
+
+Let $\monoid \genT$ denote the set of all monoids over $\genT$.
+
+\begin{zed}
+\monoid \genT == \{~ A: \semigroup \genT | \exists e: \genT @ IdentityElement[\genT] ~\}
+\end{zed}
+
+
+\subsection{$MapPreservesIdentity$}
+
+Let $A$ and $B$ be monoids and let $f$ map the elements of $A$ to the elements of $B$.
+The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
+to the identity element of $B$.
+
+Let $MapPreservesIdentity$ denote this situation.
+
+\begin{schema}{MapPreservesIdentity}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \monoid \genT \\
+B: \monoid \genU
+\where
+\LET e == identity\_element~A; \\
+\t1	e' == identity\_element~B @ \\
+\t2		f~e = e'
+\end{schema}
+
+\subsection{\zcmd{homMonoid}}
+
+A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
+that preserves identity.
+
+Let $\homMonoid(A, B)$ denote the set of all monoid homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
+\where
+\homMonoid = \\
+\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
+\t2		\{~ f: \homSemigroup(A, B) | \\
+\t3			MapPreservesIdentity[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a monoid homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two monoid homomorphisms is another monoid homomorphism.
+\end{remark}
+
+\section{Groups}
+
+\subsection{$InverseOperation$ and Postfix Operator symbol \zcmd{invG}}
+
+Let $\genT$ be a set of elements and let $A$ be a monoid on $\genT$.
+A function $inv \in \genT \fun \genT$ is said to be an {\em inverse operation} if it maps each element
+to an element whose product with it is the identity element.
+Typically, the expression $x \invG$ is used to denote the inverse of $x$.
+
+Let $InverseOperation$ denote this situation.
+
+\begin{schema}{InverseOperation}[\genT]
+A: \monoid \genT \\
+inv: \genT \fun \genT
+\where
+\LET (\_ \mulG \_) == A; \\
+\t1	\oneG == identity\_element~A; \\
+\t1	(\_ \invG) == inv @ \\
+\t2		\forall x: \genT @ \\
+\t3			x \mulG x \invG = \oneG = x \invG  \mulG x
+\end{schema}
+
+\subsection{$inverse\_operation$}
+
+Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
+
+\begin{gendef}[\genT]
+inverse\_operation: \monoid \genT \rel \genT \fun \genT
+\where
+inverse\_operation = \\
+\t1	\{~ InverseOperation[\genT] @ A \mapsto inv ~\}
+\end{gendef}
+
+\begin{remark}
+If a monoid has an inverse operation then it is unique.
+\end{remark}
+
+\begin{proof}
+Let $x$ be any element.
+Suppose $x \invG$ and $x \daggerG$ are inverses of $x$.
+\begin{argue}
+x\daggerG \\
+\t1	= x\daggerG \mulG \oneG				& $\oneG$ is an identity element \\
+\t1	= x\daggerG \mulG (x \mulG x \invG)		& $x \invG$ is an inverse \\
+\t1	= (x\daggerG \mulG x) \mulG x \invG		& associativity \\
+\t1	= \oneG \mulG x \invG				& $x \daggerG$ is an inverse \\
+\t1	= x \invG							& $\oneG$ is an identity element
+\end{argue}
+\end{proof}
+
+\begin{remark}
+Since if inverse operation exist they are unique, the relation between monoids and inverse operations
+is a partial function.
+
+\begin{zed}
+inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
+\end{zed}
+
+\end{remark}
+
+\subsection{$\group$}
+
+A {\em group} is a monoid that has an inverse operation.
+
+Let $\genT$ be a set of elements.
+Let $\group \genT$ denote the set of all groups over $\genT$.
+
+\begin{zed}
+\group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
+\end{zed}
+
+\subsection{$MapPreservesInverse$}
+
+Let $\genT$ and $\genU$ be sets of elements,
+let $A$ and $B$ be groups over $\genT$ and $\genU$, 
+and let $f$ map $\genT$ to $\genU$.
+The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
+to the inverses of the corresponding elements of $B$.
+
+Let $MapPreservesInverse$ denote this situation.
+
+\begin{schema}{MapPreservesInverse}[\genT, \genU]
+f: \genT \fun \genU \\
+A: \group \genT \\
+B: \group \genU
+\where
+\LET (\_ \invG) == inverse\_operation~A; \\
+\t1	(\_ \daggerG) == inverse\_operation~B @ \\
+\t2		\forall x: \genT @ \\
+\t3			f(x \invG) = (f~x) \daggerG
+\end{schema}
+
+\subsection{\zcmd{homGroup}}
+
+Let $A$ and $B$ be groups.
+A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
+from $A$ to $B$ that preserves inverses.
+
+Let $\homGroup(A, B)$ denote the set of all group homomorphisms from $A$ to $B$.
+
+\begin{gendef}[\genT, \genU]
+\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
+\where
+\homGroup = \\
+\t1	(\lambda A: \group \genT; B: \group \genU @ \\
+\t2		\{~ f: \homMonoid(A, B) | \\
+\t3			MapPreservesInverse[\genT, \genU] ~\})
+\end{gendef}
+
+\begin{remark}
+The identity mapping is a group homomorphism.
+\end{remark}
+
+\begin{remark}
+The composition of two group homomorphisms is another group homomorphism.
+\end{remark}
+
+\subsection{$bij$}
+
+Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
+
+\begin{gendef}[\genT]
+	bij: \power (\genT \fun \genT)
+\where
+	bij = \genT \bij \genT
+\end{gendef}
+
+\begin{remark}
+The composition of bijections is a bijection.
+
+\begin{zed}
+	\forall f, g: bij[\setT] @ \\
+	\t1	f \circ g \in bij[\setT]
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+Composition is associative.
+
+\begin{zed}
+	\forall f, g, h: bij[\setT] @ \\
+	\t1	f \circ (g \circ h) = (f \circ g) \circ h
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The identity function $\id \setT$ acts as a left and right identity element under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	 \id \setT \circ f = f = f \circ \id \setT
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
+
+\begin{zed}
+	\forall f: bij[\setT] @ \\
+	\t1	f \circ f \inv = \id \setT = f \inv \circ f
+\end{zed}
+
+\end{remark}
+
+\subsection{$Bij$}
+
+The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
+Let $Bij[\genT]$ denote this group.
+
+\begin{gendef}[\genT]
+	Bij: bij[\genT] \cross bij[\genT] \fun bij[\genT]
+\where
+	Bij = (\lambda f, g: bij[\genT] @ f \circ g)
+\end{gendef}
+
+\begin{example}
+Let $\setT$ be any non-empty set.
+The composition operation $Bij[\setT]$ is a group over the set of bijections $bij[\setT]$ from $\setT$ to $\setT$.
+
+\begin{zed}
+\setT \neq \emptyset \implies \\
+\t1	Bij[\setT] \in \group bij[\setT]
+\end{zed}
+
+\end{example}
+
+\section{Abelian Groups}
+
+\subsection{OperationIsCommutative}
+
+Let $\genT$ be a set of elements.
+A binary operation $A$ over $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
+their order.
+
+Let $OperationIsCommutative$ denote this situation.
+
+\begin{schema}{OperationIsCommutative}[\genT]
+A: \binop \genT
+\where
+\LET (\_ \mulG \_) == A @ \\
+\t1	\forall x, y: \genT @ \\
+\t2		x \mulG y = y \mulG x
+\end{schema}
+
+\subsection{\zcmd{abgroup}}
+
+An {\em Abelian group} is a group in which the binary operation is commutative.
+Let $\genT$ be a set of elements.
+
+Let $\abgroup \genT$ denote the set of all Abelian groups over $\genT$.
+
+\begin{zed}
+\abgroup \genT == \{~ A: \group \genT | OperationIsCommutative[\genT] ~\}
+\end{zed}
+
+\subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
+
+Often in an Abelian group the binary operation is denoted as addition $x \addG y$,
+the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
+
+\begin{example}
+Addition over the integers is an Abelian group.
+
+\begin{zed}
+	(\_ + \_) \in \abgroup \num
+\end{zed}
+
+\end{example}
+
+\printbibliography
+
+\end{document}\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-integers}[2022/02/01 Z Notation for integers package]
+
+% the divisibility infix relation x | y for integers
+%%inrel \divides
+\newcommand{\divides}{\mathrel{\mid}}
+
+% the addition infix operator x + y for integer sequences
+%%inop \addSeqZ 3
+\newcommand{\addSeqZ}{\mathbin{+}}

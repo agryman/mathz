@@ -1,5 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{mathz-groups}[2022/02/01 Z Notation for groups package]
+
 \RequirePackage{amsmath}
 
 % groups
@@ -9,7 +10,7 @@
 \DeclareMathOperator{\binop}{binop}
 
 % binary operation homomorphisms
-\DeclareMathOperator{\homBinOp}{hom_{op}}
+\DeclareMathOperator{\homBinOp}{hom}
 
 % semigroups
 
@@ -35,6 +36,14 @@
 
 % group identity element
 \newcommand{\oneG}{1}
+
+%%inop \mulA \mulB 4
+\newcommand{\mulA}{\mathbin{*}}
+\newcommand{\mulB}{\mathbin{*}}
+
+% variables used for mathematical structures
+\newcommand{\strucA}{\mathbf{A}}
+\newcommand{\strucB}{\mathbf{B}}
 
 %%inop \mulG \timesG 4
 \newcommand{\mulG}{\mathbin{*}}

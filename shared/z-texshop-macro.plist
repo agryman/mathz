@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>ROOT</string>
+	<key>submenu</key>
+	<array>
+		<dict>
+			<key>content</key>
+			<string></string>
+			<key>key</key>
+			<string></string>
+			<key>name</key>
+			<string>Z</string>
+			<key>submenu</key>
+			<array>
+				<dict>
+					<key>content</key>
+					<string>\begin{example}
+\begin{zed}
+#INS#
+\end{zed}
+\end{example}</string>
+					<key>key</key>
+					<string>E+OptionKey</string>
+					<key>name</key>
+					<string>example</string>
+				</dict>
+				<dict>
+					<key>content</key>
+					<string>\begin{remark}
+\begin{zed}
+#INS#
+\end{zed}
+\end{remark}</string>
+					<key>key</key>
+					<string>R+OptionKey</string>
+					<key>name</key>
+					<string>remark</string>
+				</dict>
+				<dict>
+					<key>content</key>
+					<string>\begin{theorem}
+\begin{zed}
+#INS#
+\end{zed}
+\end{theorem}</string>
+					<key>key</key>
+					<string>T+OptionKey</string>
+					<key>name</key>
+					<string>theorem</string>
+				</dict>
+				<dict>
+					<key>content</key>
+					<string>\begin{axdef}
+#INS#
+\end{axdef}</string>
+					<key>key</key>
+					<string>A+OptionKey</string>
+					<key>name</key>
+					<string>axdef</string>
+				</dict>
+				<dict>
+					<key>content</key>
+					<string>\begin{schema}{Name}
+#INS#
+\end{schema}</string>
+					<key>key</key>
+					<string>S+OptionKey</string>
+					<key>name</key>
+					<string>schema</string>
+				</dict>
+				<dict>
+					<key>content</key>
+					<string>\begin{zed}
+#INS#
+\end{zed}</string>
+					<key>key</key>
+					<string>Z+OptionKey</string>
+					<key>name</key>
+					<string>zed</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
