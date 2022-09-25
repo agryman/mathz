@@ -1,11 +1,13 @@
 # mathz
 This repository contains a library of formal specifications 
-of many standard mathematical objects.
-The specifications are written using the language Z Notation.
+of some standard mathematical objects.
+The specifications are written LaTeX using the 
+formal specification language Z Notation.
 
 The library is organized into the following topics.
 
 * sets
+* categories
 * integers
 * real numbers
 * complex numbers
@@ -14,4 +16,3 @@ The library is organized into the following topics.
 * topological spaces
 * manifolds
 * Lie groups and Lie algebras
-

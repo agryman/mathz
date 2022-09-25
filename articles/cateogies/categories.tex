@@ -1,0 +1,124 @@
+\documentclass{amsart}
+
+\usepackage{mathz-sets}
+\usepackage{mathz-categories}
+\usepackage{mathz-preamble}
+
+\addbibresource{../../shared/references.bib}
+
+\begin{document}
+
+\title{Categories}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+    This article contains \ZN\cite{spivey-zrm} definitions for
+    concepts related to categories.
+    It has been type checked by \fuzz\cite{spivey-fm}.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The definitions in this article are primarily based on those in \cite{maclane-cftwm}.
+Wikipedia and other sources will be used as needed.
+
+Category theory provides a useful conceptual framework for mathematics.
+It abstracts and generalizes many concepts and constructions that occur in other branches.
+For example, maps between sets, homomorphisms between groups, and linear transformations between vector spaces
+all form categories.
+The practical utility of category derives from the many examples that occur throughout mathematics.
+This situation presents a small dilemma for the scope of this article.
+Should this article treat categories as foundational or advanced?
+
+I have taken the position that this article should be foundational and 
+should therefore not depend on any other articles.
+Accordingly, the definitions presented here will not be illustrated with formal examples from
+other articles.
+For example, although this article does assert that homomorphisms between groups form a category, 
+it does not use the formal definition of group or homomorphism.
+Such a formal use will be deferred to other articles.
+This approach allows other, more advanced, articles to reference the foundational definitions 
+contained here without introducing circularity.
+
+\section{Categories, Functors, and Natural Transformations}
+
+\subsection{Axioms for Categories}
+
+Mac Lane\cite{maclane-cftwm} defines the concepts of \textit{metagraph}, \textit{metacategory}, \textit{large set},  \textit{small set}, and others 
+in order to avoid the well-known paradoxes of set theory.
+However, these concepts are unnecessary when using \ZN\ which uses \textit{simple type theory} to avoid the paradoxes.
+Indeed, simple type theory was conceived by Russel specifically to put set theory on a firmer foundation.
+The price one pays when using \ZN\ is to explicitly parameterize generic definitions with given sets.
+
+A \textit{graph} consists of \textit{objects}, \textit{arrows}, and two operations, \textit{domain} and \textit{codomain}, that assign arrows to objects.
+\begin{schema}{Category\_Graph}[\genO, \genA]
+	objects: \power \genO \\
+	arrows: \power \genA \\
+	domain, codomain: \genA \pfun \genO
+\where
+	domain \in arrows \fun objects
+\also
+	codomain \in arrows \fun objects
+\end{schema}
+
+A \textit{category} is a graph with two additional operations, \textit{identity} and \textit{composition}.
+\begin{schema}{Category\_Identity}[\genO, \genA]
+	Category\_Graph[\genO, \genA] \\
+	identity: \genO \pfun \genA
+\where
+	identity \in objects \fun arrows
+\end{schema}
+
+\begin{schema}{Category\_Composition}[\genO, \genA]
+	Category\_Graph[\genO, \genA] \\
+	composition: \genA \cross \genA \pfun \genA
+\where
+	composition \in arrows \cross arrows \pfun arrows
+\also
+	\dom composition = \{ g, f: arrows | domain~g = codomain~f ~\}
+\also
+	\forall f, g, h: arrows | \\
+	\t1	(g, f) \mapsto h \in composition @ \\
+	\t2		domain~h = domain~f \land codomain~h = codomain~g
+\end{schema}
+
+These operations satisfy \textit{associativity} and the \textit{unit law}.
+\begin{schema}{Category\_Associativity}[\genO, \genA]
+	Category\_Composition[\genO, \genA]
+\where
+	\forall a, b, c, d: objects; f, g, k: arrows | \\
+	\t1	domain~f = a \land codomain~f = b \land \\
+	\t1	domain~g = b \land codomain~g = c \land \\
+	\t1	domain~k = c \land codomain~k = d @\\
+	\t2		composition(k, composition(g, f)) = composition(composition(k, g), f)	
+\end{schema}
+
+\begin{schema}{Category\_UnitLaw}[\genO, \genA]
+	Category\_Identity[\genO, \genA] \\
+	Category\_Composition[\genO, \genA]
+\where
+	\forall a, b, c: objects; f, g: arrows | \\
+	\t1	domain~f = a \land codomain~f = b \land \\
+	\t1	domain~g = b \land codomain~g = c @ \\
+	\t2		composition(identity~b, f) = f \land \\
+	\t2		composition(g, identity~b) = g
+\end{schema}
+
+\begin{schema}{Category}[\genO, \genA]
+	Category\_Associativity[\genO, \genA] \\
+	Category\_UnitLaw[\genO, \genA]
+\end{schema}
+
+TODO: Define notations for the above.
+
+TODO: Include commutative diagrams for the above.
+
+\printbibliography
+
+\end{document}
