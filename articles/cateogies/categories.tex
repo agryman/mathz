@@ -1,5 +1,6 @@
 \documentclass{amsart}
 
+\usepackage{tikz-cd}
 \usepackage{mathz-sets}
 \usepackage{mathz-categories}
 \usepackage{mathz-preamble}
@@ -54,10 +55,16 @@ Mac Lane\cite{maclane-cftwm} defines the concepts of \textit{metagraph}, \textit
 in order to avoid the well-known paradoxes of set theory.
 However, these concepts are unnecessary when using \ZN\ which uses \textit{simple type theory} to avoid the paradoxes.
 Indeed, simple type theory was conceived by Russel specifically to put set theory on a firmer foundation.
-The price one pays when using \ZN\ is to explicitly parameterize generic definitions with given sets.
 
-A \textit{graph} consists of \textit{objects}, \textit{arrows}, and two operations, \textit{domain} and \textit{codomain}, that assign arrows to objects.
-\begin{schema}{Category\_Graph}[\genO, \genA]
+However, there is no free lunch.
+The price one pays when using \ZN\ is to explicitly parameterize generic definitions with given sets.
+Specifically, a category generically depends on two given sets, one for its objects and another for its arrows.
+
+A \textit{graph} consists of \textit{objects} $a, b, c, \dots$, \textit{arrows} $f, g, h, \dots$, 
+and two operations, \textit{domain} and \textit{codomain}, that assign objects to arrows.
+Arrows are also referred to as \textit{morphisms}.
+The domain and codomain of an arrow are also referred to as its \textit{source} and \textit{target}.
+\begin{schema}{Category\_Graph0}[\genO, \genA]
 	objects: \power \genO \\
 	arrows: \power \genA \\
 	domain, codomain: \genA \pfun \genO
@@ -67,28 +74,78 @@ A \textit{graph} consists of \textit{objects}, \textit{arrows}, and two operatio
 	codomain \in arrows \fun objects
 \end{schema}
 
+An arrow $f$ with domain $a$ and codomain $b$ is diagrammed as an arrow pointing from $a$ to $b$.
+$$
+ \begin{tikzcd}
+	a \arrow{r}{f} & b 
+\end{tikzcd}
+$$
+
+The domain of the arrow $f$ is donated $\domCat f$ and its codomain is denoted $\codCat f$.
+The set of all arrows with domain $a$ and codomain $b$ is denoted $a \arrCat b$.
+
+\begin{schema}{Category\_Graph}[\genO, \genA]
+	Category\_Graph0[\genO, \genA] \\
+	\domCat, \codCat: \genA \pfun \genO \\
+	\_ \arrCat \_: \genO \cross \genO \pfun \power \genA
+\where
+	\domCat = domain
+\also
+	\codCat = codomain
+\also
+	(\_ \arrCat \_) = (\lambda a, b: objects @ \{~ f: arrows | \domCat f = a \land \codCat f = b ~\})
+\end{schema}
+
 A \textit{category} is a graph with two additional operations, \textit{identity} and \textit{composition}.
-\begin{schema}{Category\_Identity}[\genO, \genA]
+
+The identity operation maps each object to its \textit{identity arrow}.
+\begin{schema}{Category\_Identity0}[\genO, \genA]
 	Category\_Graph[\genO, \genA] \\
 	identity: \genO \pfun \genA
 \where
 	identity \in objects \fun arrows
 \end{schema}
 
-\begin{schema}{Category\_Composition}[\genO, \genA]
+The identity arrow for the object $a$ is denoted $\idCat a$.
+\begin{schema}{Category\_Identity}[\genO, \genA]
+	Category\_Identity0[\genO, \genA] \\
+	\idCat: \genO \pfun \genA
+\where
+	\idCat = identity
+\end{schema}
+
+A pair of arrows $g, f$ is \textit{composable} if the domain of $g$ is the codomain of $f$.
+Composition maps each composable pair of arrows $g: b \arrCat c$ and $f: a \arrCat b$ to an arrow in $a \arrCat c$.
+\begin{schema}{Category\_Composition0}[\genO, \genA]
 	Category\_Graph[\genO, \genA] \\
 	composition: \genA \cross \genA \pfun \genA
 \where
 	composition \in arrows \cross arrows \pfun arrows
 \also
-	\dom composition = \{ g, f: arrows | domain~g = codomain~f ~\}
+	\dom composition = \{ g, f: arrows | \domCat g = \codCat f ~\}
 \also
-	\forall f, g, h: arrows | \\
-	\t1	(g, f) \mapsto h \in composition @ \\
-	\t2		domain~h = domain~f \land codomain~h = codomain~g
+	\forall f, g:arrows | \\
+	\t1	(g, f) \in \dom composition @ \\
+	\t2		composition(g, f) \in \domCat f \arrCat \codCat g
 \end{schema}
 
-These operations satisfy \textit{associativity} and the \textit{unit law}.
+The composition $h: a \arrCat c$ of arrows $g: b \arrCat c$ and $f: a \arrCat b$ is diagrammed as a triangle whose sides are $f, g, h$.
+$$
+  \begin{tikzcd}
+    a \arrow{r}{f} \arrow[swap]{dr}{h} & b \arrow{d}{g} \\
+     & c
+  \end{tikzcd}
+$$
+
+If arrows $g, f$ are composable their composition is denoted $g \compCat f$.
+\begin{schema}{Category\_Composition}[\genO, \genA]
+	Category\_Composition0[\genO, \genA] \\
+	\_ \compCat \_: \genA \cross \genA \pfun \genA
+\where
+	(\_ \compCat \_) = composition
+\end{schema}
+
+The composition and identity operations satisfy \textit{associativity} and the \textit{unit law}.
 \begin{schema}{Category\_Associativity}[\genO, \genA]
 	Category\_Composition[\genO, \genA]
 \where
@@ -98,6 +155,7 @@ These operations satisfy \textit{associativity} and the \textit{unit law}.
 	\t1	domain~k = c \land codomain~k = d @\\
 	\t2		composition(k, composition(g, f)) = composition(composition(k, g), f)	
 \end{schema}
+TODO: simplify this definition using notation
 
 \begin{schema}{Category\_UnitLaw}[\genO, \genA]
 	Category\_Identity[\genO, \genA] \\

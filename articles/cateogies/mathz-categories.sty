@@ -5,3 +5,20 @@
 \RequirePackage{amsmath}
 
 % categories
+
+% the domain of an arrow
+\DeclareMathOperator{\domCat}{dom}
+
+% the codomain of an arrow
+\DeclareMathOperator{\codCat}{cod}
+
+% the arrow infix operator f -> g
+%%inop \arrCat 1
+\newcommand{\arrCat}{\mathbin{\rightarrow}}
+
+% the identity arrow of an object
+\DeclareMathOperator{\idCat}{id}
+
+% the composition infix operator g o f
+%%inop \compCat 4
+\newcommand{\compCat}{\mathbin{\circ}}
