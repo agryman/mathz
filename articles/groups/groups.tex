@@ -5,7 +5,7 @@
 \usepackage{mathz-groups}
 \usepackage{mathz-preamble}
 
-\addbibresource{../../shared/references.bib}
+\addbibresource{../../shared/mathz-references.bib}
 
 \begin{document}
 
@@ -26,40 +26,38 @@ It has been type checked with \fuzz.
 \section{Introduction}
 
 Groups are ubiquitous throughout mathematics and physics.
-This article defines groups and their homomorphisms.
+This article defines groups and their homomorphisms,
+building up the definition in terms of some simpler, related algebraic objects,
+namely binary operations, semigroups, and monoids.
 
-We build up the definition of a group in terms of some simpler, related algebraic objects,
-namely semigroups and monoids.
+\section{Structures}
 
-\subsection{Structures}
-
-Semigroups, monoids, and groups are defined as sets of elements with an additional feature,
-namely a binary operation that has certain properties.
-In general, a set with some additional features is called a \textit{mathematical structure}.
+Semigroups, monoids, and groups are defined as sets of elements equipped with a binary operation that has certain properties.
+In general, a set equipped with one or more additional features is called a \textit{mathematical structure}.
 In particular, semigroups, monoids, and groups are called \textit{algebraic structures}. 
+The set of elements in a structure is often referred to as its \textit{carrier}.
 
-In mathematical writing, authors do not normally distinguish between a set of elements and its associated mathematical structure
-since this rarely causes confusion.
-For example, one typically see statements such as:  ``Let $G$ be a group and let $g \in G$ be an element.''
-However, a set of elements may be given many inequivalent structures.
+In mathematical writing, authors do not normally distinguish between a carrier and its structure
+when the structure is clear from context.
+For example, one typically see statements such as:  
+``Let $G$ be a group and let $g$ be an element of $G$.''
+However, a set of elements may have more than one structure is a given context.
 For example, addition and multiplication are distinct binary operations on the set of integers.
 In this case it is insufficient to specify only the set of elements.
-
-In natural language, the practice of \textit{metonymy}, which consists of referring to a thing, e.g. an algebraic structure, 
-by naming a part of it, e.g. its set of elements, normally causes no confusion.
-However, an algebraic structure and its set of elements are distinct mathematical objects
-and so, in formal language, must be referred to using distinct names or expressions.
+Distinct mathematical objects
+must be referred to using distinct names or expressions.
 
 In order to distinguish between sets of elements and structures on them, 
-we will adopt the practice of defining structures as being tuples consisting of the set of elements and one of more additional features.
+this article adopts the common practice of defining structures as being \textit{tuples}
+consisting of the set of elements and one or more additional features.
 
 \section{Binary Operations}
 
-Let $\genT$ be a set which we regard as a universe from which we draw elements.
-Let $elements \subseteq \genT$ be a set of elements drawn from $\genT$
-let $op \in elements \cross element \fun elements$ be an operation that combines pairs of elements to give another element.
-We call the pair $(elements, op)$ a \textit{binary operation} on $elements$.
-Furthermore, say that it is a binary relation \textit{in} the universe $\genT$.
+Let $\genT$ be a set from which we draw elements.
+Let $elements$ be a set of elements drawn from $\genT$ and
+let $op$ be an operation that maps each pair of elements to some other element.
+We call the pair $(elements, op)$ a \textit{binary operation on the set} $elements$.
+Furthermore, we say that it is a \textit{binary operation in} $\genT$.
 
 \begin{schema}{BinaryOperation}[\genT]
 	elements: \power \genT \\
@@ -71,33 +69,41 @@ Furthermore, say that it is a binary relation \textit{in} the universe $\genT$.
 	\item The set of elements is closed under the operation.
 \end{itemize}
 
-Let $binary\_operation[\genT]$ denote the set of all binary operations in $\genT$.
-
+Let $binary\_operation[\genT]$ be the set of all binary operations in $\genT$.
 \begin{zed}
 	binary\_operation[\genT] == \{~ BinaryOperation[\genT] @ (elements, op) ~\}
+\end{zed}
+
+Let the notation $\binop \genT$ denote the set of all binary operations in $\genT$.
+\begin{zed}
+	\binop \genT == binary\_operation[\genT]
+\end{zed}
+
+Let $integer\_addition$ be the binary operation of integer addition.
+\begin{zed}
+	integer\_addition == (\num, (\_ + \_))
 \end{zed}
 
 \begin{example}
 Integer addition is a binary operation on $\num$.
 \begin{zed}
-	(\num, (\_ + \_)) \in binary\_operation[\num]
+	integer\_addition \in \binop \num
 \end{zed}
 \end{example}
+
+Let $integer\_multiplication$ denote the binary operation of integer multiplication.
+\begin{zed}
+	integer\_multiplication == (\num, (\_ * \_))
+\end{zed}
 
 \begin{example}
 Integer multiplication is a binary operation on $\num$.
 \begin{zed}
-	(\num, (\_ * \_)) \in binary\_operation[\num]
+	integer\_multiplication \in binary\_operation[\num]
 \end{zed}
 \end{example}
 
-Let the prefix generic notation $\binop \genT$ denote the set of all binary operations in $\genT$.
-
-\begin{zed}
-	\binop \genT == binary\_operation[\genT]
-\end{zed}
-
-\subsection{Notation}
+\subsection{Notational Convention for Structures}
 
 The set of elements in a binary operation is normally denoted by variables such as $A$ or $B$.
 As a notational convention, we'll denote the corresponding structures by variables such as $\strucA$ or $\strucB$.
@@ -114,7 +120,8 @@ Although the symbols look the same, they are encoded distinctly at the source le
 namely using the commands \verb|\mulA| and \verb|\mulB|.
 This practice makes the typeset expressions look as natural as possible while at the same time satisfying the type checker.
 
-Let $BinaryOperation\_A$ denote the binary operation $\strucA$ where $A$ is the set of elements and $*$ (encoded as \verb|\mulA|) is the operator.
+Let $BinaryOperation\_A$ denote the binary operation $\strucA$ where $A$ is the set of elements and 
+$(\_  \mulA \_)$ is the operator using \verb|\mulA|.
 \begin{schema}{BinaryOperation\_A}[\genT]
 	BinaryOperation[\genT][A / elements, \_ \mulA \_ / op] \\
 	\strucA: \binop \genT
@@ -122,7 +129,8 @@ Let $BinaryOperation\_A$ denote the binary operation $\strucA$ where $A$ is the 
 	\strucA = (A, (\_ \mulA \_))
 \end{schema}
 
-Let $BinaryOperation\_B$ denote the binary operation $\strucB$ where $B$ is the set of elements and $*$ (encoded as \verb|\mulB|) is the operator.
+Similarly, let $BinaryOperation\_B$ denote the binary operation $\strucB$ where $B$ is the set of elements and 
+$(\_ \mulB \_)$ is the operator using \verb|\mulB|.
 \begin{schema}{BinaryOperation\_B}[\genU]
 	BinaryOperation[\genU][B / elements, \_ \mulB \_ / op] \\
 	\strucB: \binop \genU
@@ -132,33 +140,37 @@ Let $BinaryOperation\_B$ denote the binary operation $\strucB$ where $B$ is the 
 
 \subsection{Homomorphisms}
 
-Let $\strucA$ and $\strucB$ be binary operations and let $f \in A \fun B$ be a function.
-Then $f$ is said to {\em preserve the operations} if it maps the product of elements of $A$ to 
-the product of the mapped elements of $B$.
-
-Let $MapPreservesOperation$ denote this situation.
-\begin{schema}{MapPreservesOperation}[\genT, \genU]
+Let $\strucA$ and $\strucB$ be binary operations and let $f$ map $A$ to $B$.
+\begin{schema}{Map\_AB}[\genT, \genU]
 	BinaryOperation\_A[\genT] \\
 	BinaryOperation\_B[\genU] \\
 	f: \genT \pfun \genU
 \where
 	f \in A \fun B
-\also
+\end{schema}
+
+The map $f$ is said to {\em preserve the operations} if it maps the product of elements of $A$ to 
+the product of the mapped elements of $B$.
+\begin{schema}{MapPreservesOperations}[\genT, \genU]
+	Map\_AB[\genT, \genU]
+\where
 	\forall x, y: A @ \\
 	\t1	f(x \mulA y) = (f~x) \mulB (f~y)
 \end{schema}
-\begin{itemize}
-	\item $f$ is a total function from $A$ to $B$
-	\item $f$ preserves the binary operations
-\end{itemize}
-
-TODO: express this examples in terms of the schema $MapPreservesOperation$.
 
 \begin{example}
 Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
 \begin{zed}
 	\forall c, x, y: \num @ \\
 	\t1	c * (x + y) = c * x + c * y
+\end{zed}
+
+Therefore
+\begin{zed}
+	\forall Map\_AB[\num, \num]; c: \num | \\
+	\t1	\strucA = \strucB = (\num, (\_ +  \_)) \land \\
+	\t1	f = (\lambda x: \num @ c * x) @ \\
+	\t2		MapPreservesOperations[\num, \num]
 \end{zed}
 \end{example}
 
@@ -171,16 +183,13 @@ Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves
 \end{example}
 
 A map that preserves operations is said to be an \textit{operation homomorphism}.
-Let $\alpha = (A, *)$ and $\beta = (B, *)$ be binary operations in $\genT$ and $\genU$. 
-Let $hom\_op[\genT, \genU](\alpha,\beta)$ denote the set of all operation homomorphisms from $\alpha$ to $\beta$.
+Let $\strucA, \strucB$ be binary operations in $\genT$ and $\genU$. 
+Let $hom\_op[\genT, \genU](\strucA, \strucB)$ denote the set of all operation homomorphisms from $\strucA$ to $\strucB$.
 
 \begin{zed}
 	hom\_op[\genT, \genU] == \\
 	\t1	(\lambda \alpha: \binop \genT; \beta: \binop \genU @ \\
-	\t2		\{~ MapPreservesOperation[\genT, \genU] | \\
-	\t3			\alpha = (A, (\_ \mulA \_)) \land \\
-	\t3			\beta = (B, (\_ \mulB \_)) @ \\
-	\t4				f ~\})
+	\t2		\{~ MapPreservesOperations[\genT, \genU] | \alpha = \strucA \land \beta = \strucB @ f ~\})
 \end{zed}
 
 TODO: try to simplify the above by using a gendef paragraph.
@@ -201,17 +210,17 @@ denote the set of operation homomorphisms from $\alpha$ to $\beta$.
 \begin{remark}
 The identity map preserves all operations.
 \begin{zed}
-	\forall A: \binop \setX @ \\
-	\t1	\id \setX \in \homBinOp(A, A)
+	\forall \strucA: \binop \setX @ \\
+	\t1	\id \setX \in \homBinOp(\strucA, \strucA)
 \end{zed}
 \end{remark}
 
 \begin{remark}
 The composition of two operation homomorphisms is an operation homomorphism.
 \begin{zed}
-	\forall A: \binop \setX; B: \binop \setY; C: \binop \setZ @ \\
-	\t1	\forall f: \homBinOp(A, B); g: \homBinOp(B, C) @ \\
-	\t2		g \circ f \in \homBinOp(A, C)
+	\forall \strucA: \binop \setX; \strucB: \binop \setY; \strucC: \binop \setZ @ \\
+	\t1	\forall f: \homBinOp(\strucA, \strucB); g: \homBinOp(\strucB, \strucC) @ \\
+	\t2		g \circ f \in \homBinOp(\strucA, \strucC)
 \end{zed}
 \end{remark}
 
@@ -219,27 +228,29 @@ The composition of two operation homomorphisms is an operation homomorphism.
 
 \subsection{$OperationIsAssociative$}
 
-A binary operation is said to be \textit{associative} if the result of applying it to three elements
+A binary operation is said to be \textit{associative} if the result of applying it to any three elements
 is independent of the order in which it is applied pairwise.
 
-Let $OperationIsAssociative$ denote this situation.
-
 \begin{schema}{OperationIsAssociative}[\genT]
-A: \binop \genT
+	BinaryOperation\_A[\genT]
 \where
-	\forall x, y, z: \genT @ \\
-	\t1		A(A(x, y), z) = A(x, A(y, z))
+	\forall x, y, z: A @ \\
+	\t1	x \mulA y \mulA z = x \mulA (y \mulA z)
 \end{schema}
 
-A set of elements $\genT$ with an associative binary operation is called a \textit{semigroup}.
-Let $semigroup[\genT]$ denote the set of all semigroups with elements $\genT$.
+A set of elements with an associative binary operation is called a \textit{semigroup}.
+\begin{schema}{Semigroup\_A}[\genT]
+	OperationIsAssociative[\genT]
+\end{schema}
+
+Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
 
 \begin{zed}
-	semigroup[\genT] == \{~ OperationIsAssociative[\genT] @ A  ~\}
+	semigroup[\genT] == \{~ Semigroup\_A[\genT] @ \strucA  ~\}
 \end{zed}
 
 Let the notation $\semigroup \genT$, typeset using the prefix generic command \verb|\semigroup|,
-denote the set of all semigroups on the set of elements $\genT$.
+denote the set of all semigroups in $\genT$.
 
 \begin{zed}
 	\semigroup \genT == semigroup[\genT]
@@ -251,26 +262,18 @@ denote the set of all semigroups on the set of elements $\genT$.
 \end{zed}
 \end{remark}
 
-A \textit{semigroup homomorphism} from $A$ to $B$ is a homomorphism of the underlying binary operation.
+A \textit{semigroup homomorphism} is a homomorphism of the underlying binary operation.
 
-Let $hom\_semigroup(A,B)$ denote the set of semigroup homomorphism from $A$ to $B$.
+Let $\strucA, \strucB$ be semigroups in $\genT, \genU$.
+Let $hom\_semigroup(\strucA, \strucB)$ denote the set of semigroup homomorphisms from $\strucA$ to $\strucB$.
 
 \begin{zed}
-	hom\_semigroup[\setT, \setU] == \\
-	\t1	(\lambda A: \semigroup \setT; B: \semigroup \setU @ \homBinOp(A, B))
+	hom\_semigroup[\genT, \genU] == \\
+	\t1	(\lambda \strucA: \semigroup \genT; \strucB: \semigroup \genU @ \homBinOp(\strucA, \strucB))
 \end{zed}
-
-STOPPED HERE.
 
 Note that as a type, semigroups are a subset of binary operations.
 The operation homomorphisms of a semigroup are the same as the semigroup homomorphisms.
-
-Is it clearer to introduce explicit additional structure?
-e.g. a semigroup is a pair (X, op) where X is a set of elements and op is a binary operation on X.
-
-A monoid is a triple (X, op, e) where (X, op) is a semigroup and e is an identity element.
-
-Try to define the category of semigroups. Do I need to duplicate the definitions to allow elements being subsets of the formal generic parameters?
 
 If A is a semigroup and B is a binary operation and f is an operation homomorphism then the image of f is a semigroup.
 
@@ -293,70 +296,76 @@ The composition of two semigroup homomorphisms is another semigroup homomorphism
 
 \section{Monoids}
 
-\subsection{$IdentityElement$}
-
-Let $\genT$ be a set, let $A$ be a binary operation over $\genT$, and let $e$ be an element of $\genT$.
-The element $e$ is said to be an {\em identity element} of $A$ if left and right 
+Let $\genT$ be a set, let $\strucA = (A, (\_ \mulA \_))$ be a binary operation in $\genT$, and let $e$ be an element of $A$.
+The element $e$ is said to be an \textit{identity element} of $A$ if left and right 
 products with it leave all elements unchanged.
-
-Let $IdentityElement$ denote this situation.
-
-\begin{schema}{IdentityElement}[\genT]
-A: \binop \genT \\
-e: \genT
+\begin{schema}{IdentityElement\_A}[\genT]
+	BinaryOperation\_A[\genT] \\
+	e: \genT
 \where
-\LET (\_ \mulG \_) == A @ \\
-\t1	\forall x: \genT @ \\
-\t2		e \mulG x = x = x \mulG e
+	e \in A
+\also
+	\forall x: A @ e \mulA x = x = x \mulA e
 \end{schema}
 
-\subsection{$identity\_element$}
+Let $identity\_element$ denote the relation between binary operations and identity elements.
+\begin{zed}
+	identity\_element[\genT] == \\
+	\t1	\{~ IdentityElement\_A[\genT] @ \strucA \mapsto e ~\}
+\end{zed}
 
-Let $identity\_element$ denote the relation that associates a binary operation one of its identity elements.
+\begin{remark}
+\begin{zed}
+	identity\_element[\setT] \in \binop \setT \rel \setT
+\end{zed}
+\end{remark}
 
-\begin{gendef}[\genT]
-identity\_element: \binop \genT \rel \genT
+Consider the case of a binary operation $\strucA$ that has, possibly distinct, identity elements $e, e'$.
+\begin{schema}{IdentityElements\_A}[\genT]
+	BinaryOperation\_A[\genT] \\
+	e, e': \genT
 \where
-identity\_element = \\
-\t1	\{~ IdentityElement[\genT] @ A \mapsto e ~\}
-\end{gendef}
+	\{ \strucA \} \cross \{ e, e' \} \subseteq identity\_element[\genT]
+\end{schema}
 
 \begin{remark}
 If a binary operation has an identity element then it is unique.
-\end{remark}
+
+\begin{zed}
+	\forall IdentityElements\_A[\setT] @ e = e'
+\end{zed}
 
 \begin{proof}
-Let $\mulG$ be a binary operation. Suppose $e$ and $e'$ are identity elements.
 \begin{argue}
 e \\
-\t1	= e \mulG e'	& $e'$ is an identity element \\
+\t1	= e \mulA e'	& $e'$ is an identity element \\
 \t1	= e'			& $e$ is an identity element
 \end{argue}
 \end{proof}
 
+\end{remark}
+
 \begin{remark}
-Since identity elements are unique if they exist, the relation from binary operations to identity elements is a partial function.
+If an identity element exists then it is unique.
+Therefore the relation from binary operations to identity elements is a partial function.
 
 \begin{zed}
-identity\_element \in \binop \setT \pfun \setT
+identity\_element[\setT] \in \binop \setT \pfun \setT
 \end{zed}
 
 \end{remark}
 
-
-\subsection{Identity Element Symbols \zcmd{zeroG}, and \zcmd{oneG}}
-
 Identity elements are typically denoted by the symbols  $\zeroG$ or $\oneG$.
 
-\subsection{\zcmd{monoid}}
+A {\em monoid} in $\genT$ is a semigroup in $\genT$ that has an identity element.
+\begin{schema}{Monoid\_A}[\genT]
+	Semigroup\_A[\genT] \\
+	IdentityElement\_A[\genT]
+\end{schema}
 
-Let $\genT$ be a set of elements.
-A {\em monoid} over $\genT$ is a semigroup over $\genT$ that has an identity element.
-
-Let $\monoid \genT$ denote the set of all monoids over $\genT$.
-
+Let $\monoid \genT$ denote the set of all monoids in $\genT$.
 \begin{zed}
-\monoid \genT == \{~ A: \semigroup \genT | \exists e: \genT @ IdentityElement[\genT] ~\}
+	\monoid \genT == \{~ Monoid\_A[\genT] @ \strucA ~\}
 \end{zed}
 
 
@@ -369,7 +378,7 @@ to the identity element of $B$.
 Let $MapPreservesIdentity$ denote this situation.
 
 \begin{schema}{MapPreservesIdentity}[\genT, \genU]
-f: \genT \fun \genU \\
+f: \genT \pfun \genU \\
 A: \monoid \genT \\
 B: \monoid \genU
 \where
@@ -404,36 +413,29 @@ The composition of two monoid homomorphisms is another monoid homomorphism.
 
 \section{Groups}
 
-\subsection{$InverseOperation$ and Postfix Operator symbol \zcmd{invG}}
-
-Let $\genT$ be a set of elements and let $A$ be a monoid on $\genT$.
-A function $inv \in \genT \fun \genT$ is said to be an {\em inverse operation} if it maps each element
+Let $\strucA$ be a monoid in $\genT$.
+A function $inv \in A \fun A$ is said to be an \textit{inverse operation} if it maps each element
 to an element whose product with it is the identity element.
-Typically, the expression $x \invG$ is used to denote the inverse of $x$.
+Typically, the postfix expression $x \invG$ is used to denote the inverse of $x$.
 
-Let $InverseOperation$ denote this situation.
-
-\begin{schema}{InverseOperation}[\genT]
-A: \monoid \genT \\
-inv: \genT \fun \genT
+\begin{schema}{InverseOperation\_A}[\genT]
+	Monoid\_A[\genT] \\
+	inv: \genT \pfun \genT
 \where
-\LET (\_ \mulG \_) == A; \\
-\t1	\oneG == identity\_element~A; \\
-\t1	(\_ \invG) == inv @ \\
-\t2		\forall x: \genT @ \\
-\t3			x \mulG x \invG = \oneG = x \invG  \mulG x
+	inv \in A \fun A
+\also
+	\LET (\_ \invG) == inv @ \\
+	\t1	\forall x: A @ \\
+	\t2		x \mulA x \invG = e = x \invG  \mulA x
 \end{schema}
 
 \subsection{$inverse\_operation$}
 
 Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
-
-\begin{gendef}[\genT]
-inverse\_operation: \monoid \genT \rel \genT \fun \genT
-\where
-inverse\_operation = \\
-\t1	\{~ InverseOperation[\genT] @ A \mapsto inv ~\}
-\end{gendef}
+\begin{zed}
+inverse\_operation[\genT] == \\
+\t1	\{~ InverseOperation\_A[\genT] @ \strucA \mapsto inv ~\}
+\end{zed}
 
 \begin{remark}
 If a monoid has an inverse operation then it is unique.
@@ -453,11 +455,11 @@ x\daggerG \\
 \end{proof}
 
 \begin{remark}
-Since if inverse operation exist they are unique, the relation between monoids and inverse operations
+Since inverse operations are unique if exist they, the relation between monoids and inverse operations
 is a partial function.
 
 \begin{zed}
-inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
+inverse\_operation \in \monoid \setT \pfun \setT \pfun \setT
 \end{zed}
 
 \end{remark}
@@ -465,12 +467,14 @@ inverse\_operation \in \monoid \setT \pfun \setT \fun \setT
 \subsection{$\group$}
 
 A {\em group} is a monoid that has an inverse operation.
+\begin{schema}{Group\_A}[\genT]
+	InverseOperation\_A[\genT]
+\end{schema}
 
 Let $\genT$ be a set of elements.
 Let $\group \genT$ denote the set of all groups over $\genT$.
-
 \begin{zed}
-\group \genT == \{~ A: \monoid \genT | \exists inv: \genT \fun \genT @ InverseOperation[\genT] ~\}
+	\group \genT == \{~ Group\_A[\genT] @ \strucA ~\}
 \end{zed}
 
 \subsection{$MapPreservesInverse$}
@@ -484,7 +488,7 @@ to the inverses of the corresponding elements of $B$.
 Let $MapPreservesInverse$ denote this situation.
 
 \begin{schema}{MapPreservesInverse}[\genT, \genU]
-f: \genT \fun \genU \\
+f: \genT \pfun \genU \\
 A: \group \genT \\
 B: \group \genU
 \where
@@ -523,11 +527,9 @@ The composition of two group homomorphisms is another group homomorphism.
 
 Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
 
-\begin{gendef}[\genT]
-	bij: \power (\genT \fun \genT)
-\where
-	bij = \genT \bij \genT
-\end{gendef}
+\begin{zed}
+	bij[\genT] == \genT \bij \genT
+\end{zed}
 
 \begin{remark}
 The composition of bijections is a bijection.
@@ -572,21 +574,18 @@ The inverse $f \inv$ of a bijection $f$ is its left and right inverse under comp
 \subsection{$Bij$}
 
 The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
-Let $Bij[\genT]$ denote this group.
-
-\begin{gendef}[\genT]
-	Bij: bij[\genT] \cross bij[\genT] \fun bij[\genT]
-\where
-	Bij = (\lambda f, g: bij[\genT] @ f \circ g)
-\end{gendef}
-
-\begin{example}
-Let $\setT$ be any non-empty set.
-The composition operation $Bij[\setT]$ is a group over the set of bijections $bij[\setT]$ from $\setT$ to $\setT$.
+Let $Bij[\genT]$ denote the composition of bijections.
 
 \begin{zed}
-\setT \neq \emptyset \implies \\
-\t1	Bij[\setT] \in \group bij[\setT]
+	Bij[\genT] == (\lambda f, g: bij[\genT] @ f \circ g)
+\end{zed}
+
+\begin{example}
+Let $\setT$ be any set.
+The composition of bijections of $\setT$ is a group.
+
+\begin{zed}
+(bij[\setT], Bij[\setT]) \in \group bij[\setT]
 \end{zed}
 
 \end{example}
@@ -595,41 +594,38 @@ The composition operation $Bij[\setT]$ is a group over the set of bijections $bi
 
 \subsection{OperationIsCommutative}
 
-Let $\genT$ be a set of elements.
-A binary operation $A$ over $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
+A binary operation $\strucA$ in $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
 their order.
 
-Let $OperationIsCommutative$ denote this situation.
-
-\begin{schema}{OperationIsCommutative}[\genT]
-A: \binop \genT
+\begin{schema}{OperationIsCommutative\_A}[\genT]
+	BinaryOperation\_A[\genT]
 \where
-\LET (\_ \mulG \_) == A @ \\
-\t1	\forall x, y: \genT @ \\
-\t2		x \mulG y = y \mulG x
+	\forall x, y: A @ x \mulA y = y \mulA x
 \end{schema}
 
 \subsection{\zcmd{abgroup}}
 
-An {\em Abelian group} is a group in which the binary operation is commutative.
-Let $\genT$ be a set of elements.
+An {\em abelian group} is a group in which the binary operation is commutative.
+\begin{schema}{AbelianGroup\_A}[\genT]
+	Group\_A[\genT] \\
+	OperationIsCommutative\_A[\genT]
+\end{schema}
 
-Let $\abgroup \genT$ denote the set of all Abelian groups over $\genT$.
-
+Let $\abgroup \genT$ denote the set of all abelian groups in $\genT$.
 \begin{zed}
-\abgroup \genT == \{~ A: \group \genT | OperationIsCommutative[\genT] ~\}
+\abgroup \genT == \{~ AbelianGroup\_A[\genT] @ \strucA ~\}
 \end{zed}
 
 \subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
 
-Often in an Abelian group the binary operation is denoted as addition $x \addG y$,
+Often in an abelian group the binary operation is denoted as addition $x \addG y$,
 the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
 
 \begin{example}
-Addition over the integers is an Abelian group.
+Addition over the integers is an abelian group.
 
 \begin{zed}
-	(\_ + \_) \in \abgroup \num
+	(\num, (\_ + \_)) \in \abgroup \num
 \end{zed}
 
 \end{example}

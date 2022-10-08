@@ -317,7 +317,7 @@
 \usepackage{mathz-preamble}
 \usepackage{amsmath}
 
-\addbibresource{../../shared/references.bib}
+\addbibresource{../../shared/mathz-references.bib}
 
 \begin{document}
 
@@ -649,7 +649,7 @@ Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $
 \usepackage{mathz-integers}
 \usepackage{mathz-preamble}
 
-\addbibresource{../../shared/references.bib}
+\addbibresource{../../shared/mathz-references.bib}
 
 \begin{document}
 
@@ -970,6 +970,7 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 % variables used for mathematical structures
 \newcommand{\strucA}{\mathbf{A}}
 \newcommand{\strucB}{\mathbf{B}}
+\newcommand{\strucC}{\mathbf{C}}
 
 %%inop \mulG \timesG 4
 \newcommand{\mulG}{\mathbin{*}}
