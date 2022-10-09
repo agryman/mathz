@@ -30,8 +30,6 @@ This article defines groups and their homomorphisms,
 building up the definition in terms of some simpler, related algebraic objects,
 namely binary operations, semigroups, and monoids.
 
-\section{Structures}
-
 Semigroups, monoids, and groups are defined as sets of elements equipped with a binary operation that has certain properties.
 In general, a set equipped with one or more additional features is called a \textit{mathematical structure}.
 In particular, semigroups, monoids, and groups are called \textit{algebraic structures}. 
@@ -54,24 +52,29 @@ consisting of the set of elements and one or more additional features.
 \section{Binary Operations}
 
 Let $\genT$ be a set from which we draw elements.
+A \textit{binary operator} in $\genT$ is a partial function from pairs of elements to elements.
+\begin{zed}
+	BINOP[\genT] == \genT \cross \genT \pfun \genT
+\end{zed}
+
 Let $elements$ be a set of elements drawn from $\genT$ and
-let $op$ be an operation that maps each pair of elements to some other element.
-We call the pair $(elements, op)$ a \textit{binary operation on the set} $elements$.
+let $op$ be binary operator defined on all pairs of elements.
+We call the structure $(elements, op)$ a \textit{binary operation on the set} $elements$.
 Furthermore, we say that it is a \textit{binary operation in} $\genT$.
 
 \begin{schema}{BinaryOperation}[\genT]
 	elements: \power \genT \\
-	op: \genT \cross \genT \pfun \genT
+	op: BINOP[\genT] \\
+	structure: \power \genT \cross BINOP[\genT]
 \where
 	op \in elements \cross elements \fun elements
+\also
+	structure = (elements, op)
 \end{schema}
-\begin{itemize}
-	\item The set of elements is closed under the operation.
-\end{itemize}
 
 Let $binary\_operation[\genT]$ be the set of all binary operations in $\genT$.
 \begin{zed}
-	binary\_operation[\genT] == \{~ BinaryOperation[\genT] @ (elements, op) ~\}
+	binary\_operation[\genT] == \{~ BinaryOperation[\genT] @ structure ~\}
 \end{zed}
 
 Let the notation $\binop \genT$ denote the set of all binary operations in $\genT$.
@@ -99,49 +102,42 @@ Let $integer\_multiplication$ denote the binary operation of integer multiplicat
 \begin{example}
 Integer multiplication is a binary operation on $\num$.
 \begin{zed}
-	integer\_multiplication \in binary\_operation[\num]
+	integer\_multiplication \in \binop \num
 \end{zed}
 \end{example}
-
-\subsection{Notational Convention for Structures}
 
 The set of elements in a binary operation is normally denoted by variables such as $A$ or $B$.
 As a notational convention, we'll denote the corresponding structures by variables such as $\strucA$ or $\strucB$.
 
-The result of applying a binary operation to a pair of elements $(x, y)$ 
-is normally denoted by an expression formed using an infix operator symbol,
-e.g. $x + y$ or $x * y$.
+The result of applying a binary operator to a pair of elements $(x, y)$ 
+is normally denoted by an expression formed using an infix operator such as $x + y$ or $x * y$.
 
 Let $\genT$ and $\genU$ be sets, 
 let $A \subseteq \genT$ and $B \subseteq \genU$ be subsets of elements,
-and let the infix expression $x * y$ denote binary operations on both $A$ and $B$.
-Here we follow the traditional practice of using the same symbol to denote different things when no confusion can occur.
+and let the infix expression $x * y$ denote binary operators on both $A$ and $B$.
+Here we follow the standard practice of using visually indistinguishable symbols to denote distinct mathematical
+objects when no confusion can occur.
 Although the symbols look the same, they are encoded distinctly at the source level,
-namely using the commands \verb|\mulA| and \verb|\mulB|.
-This practice makes the typeset expressions look as natural as possible while at the same time satisfying the type checker.
+in this case using the operator names \verb|\mulA| and \verb|\mulB|.
+This practice makes the typeset expressions look as close as possible to informal mathematical notation
+while at the same time satisfying the strict requirements of the type checker.
 
 Let $BinaryOperation\_A$ denote the binary operation $\strucA$ where $A$ is the set of elements and 
-$(\_  \mulA \_)$ is the operator using \verb|\mulA|.
-\begin{schema}{BinaryOperation\_A}[\genT]
-	BinaryOperation[\genT][A / elements, \_ \mulA \_ / op] \\
-	\strucA: \binop \genT
-\where
-	\strucA = (A, (\_ \mulA \_))
-\end{schema}
+$\_  \mulA \_$ is the infix operator named \verb|\mulA|.
+\begin{zed}
+	BinaryOperation\_A[\genT] \defs \\
+	\t1	BinaryOperation[\genT][A / elements, \_ \mulA \_ / op, \strucA / structure]
+\end{zed}
 
 Similarly, let $BinaryOperation\_B$ denote the binary operation $\strucB$ where $B$ is the set of elements and 
-$(\_ \mulB \_)$ is the operator using \verb|\mulB|.
-\begin{schema}{BinaryOperation\_B}[\genU]
-	BinaryOperation[\genU][B / elements, \_ \mulB \_ / op] \\
-	\strucB: \binop \genU
-\where
-	\strucB = (B, (\_ \mulB \_))
-\end{schema}
-
-\subsection{Homomorphisms}
+$\_ \mulB \_$ is the infix operator named \verb|\mulB|.
+\begin{zed}
+	BinaryOperation\_B[\genT] \defs \\
+	\t1	BinaryOperation[\genT][B / elements, \_ \mulB \_ / op, \strucB / structure]
+\end{zed}
 
 Let $\strucA$ and $\strucB$ be binary operations and let $f$ map $A$ to $B$.
-\begin{schema}{Map\_AB}[\genT, \genU]
+\begin{schema}{BinaryOperation\_Map\_AB}[\genT, \genU]
 	BinaryOperation\_A[\genT] \\
 	BinaryOperation\_B[\genU] \\
 	f: \genT \pfun \genU
@@ -151,8 +147,8 @@ Let $\strucA$ and $\strucB$ be binary operations and let $f$ map $A$ to $B$.
 
 The map $f$ is said to {\em preserve the operations} if it maps the product of elements of $A$ to 
 the product of the mapped elements of $B$.
-\begin{schema}{MapPreservesOperations}[\genT, \genU]
-	Map\_AB[\genT, \genU]
+\begin{schema}{BinaryOperation\_MapPreservesOperations\_AB}[\genT, \genU]
+	BinaryOperation\_Map\_AB[\genT, \genU]
 \where
 	\forall x, y: A @ \\
 	\t1	f(x \mulA y) = (f~x) \mulB (f~y)
@@ -183,6 +179,7 @@ Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves
 \end{example}
 
 A map that preserves operations is said to be an \textit{operation homomorphism}.
+
 Let $\strucA, \strucB$ be binary operations in $\genT$ and $\genU$. 
 Let $hom\_op[\genT, \genU](\strucA, \strucB)$ denote the set of all operation homomorphisms from $\strucA$ to $\strucB$.
 
@@ -191,8 +188,6 @@ Let $hom\_op[\genT, \genU](\strucA, \strucB)$ denote the set of all operation ho
 	\t1	(\lambda \alpha: \binop \genT; \beta: \binop \genU @ \\
 	\t2		\{~ MapPreservesOperations[\genT, \genU] | \alpha = \strucA \land \beta = \strucB @ f ~\})
 \end{zed}
-
-TODO: try to simplify the above by using a gendef paragraph.
 
 \begin{remark}
 \begin{zed}
@@ -226,22 +221,20 @@ The composition of two operation homomorphisms is an operation homomorphism.
 
 \section{Semigroups}
 
-\subsection{$OperationIsAssociative$}
-
 A binary operation is said to be \textit{associative} if the result of applying it to any three elements
 is independent of the order in which it is applied pairwise.
 
-\begin{schema}{OperationIsAssociative}[\genT]
+\begin{schema}{BinaryOperation\_IsAssociative\_A}[\genT]
 	BinaryOperation\_A[\genT]
 \where
 	\forall x, y, z: A @ \\
 	\t1	x \mulA y \mulA z = x \mulA (y \mulA z)
 \end{schema}
 
-A set of elements with an associative binary operation is called a \textit{semigroup}.
-\begin{schema}{Semigroup\_A}[\genT]
-	OperationIsAssociative[\genT]
-\end{schema}
+An associative binary operation is called a \textit{semigroup}.
+\begin{zed}
+	Semigroup\_A[\genT] \defs BinaryOperation\_IsAssociative\_A[\genT]
+\end{zed}
 
 Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
 
