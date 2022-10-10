@@ -27,13 +27,21 @@ It has been type checked with \fuzz.
 
 Groups are ubiquitous throughout mathematics and physics.
 This article defines groups and their homomorphisms,
-building up the definition in terms of some simpler, related algebraic objects,
+gradually building up the definition in terms of some related simpler algebraic objects,
 namely binary operations, semigroups, and monoids.
 
 Semigroups, monoids, and groups are defined as sets of elements equipped with a binary operation that has certain properties.
 In general, a set equipped with one or more additional features is called a \textit{mathematical structure}.
 In particular, semigroups, monoids, and groups are called \textit{algebraic structures}. 
 The set of elements in a structure is often referred to as its \textit{carrier}.
+
+Let $\genT$ be any set and let $elements$ be a set of elements drawn from $\genT$.
+\begin{schema}{Carrier}[\genT]
+	elements: \power \genT
+\end{schema}
+
+A structure whose carrier is the set $elements$ drawn from the set $\genT$ is said to be \textit{on} or \textit{over} $elements$
+and \textit{in} $\genT$.
 
 In mathematical writing, authors do not normally distinguish between a carrier and its structure
 when the structure is clear from context.
@@ -163,10 +171,10 @@ Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves additi
 
 Therefore
 \begin{zed}
-	\forall Map\_AB[\num, \num]; c: \num | \\
+	\forall BinaryOperation\_Map\_AB[\num, \num]; c: \num | \\
 	\t1	\strucA = \strucB = (\num, (\_ +  \_)) \land \\
 	\t1	f = (\lambda x: \num @ c * x) @ \\
-	\t2		MapPreservesOperations[\num, \num]
+	\t2		BinaryOperation\_MapPreservesOperations\_AB[\num, \num]
 \end{zed}
 \end{example}
 
@@ -186,7 +194,8 @@ Let $hom\_op[\genT, \genU](\strucA, \strucB)$ denote the set of all operation ho
 \begin{zed}
 	hom\_op[\genT, \genU] == \\
 	\t1	(\lambda \alpha: \binop \genT; \beta: \binop \genU @ \\
-	\t2		\{~ MapPreservesOperations[\genT, \genU] | \alpha = \strucA \land \beta = \strucB @ f ~\})
+	\t2		\{~ BinaryOperation\_MapPreservesOperations\_AB[\genT, \genU] | \\
+	\t3			\alpha = \strucA \land \beta = \strucB @ f ~\})
 \end{zed}
 
 \begin{remark}
@@ -362,38 +371,29 @@ Let $\monoid \genT$ denote the set of all monoids in $\genT$.
 \end{zed}
 
 
-\subsection{$MapPreservesIdentity$}
-
 Let $A$ and $B$ be monoids and let $f$ map the elements of $A$ to the elements of $B$.
 The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
 to the identity element of $B$.
-
-Let $MapPreservesIdentity$ denote this situation.
-
 \begin{schema}{MapPreservesIdentity}[\genT, \genU]
-f: \genT \pfun \genU \\
-A: \monoid \genT \\
-B: \monoid \genU
+	f: \genT \pfun \genU \\
+	A: \monoid \genT \\
+	B: \monoid \genU
 \where
 \LET e == identity\_element~A; \\
 \t1	e' == identity\_element~B @ \\
 \t2		f~e = e'
 \end{schema}
 
-\subsection{\zcmd{homMonoid}}
-
 A {\em monoid homomorphism} from $A$ to $B$ is a homomorphism $f$ of the underlying semigroups
 that preserves identity.
-
 Let $\homMonoid(A, B)$ denote the set of all monoid homomorphisms from $A$ to $B$.
-
 \begin{gendef}[\genT, \genU]
-\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
+	\homMonoid: \monoid \genT \cross \monoid \genU \fun \power (\genT \fun \genU)
 \where
-\homMonoid = \\
-\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
-\t2		\{~ f: \homSemigroup(A, B) | \\
-\t3			MapPreservesIdentity[\genT, \genU] ~\})
+	\homMonoid = \\
+	\t1	(\lambda A: \monoid \genT; B: \monoid \genU @ \\
+	\t2		\{~ f: \homSemigroup(A, B) | \\
+	\t3			MapPreservesIdentity[\genT, \genU] ~\})
 \end{gendef}
 
 \begin{remark}
@@ -422,12 +422,10 @@ Typically, the postfix expression $x \invG$ is used to denote the inverse of $x$
 	\t2		x \mulA x \invG = e = x \invG  \mulA x
 \end{schema}
 
-\subsection{$inverse\_operation$}
-
 Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
 \begin{zed}
-inverse\_operation[\genT] == \\
-\t1	\{~ InverseOperation\_A[\genT] @ \strucA \mapsto inv ~\}
+	inverse\_operation[\genT] == \\
+	\t1	\{~ InverseOperation\_A[\genT] @ \strucA \mapsto inv ~\}
 \end{zed}
 
 \begin{remark}
@@ -452,12 +450,10 @@ Since inverse operations are unique if exist they, the relation between monoids 
 is a partial function.
 
 \begin{zed}
-inverse\_operation \in \monoid \setT \pfun \setT \pfun \setT
+	inverse\_operation \in \monoid \setT \pfun \setT \pfun \setT
 \end{zed}
 
 \end{remark}
-
-\subsection{$\group$}
 
 A {\em group} is a monoid that has an inverse operation.
 \begin{schema}{Group\_A}[\genT]
@@ -470,42 +466,33 @@ Let $\group \genT$ denote the set of all groups over $\genT$.
 	\group \genT == \{~ Group\_A[\genT] @ \strucA ~\}
 \end{zed}
 
-\subsection{$MapPreservesInverse$}
-
 Let $\genT$ and $\genU$ be sets of elements,
 let $A$ and $B$ be groups over $\genT$ and $\genU$, 
 and let $f$ map $\genT$ to $\genU$.
 The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
 to the inverses of the corresponding elements of $B$.
-
-Let $MapPreservesInverse$ denote this situation.
-
 \begin{schema}{MapPreservesInverse}[\genT, \genU]
-f: \genT \pfun \genU \\
-A: \group \genT \\
-B: \group \genU
+	f: \genT \pfun \genU \\
+	A: \group \genT \\	
+	B: \group \genU
 \where
-\LET (\_ \invG) == inverse\_operation~A; \\
-\t1	(\_ \daggerG) == inverse\_operation~B @ \\
-\t2		\forall x: \genT @ \\
-\t3			f(x \invG) = (f~x) \daggerG
+	\LET (\_ \invG) == inverse\_operation~A; \\
+	\t1	(\_ \daggerG) == inverse\_operation~B @ \\
+	\t2		\forall x: \genT @ \\
+	\t3			f(x \invG) = (f~x) \daggerG
 \end{schema}
-
-\subsection{\zcmd{homGroup}}
 
 Let $A$ and $B$ be groups.
 A {\em group homomorphism} from $A$ to $B$ is a monoid homomorphism
 from $A$ to $B$ that preserves inverses.
-
 Let $\homGroup(A, B)$ denote the set of all group homomorphisms from $A$ to $B$.
-
 \begin{gendef}[\genT, \genU]
-\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
+	\homGroup: \group \genT \cross \group \genU \fun \power (\genT \fun \genU)
 \where
-\homGroup = \\
-\t1	(\lambda A: \group \genT; B: \group \genU @ \\
-\t2		\{~ f: \homMonoid(A, B) | \\
-\t3			MapPreservesInverse[\genT, \genU] ~\})
+	\homGroup = \\
+	\t1	(\lambda A: \group \genT; B: \group \genU @ \\
+	\t2		\{~ f: \homMonoid(A, B) | \\
+	\t3			MapPreservesInverse[\genT, \genU] ~\})
 \end{gendef}
 
 \begin{remark}
@@ -516,10 +503,9 @@ The identity mapping is a group homomorphism.
 The composition of two group homomorphisms is another group homomorphism.
 \end{remark}
 
-\subsection{$bij$}
+\subsection{Bijections}
 
 Let $\genT$ be a set and let $bij[\genT]$ denote the set of a bijections $\genT \bij \genT$ from $\genT$ to itself.
-
 \begin{zed}
 	bij[\genT] == \genT \bij \genT
 \end{zed}
@@ -564,11 +550,8 @@ The inverse $f \inv$ of a bijection $f$ is its left and right inverse under comp
 
 \end{remark}
 
-\subsection{$Bij$}
-
 The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
 Let $Bij[\genT]$ denote the composition of bijections.
-
 \begin{zed}
 	Bij[\genT] == (\lambda f, g: bij[\genT] @ f \circ g)
 \end{zed}
@@ -585,18 +568,13 @@ The composition of bijections of $\setT$ is a group.
 
 \section{Abelian Groups}
 
-\subsection{OperationIsCommutative}
-
 A binary operation $\strucA$ in $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
 their order.
-
 \begin{schema}{OperationIsCommutative\_A}[\genT]
 	BinaryOperation\_A[\genT]
 \where
 	\forall x, y: A @ x \mulA y = y \mulA x
 \end{schema}
-
-\subsection{\zcmd{abgroup}}
 
 An {\em abelian group} is a group in which the binary operation is commutative.
 \begin{schema}{AbelianGroup\_A}[\genT]
@@ -606,10 +584,8 @@ An {\em abelian group} is a group in which the binary operation is commutative.
 
 Let $\abgroup \genT$ denote the set of all abelian groups in $\genT$.
 \begin{zed}
-\abgroup \genT == \{~ AbelianGroup\_A[\genT] @ \strucA ~\}
+	\abgroup \genT == \{~ AbelianGroup\_A[\genT] @ \strucA ~\}
 \end{zed}
-
-\subsection{\zcmd{addG}, \zcmd{zeroG}, and \zcmd{negG}}
 
 Often in an abelian group the binary operation is denoted as addition $x \addG y$,
 the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
