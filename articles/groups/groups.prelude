@@ -951,6 +951,7 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 % the set of all monoids
 %%pregen \monoid
 \DeclareMathOperator{\monoid}{monoid}
+
 \DeclareMathOperator{\homMonoid}{hom_{mon}}
 
 % groups

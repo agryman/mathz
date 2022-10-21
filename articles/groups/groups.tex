@@ -27,73 +27,85 @@ It has been type checked with \fuzz.
 
 Groups are ubiquitous throughout mathematics and physics.
 This article defines groups and their homomorphisms,
-gradually building up the definitions in terms of some related simpler algebraic objects,
+gradually building up the definitions in terms of some related, simpler algebraic objects,
 namely binary operations, semigroups, and monoids.
+These objects are \textit{mathematical structures}, namely sets of elements equipped with additional features.
+In particular, binary operations, semigroups, monoids, and groups are \textit{algebraic structures}. 
 
-\section{Structures and Carriers}
+\section{Carriers}
 
-Semigroups, monoids, and groups are defined as sets of elements equipped with a binary operation that has certain properties.
-In general, a set equipped with one or more additional features is called a \textit{mathematical structure}.
-In particular, semigroups, monoids, and groups are called \textit{algebraic structures}. 
-
-Let $\genT$ be any set and let $elements$ be a set of elements drawn from $\genT$.
-The set $\genT$ is said to be the \textit{universe} of elements.
-The set of elements is said to be the \textit{carrier} of the structure.
+Let $\genT$ be a set and let $elements$ be a subset of $\genT$.
+The set $\genT$ can be thought of as the \textit{universe of discourse} from which the elements are drawn.
+The set $elements$ in the context of some mathematical structure is said to be the \textit{carrier} of that structure.
+Such a structure is said to be \textit{on} or \textit{over} its set of elements
+and \textit{in} the universe from which its elements are drawn.
 \begin{schema}{Carrier}[\genT]
 	elements: \power \genT
 \end{schema}
 
-A structure whose carrier is a set of elements drawn from some universe is said to be a structure \textit{on} or \textit{over} that set of elements.
-It is also said to be a structure \textit{in} the universe.
-
-In typical mathematical writing, authors do not normally distinguish between a carrier and its structure
-when the structure is clear from context.
-For example, one typically see statements such as:  
-``Let $G$ be a group and let $g$ be an element of $G$.''
-Here the first instance of the variable $G$ stands for the structure while the second stands for its carrier.
-
-However, a set of elements may have more than one structure is a given context.
-For example, addition and multiplication are distinct binary operations on the set of integers.
-In this case it is ambiguous to specify only the set of elements.
-Furthermore, in more formal settings, distinct mathematical objects
-must be referred to using distinct names or expressions.
-
-In order to distinguish between sets of elements and structures on them, 
-this article adopts the common practice of defining structures as being \textit{tuples}
-consisting of the set of elements and one or more additional features.
-
-This article uses the notational convention of using bold font variables such as $\strucA, \strucB, \strucC$
-to denote structures, and the corresponding Roman font variables such as $A, B, C$ to denote their carriers.
-It is convenient to define a few schemas with these variables as carriers.
+Let $\strucA, \strucB$ be structures with carriers $A, B$.
+A \textit{carrier map} from $\strucA$ to $\strucB$ is a triple $(f, A, B)$ where $f$ is a function from $A$ to $B$.
+In this situation, the carrier $A$ of the source structure $\strucA$ is called the \textit{domain} of the map 
+and the carrier $B$ of the target structure $\strucB$ is called its \textit{codomain}.
 \begin{zed}
-	Carrier\_A[\genT] \defs Carrier[\genT][A / elements]
+	Carrier\_Domain[\genT] \defs Carrier[\genT][domain / elements]
 \also
-	Carrier\_B[\genT] \defs Carrier[\genT][B / elements]
-\also
-	Carrier\_C[\genT] \defs Carrier[\genT][C / elements]
+	Carrier\_Codomain[\genT] \defs Carrier[\genT][codomain / elements]
 \end{zed}
 
-Let $A$ be drawn from $\genT$ and let $B$ be drawn from $\genU$.
-A map $f$ from $A$ to $B$ is called a \textit{carrier map}.
-\begin{schema}{Carrier\_Map\_fAB}[\genT, \genU]
-	f: \genT \pfun \genU \\
-	Carrier\_A[\genT] \\
-	Carrier\_B[\genU]
+\begin{schema}{Carrier\_Map}[\genT, \genU]
+	Carrier\_Domain[\genT] \\
+	Carrier\_Codomain[\genU] \\
+	function: \genT \pfun \genU
 \where
-	f \in A \fun B
+	function \in domain \fun codomain
 \end{schema}
 
-Similarly, let $g$ be a carrier map from $B$ to $C$ and
-let $h$ be a carrier map from $A$ to $C$.
+\begin{remark}
+The domain of a carrier map is uniquely determined by its function.
 \begin{zed}
-	Carrier\_Map\_gBC[\genT, \genU] \defs Carrier\_Map\_fAB[\genT, \genU][g / f, B / A, C / B]
-\also
-	Carrier\_Map\_hAC[\genT, \genU] \defs Carrier\_Map\_fAB[\genT, \genU][h / f, C / B]
+	\forall Carrier\_Map[\setT, \setU] @ \dom function = domain
+\end{zed}
+\end{remark}
+
+\begin{remark}
+The codomain of a carrier map is a superset of the range of its function.
+This means that carrier maps that have the same function but distinct codomains are distinct carrier maps.
+\begin{zed}
+	\forall Carrier\_Map[\setT, \setU] @ \ran function \subseteq codomain
+\end{zed}
+\end{remark}
+
+Let $carrier\_maps[\genT]$ denote the set of all carrier maps of structures in $\genT$.
+\begin{zed}
+	carrier\_maps[\genT] == \{~ Carrier\_Map[\genT, \genT] @ (function, domain, codomain) ~\}
 \end{zed}
 
-The carrier map $h$ is said to be the \textit{carrier map composition} of $g$ and $f$ when
-it is their function composition.
-\begin{schema}{Carrier\_Map\_Composition\_ABC}[\genT, \genU, \genV]
+Let $A, B, C$ be carriers of some structures.
+Consider functions $f: A \fun B$, $g: B \fun C$, and $h: A \fun C$.
+\begin{zed}
+	Carrier\_Map\_fAB[\genT, \genU] \defs Carrier\_Map[\genT, \genU][f / function, A / domain, B / codomain]
+\also
+	Carrier\_Map\_gBC[\genT, \genU] \defs Carrier\_Map[\genT, \genU][g / function, B / domain, C / codomain]
+\also
+	Carrier\_Map\_hAC[\genT, \genU] \defs Carrier\_Map[\genT, \genU][h / function, A / domain, C / codomain]
+\end{zed}
+
+The carrier map $(g, B, C)$ is said to be \textit{composable} with the carrier map $(f, A, B)$.
+\begin{schema}{Carrier\_Composable\_gf[\genT, \genU, \genV]}
+	Carrier\_Map\_fAB[\genT, \genU] \\
+	Carrier\_Map\_gBC[\genU, \genV]
+\end{schema}
+
+Let $carrier\_composable[\genT]$ denote the set of composable pairs of carrier maps in $\genT$.
+\begin{zed}
+	carrier\_composable[\genT] == \\
+	\t1	\{~ Carrier\_Composable\_gf[\genT, \genT, \genT] @ (g, B, C) \mapsto (f, A, B) ~\}
+\end{zed}
+
+The carrier map $(h, A, C)$ is said to be the \textit{composition} of $(g, B, C)$ with $(f, A, B)$ when
+$h$ is the function composition $g \circ f$.
+\begin{schema}{Carrier\_Composition\_hgf}[\genT, \genU, \genV]
 	Carrier\_Map\_fAB[\genT, \genU] \\
 	Carrier\_Map\_gBC[\genU, \genV] \\
 	Carrier\_Map\_hAC[\genT, \genV]
@@ -101,19 +113,47 @@ it is their function composition.
 	h = g \circ f
 \end{schema}
 
+Let $carrier\_composition[\genT]$ denote the composition operation on composable carrier maps
+for structures in $\genT$.
+\begin{zed}
+	carrier\_composition[\genT] == \\
+	\t1	\{~ Carrier\_Composition\_hgf[\genT, \genT, \genT] @ ((g, B, C), (f, A, B)) \mapsto (h, A, C) ~\}
+\end{zed}
+
+\section{Structures}
+
+In normal mathematical writing, authors do not need to distinguish between a carrier and its structure
+because the structure is usually clear from context.
+For example, one typically see statements such as:  
+``Let $G$ be a group and let $g$ be an element of $G$.''
+Here the first instance of the variable $G$ stands for the structure while the second stands for its carrier.
+
+However, a set of elements may have more than one structure in a given context.
+For example, the set of integers has the distinct binary operations of addition and multiplication.
+In such cases it may be ambiguous if only the carrier is specified.
+Furthermore, if the mathematics is expressed using a formal language, distinct mathematical objects
+must be referred to using distinct names or expressions.
+
+In order to distinguish between carriers and structures on them, 
+this article adopts the common practice of defining structures as being \textit{tuples}
+consisting of a carrier together with one or more additional features.
+This article also adopts the notational convention of using bold font variables, e.g. $\strucA, \strucB, \strucC$,
+to denote structures, and the corresponding Roman font variables, e.g. $A, B, C$, to denote their carriers.
+
 \section{Binary Operations}
 
-Let $\genT$ be a set from which we draw elements.
+STOPPED HERE
+
+Let $\genT$ be a set.
 A \textit{binary operator} in $\genT$ is a partial function from pairs of elements to elements.
 \begin{zed}
 	BINOP[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
 
-Let $elements$ be a set of elements drawn from $\genT$ and
+Let $elements$ be a subset of $\genT$ and
 let $op$ be binary operator defined on all pairs of elements.
 We call the structure $(elements, op)$ a \textit{binary operation on the set} $elements$.
 Furthermore, we say that it is a \textit{binary operation in} $\genT$.
-
 \begin{schema}{BinaryOperation}[\genT]
 	Carrier[\genT] \\
 	op: BINOP[\genT] \\
@@ -124,7 +164,7 @@ Furthermore, we say that it is a \textit{binary operation in} $\genT$.
 	structure = (elements, op)
 \end{schema}
 
-Let $binary\_operation[\genT]$ be the set of all binary operations in $\genT$.
+Let $binary\_operation[\genT]$ denote the set of all binary operations in $\genT$.
 \begin{zed}
 	binary\_operation[\genT] == \{~ BinaryOperation[\genT] @ structure ~\}
 \end{zed}
@@ -134,7 +174,7 @@ Let the notation $\binop \genT$ denote the set of all binary operations in $\gen
 	\binop \genT == binary\_operation[\genT]
 \end{zed}
 
-Let $integer\_addition$ be the binary operation of integer addition.
+Let $integer\_addition$ denote the binary operation of integer addition.
 \begin{zed}
 	integer\_addition == (\num, (\_ + \_))
 \end{zed}
@@ -157,9 +197,6 @@ Integer multiplication is a binary operation on $\num$.
 	integer\_multiplication \in \binop \num
 \end{zed}
 \end{example}
-
-The set of elements in a binary operation is normally denoted by variables such as $A$ or $B$.
-As a notational convention, we'll denote the corresponding structures by variables such as $\strucA$ or $\strucB$.
 
 The result of applying a binary operator to a pair of elements $(x, y)$ 
 is normally denoted by an expression formed using an infix operator such as $x + y$ or $x * y$.
