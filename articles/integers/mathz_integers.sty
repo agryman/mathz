@@ -1,0 +1,17 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz_integers}[2022/02/01 Z Notation for integers package]
+
+% the exponentiation infix operator x ** n
+%%inop \expN 5
+\newcommand{\expN}{\mathbin{**}}
+
+%%inop \foo 3
+\newcommand{\foo}{\mathbin{+}}
+
+% the divisibility infix relation x | y for integers
+%%inrel \divides
+\newcommand{\divides}{\mathrel{\mid}}
+
+% the addition infix operator x + y for integer sequences
+%%inop \addSeqZ 3
+\newcommand{\addSeqZ}{\mathbin{+}}

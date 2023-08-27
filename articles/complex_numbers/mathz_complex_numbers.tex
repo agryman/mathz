@@ -1,0 +1,709 @@
+\documentclass{amsart}
+
+\usepackage{mathz_core}
+\usepackage{mathz_formal_specifications}
+\usepackage{mathz_sets}
+\usepackage{mathz_topological_spaces}
+\usepackage{mathz_groups}
+\usepackage{mathz_real_numbers}
+\usepackage{mathz_complex_numbers}
+\usepackage{mathz_preamble}
+
+\addbibresource{mathz_references.bib}
+
+\begin{document}
+
+\title{Complex Numbers}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains \ZN\ definitions for the complex numbers, $\C$, and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The complex numbers, $\C$, are foundational to many mathematical objects such as vector spaces and manifolds,
+but are not built into Z Notation.
+This article provides type declarations for $\C$ and related objects so that they can be used and type checked in formal Z specifications.
+
+No attempt has been made to provide complete, axiomatic definitions of all these objects since that would only be of use for proof checking.
+Although proof checking is highly desirable, it is beyond the scope of this article.
+The type declarations given here are intended to provide a basis for future axiomatization.
+
+\subsection{The Set of Complex Numbers}
+
+Z Notation does not predefine the set of complex numbers, so we define
+them and operations on them here.
+
+Although complex number operations are displayed using the same symbols as the 
+analogous real number operations,
+they are distinct mathematical objects.
+This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
+because the underlying types of the objects will, as a rule, be clear from the context.
+Visually distinct symbols will be used in cases where confusion is possible.
+
+\subsubsection{$COMPLEX$}
+
+A complex number can be thought of a pair of real numbers.
+However, it is not correct to view any pair of real numbers as a complex number.
+Therefore to denote a complex number we map a pair of real numbers
+into the free type $COMPLEX$.
+
+\begin{zed}
+	COMPLEX ::= complex \ldata \Rtwo \rdata
+\end{zed}
+
+Here the function $complex$ is a constructor that constructs a
+complex number from a pair of real numbers.
+
+\subsubsection{\zcmd{C}}
+
+We introduce the usual notation $\C = COMPLEX$ for the set of complex numbers.
+
+\begin{zed}
+\C == COMPLEX
+\end{zed}
+
+\subsection{Real and Imaginary Parts}
+
+\subsubsection{$Complex$}
+
+Given real numbers $x$ and $y$, we can construct the complex number
+$z = complex(x,y)$.
+The real numbers $x$ and $y$ are referred to as the \textit{real} and \textit{imaginary} parts of $z$.
+It's useful to introduce the schema $Complex$ that relates the complex number $z$ to its
+real and imaginary parts $x$ and $y$.
+
+\begin{schema}{Complex}
+	z : \C \\
+	x, y : \R
+\where
+	z = complex(x, y)
+\end{schema}
+
+\subsubsection{$real\_of\_complex$}
+
+Let $real\_of\_complex(z)$ denote the real part $x$ of $z$.
+
+\begin{axdef}
+	real\_of\_complex: \C \fun \R
+\where
+	real\_of\_complex = \{~ Complex @ z \mapsto x ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{realC}}
+
+We introduce the usual notation $x = \realC(z)$ for the real part of $z$.
+
+\begin{zed}
+	\realC == real\_of\_complex
+\end{zed}
+
+\subsubsection{$imag\_of\_complex$}
+
+Let $imag\_of\_complex(z)$ denote the imaginary part $y$ of $z$.
+
+\begin{axdef}
+	imag\_of\_complex: \C \fun \R
+\where
+	imag\_of\_complex = \{~ Complex @ z \mapsto y ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{imagC}}
+
+We introduce the usual notation $y = \imagC(z)$ for the imaginary part of $z$.
+
+\begin{zed}
+	\imagC == imag\_of\_complex
+\end{zed}
+
+\subsection{Real Numbers as Complex Numbers}
+
+The complex numbers contain a natural copy of the real numbers,
+namely the set of complex numbers with vanishing imaginary part.
+
+\subsubsection{$real\_as\_complex$}
+
+Let the function $real\_as\_complex(x) = z$ map the real number $x$
+to its corresponding complex number $z$ which has $x$ as its real part and $0$ as its imaginary part.
+
+\begin{axdef}
+	real\_as\_complex: \R \fun \C
+\where
+	real\_as\_complex = (\lambda x: \R @ complex(x, \zeroR))
+\end{axdef}
+
+\subsubsection{\zcmd{asRC}}
+
+We introduce the notation $\asRC x = real\_as\_complex(x)$.
+
+\begin{zed}
+	\asRC == real\_as\_complex
+\end{zed}
+
+\subsection{Conjugation}
+
+\subsubsection{$ComplexConjugate$}
+
+Let $z' = z^*$ be the \textit{complex conjugate} of the complex number $z$.
+Let the schema $ComplexConjugate$ denote this situation.
+
+\begin{schema}{ComplexConjugate}
+	Complex \\
+	Complex'
+\where
+	x' = x \\
+	y' = \negR y
+\end{schema}
+\begin{itemize}
+\item The complex conjugate $z'$ of a complex number $z$ has the same real part $x$ 
+and the negative imaginary part $-y$.
+\end{itemize}
+
+\subsubsection{$complex\_conjugate$}
+
+Let the function $complex\_conjugate(z) = z^*$ map the complex number $z$ to its complex conjugate $z^*$.
+
+\begin{axdef}
+	complex\_conjugate: \C \fun \C
+\where
+	complex\_conjugate = \{~ ComplexConjugate @ z \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{conjC}}
+
+We introduce the usual postfix operator notation $z\conjC = complex\_conjugate(z)$.
+
+\begin{zed}
+	(\_ \conjC) == complex\_conjugate
+\end{zed}
+
+\section{Some Important Complex Numbers}
+
+We next define some important complex numbers.
+
+\subsection{Zero}
+
+\subsubsection{$zero\_complex$}
+
+Let $zero\_complex$ denote the \textit{zero} of $\C$.
+
+\begin{axdef}
+	zero\_complex: \C
+\where
+	zero\_complex = \asRC \zeroR
+\end{axdef}
+
+\subsubsection{\zcmd{zeroC}}
+
+We introduce the usual notation $\zeroC \in \C$ for the zero of $\C$.
+
+\begin{zed}
+	\zeroC == zero\_complex
+\end{zed}
+
+\subsection{One}
+
+\subsubsection{$one\_complex$}
+
+Let $one\_complex$ denote the multiplicative unit in $\C$.
+
+\begin{axdef}
+	one\_complex: \C
+\where
+	one\_complex = \asRC \oneR
+\end{axdef}
+
+\subsubsection{\zcmd{oneC}}
+
+We introduce the usual notation $\oneC \in \C$ for the unit of $\C$.
+
+\begin{zed}
+	\oneC == one\_complex
+\end{zed}
+
+\subsection{The Square Root of $-1$}
+
+\subsubsection{$i\_complex$}
+
+Let $i\_complex$ denote the usual square root of $-1$ in $\C$.
+
+\begin{axdef}
+	i\_complex: \C
+\where
+	i\_complex = complex(\zeroR, \oneR)
+\end{axdef}
+
+\subsubsection{\zcmd{iC}}
+
+We introduce the usual notation $\iC = i\_complex$.
+
+\begin{zed}
+	\iC == i\_complex
+\end{zed}
+
+\section{Arithmetic}
+
+\subsection{Addition}
+
+\subsubsection{$AddComplex$}
+
+We can \textit{add} the complex numbers $z_1$ and $z_2$ to give their \textit{sum} $z' = z_1 + z_2$.
+Let the schema $AddComplex$ denote this situation.
+
+\begin{schema}{AddComplex}
+	Complex_1 \\
+	Complex_2 \\
+	Complex'
+\where
+	x' = x_1 \addR x_2 \\
+	y' = y_1 \addR y_2
+\end{schema}
+
+\subsubsection{$add\_complex$}
+
+Let $add\_complex(z_1, z_2)$ denote the result of adding $z_1$ and $z_2$.
+
+\begin{axdef}
+	add\_complex: \C \cross \C \fun \C
+\where
+	add\_complex = \{~ AddComplex @ (z_1, z_2) \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{addC}}
+
+We introduce the usual notation $z' = z_1 \addC z_2$ for addition in $\C$.
+
+\begin{zed}
+	(\_ \addC \_) == add\_complex
+\end{zed}
+
+\subsection{Negation}
+
+\subsubsection{$NegComplex$}
+
+We can \textit{negate} the complex number $z$ to give its \textit{negative} $z' = -z$.
+Let the schema $NegComplex$ denote this situation.
+
+\begin{schema}{NegComplex}
+	Complex \\
+	Complex'
+\where
+	x' = \negR x \\
+	y' = \negR y
+\end{schema}
+
+\subsubsection{$neg\_complex(z)$}
+
+Let $neg\_complex(z)$ denote the negative of $z$.
+
+\begin{axdef}
+	neg\_complex: \C \fun \C
+\where
+	neg\_complex = \{~ NegComplex @ z \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{negC}}
+
+We introduce the usual notation $z' = \negC z$ for the negative of $z$.
+\begin{zed}
+	\negC == neg\_complex
+\end{zed}
+
+\subsection{Subtraction}
+
+\subsubsection{$SubComplex$}
+
+We can \textit{subtract} the complex number $z_2$ from $z_1$
+to give their \textit{difference} $z' = z_1 - z_2$.
+Let the schema $SubComplex$ denote this situation.
+
+\begin{schema}{SubComplex}
+	Complex_1 \\
+	Complex_2 \\
+	Complex'
+\where
+	x' = x_1 \subR x_2 \\
+	y' = y_1 \subR y_2
+\end{schema}
+
+\subsubsection{$sub\_complex$}
+
+Let $sub\_complex(z_1, z_2)$ denote the difference $z_1 - z_2$.
+
+\begin{axdef}
+	sub\_complex: \C \cross \C \fun \C
+\where
+	sub\_complex = \{~ SubComplex @ (z_1, z_2) \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{subC}}
+
+We introduce the usual notation $z' = z_1 \subC z_2$ for subtraction in $\C$.
+
+\begin{zed}
+	(\_ \subC \_) == sub\_complex
+\end{zed}
+
+\subsection{Multiplication}
+
+\subsubsection{$MulComplex$}
+
+We can \textit{multiply} the complex numbers $z_1$ times $z_2$ to give their \textit{product} $z' = z_1 z_2$.
+Let the schema $MulComplex$ denote this situation.
+
+\begin{schema}{MulComplex}
+	Complex_1 \\
+	Complex_2 \\
+	Complex'
+\where
+	x' = x_1 \mulR x_2 \subR y_1 \mulR y_2 \\
+	y' = x_1 \mulR y_2 \addR y_1 \mulR x_2
+\end{schema}
+
+\subsubsection{$mul\_complex$}
+
+Let $mul\_complex(z_1, z_2)$ denote the product $z_1 z_2$.
+
+\begin{axdef}
+	mul\_complex: \C \cross \C \fun \C
+\where
+	mul\_complex = \{~ MulComplex @ (z_1, z_2) \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{mulC}}
+
+We introduce the usual notation $z' = z_1 \mulC z_2$ for multiplication in $\C$.
+
+\begin{zed}
+	(\_ \mulC \_) == mul\_complex
+\end{zed}
+
+\subsubsection{$mul\_real\_complex$}
+
+Let the function $mul\_real\_complex(x, z) = xz$ denote the product of the real number $x$ and
+the complex number $z$.
+
+\begin{axdef}
+	mul\_real\_complex: \R \cross \C \fun \C
+\where
+	mul\_real\_complex = (\lambda x: \R; z: \C @ (\asRC x) \mulC z)
+\end{axdef}
+
+\subsubsection{\zcmd{mulRC}}
+
+We introduce the notation $x \mulRC z = mul\_real\_complex(x, z)$.
+
+\begin{zed}
+	(\_ \mulRC \_) == mul\_real\_complex
+\end{zed}
+
+\subsubsection{$mul\_complex\_real$}
+
+Similarly, let the function $mul\_complex\_real(z, x) = zx$ denote the product of the complex number $z$ and
+the real number $x$.
+
+\begin{axdef}
+	mul\_complex\_real: \C \cross \R \fun \C
+\where
+	mul\_complex\_real = (\lambda z: \C; x: \R @ z \mulC (\asRC x))
+\end{axdef}
+
+\subsubsection{\zcmd{mulCR}}
+
+We introduce the notation $z \mulCR z = mul\_complex\_real(z, x)$.
+
+\begin{zed}
+	(\_ \mulCR \_) == mul\_complex\_real
+\end{zed}
+
+\subsection{Nonzero Complex Numbers}
+
+\subsubsection{$nonzero\_complex$}
+
+Let $nonzero\_complex$ denote the set of nonzero complex numbers.
+
+\begin{axdef}
+	nonzero\_complex: \power \C
+\where
+	nonzero\_complex = \C \setminus \{ \zeroC \}
+\end{axdef}
+
+\subsubsection{\zcmd{Cnz}}
+
+We introduce the usual notation $\Cnz$ to denote the set of nonzero complex numbers,
+also referred to as the \textit{punctured complex number plane}.
+
+\begin{zed}
+	\Cnz == nonzero\_complex
+\end{zed}
+
+\subsection{Nonzero Multiplication}
+
+\subsubsection{$MulNonzeroComplex$}
+
+We can restrict multiplication in $\C$ to $\Cnz$.
+Let the schema $MulNonzeroComplex$ denote this situation.
+
+\begin{schema}{MulNonzeroComplex}
+	MulComplex \\
+\where
+	z_1 \in \Cnz \\
+	z_2 \in \Cnz
+\end{schema}
+
+\subsubsection{$mul\_nonzero\_complex$}
+
+Let $mul\_nonzero\_complex(z_1, z_2)$ denote the product of nonzero complex numbers.
+
+\begin{axdef}
+	mul\_nonzero\_complex: \Cnz \cross \Cnz \fun \Cnz
+\where
+	mul\_nonzero\_complex = \{~ MulNonzeroComplex @ (z_1, z_2) \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{mulCnz}}
+
+We introduce the usual notation $z' = z_1 \mulCnz z_2$ to denote the product.
+
+\begin{zed}
+	(\_ \mulCnz \_) == mul\_nonzero\_complex
+\end{zed}
+
+\subsection{Inversion}
+
+\subsubsection{$InvNonzeroComplex$}
+
+We can \textit{invert}
+the nonzero complex number $z$ to get its \textit{inverse} or \textit{reciprocal} $z' = z^{-1}$.
+Let the schema $InvNonzeroComplex$ denote this situation.
+
+\begin{schema}{InvNonzeroComplex}
+	z, z' : \Cnz
+\where
+	z \mulCnz z' = \oneC
+\end{schema}
+
+\subsubsection{$inv\_nonzero\_complex$}
+
+Let $z' = inv\_nonzero\_complex(z)$ denote the inverse of $z$.
+
+\begin{axdef}
+	inv\_nonzero\_complex: \Cnz \fun \Cnz
+\where
+	inv\_nonzero\_complex = \{~ InvNonzeroComplex @ z \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{invCnz}}
+
+We introduce the usual notation $z' = z \invCnz$ for the inverse.
+
+\begin{zed}
+	(\_ \invCnz) == inv\_nonzero\_complex
+\end{zed}
+
+\subsection{Division}
+
+\subsubsection{$DivNonzeroComplex$}
+
+We can \textit{divide} the complex number $z_1$ by the nonzero complex number $z_2$ 
+to get their \textit{quotient} $z' = z_1 / z_2$.
+Let the schema $DivNonzeroComplex$ denote this situation.
+
+\begin{schema}{DivNonzeroComplex}
+	z_1, z': \C \\
+	z_2: \Cnz
+\where
+	z_1 = z' \mulCnz z_2
+\end{schema}
+
+\subsubsection{$div\_nonzero\_complex$}
+
+Let $z' = div\_nonzero\_complex(z_1, z_2)$ denote $z_1$ divided by $z_2$.
+
+\begin{axdef}
+	div\_nonzero\_complex: \C \cross \Cnz \fun \C
+\where
+	div\_nonzero\_complex = \{~ DivNonzeroComplex @ (z_1, z_2) \mapsto z' ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{divCnz}}
+
+We introduce the usual notation $z_1 \divCnz z_2$ to denote division.
+
+\begin{zed}
+	(\_ \divCnz \_) == div\_nonzero\_complex
+\end{zed}
+
+\subsection{Power}
+
+\subsubsection{$power\_complex\_nat$}
+
+Let the function $power\_complex\_nat(z,n) = z^n$ denote the result of raising the complex number $z$
+to the power $n$ where $n$ is a natural number.
+
+\begin{axdef}
+	power\_complex\_nat: \C \cross \nat \fun \C
+\where
+	\forall z: \C @ \\
+	\t1	power\_complex\_nat(z, 0) = \oneC
+\also
+	\forall z: \C; n: \nat_1 @ \\
+	\t1	power\_complex\_nat(z, n) = z \mulC power\_complex\_nat(z, n - 1)
+\end{axdef}
+
+\begin{remark}
+The expression $0^0$ is problematic, but here we define it to be $1$ since this is the most convenient for
+complex polynomials.
+
+\begin{zed}
+	power\_complex\_nat(\zeroC, 0) = \oneC
+\end{zed}
+\end{remark}
+
+\subsubsection{\zcmd{powCN}}
+
+We introduce the notation $z \powCN n = power\_complex\_nat(z, n)$.
+
+\begin{zed}
+	(\_ \powCN \_) == power\_complex\_nat
+\end{zed}
+
+\subsection{Norm}
+
+\subsubsection{$NormComplex$}
+
+The $norm$ of a complex number $z$ is a non-negative real number $r$
+equal to the Euclidean length of its underlying pair of real numbers regarded
+as a vector in the Euclidean plane.
+Let the schema $NormComplex$ denote this situation.
+
+\begin{schema}{NormComplex}
+	Complex \\
+	r : \R
+\where
+	r = \sqrtR(x \mulR x \addR y \mulR y)
+\end{schema}
+
+\subsubsection{$norm\_complex$}
+
+Let $r = norm\_complex(z)$ be the norm of $z$.
+
+\begin{axdef}
+	norm\_complex: \C \fun \R
+\where
+	norm\_complex = \{~ NormComplex @ z \mapsto r ~\}
+\end{axdef}
+
+\subsubsection{\zcmd{normC}}
+
+We introduce the notation $r = \normC(z)$ to denote the norm of $z$.
+
+\begin{zed}
+	\normC == norm\_complex
+\end{zed}
+
+\section{Some Important Functions}
+
+We declare the usual exponential and trigonometric functions here.
+
+\subsection{Exponential}
+
+\subsubsection{$exp\_complex$}
+
+Let $exp\_complex(z) = e^z$.
+
+\begin{axdef}
+	exp\_complex: \C \fun \C
+\end{axdef}
+
+\subsubsection{\zcmd{expC}}
+
+We introduce the notation $\expC z = exp\_complex(z)$.
+
+\begin{zed}
+	\expC == exp\_complex
+\end{zed}
+
+\subsection{Logarithm}
+
+\subsubsection{$log\_complex$}
+
+Let $log\_complex(z) = \log z$.
+
+\begin{axdef}
+	log\_complex: \Cnz \fun \C
+\end{axdef}
+
+\subsubsection{\zcmd{logC}}
+
+We introduce the notation $\logC z = log\_complex(z)$.
+
+\begin{zed}
+	\logC == log\_complex
+\end{zed}
+
+\subsection{Sine}
+
+\subsubsection{$sin\_complex$}
+
+Let $sin\_complex(z) = \sin z$.
+
+\begin{axdef}
+	sin\_complex: \C \fun \C
+\end{axdef}
+
+\subsubsection{\zcmd{sinC}}
+
+We introduce the notation $\sinC z = sin\_complex(z)$.
+
+\begin{zed}
+	\sinC == sin\_complex
+\end{zed}
+
+\subsection{Cosine}
+
+\subsubsection{$cos\_complex$}
+
+Let $cos\_complex(z) = \cos z$.
+
+\begin{axdef}
+	cos\_complex: \C \fun \C
+\end{axdef}
+
+\subsubsection{\zcmd{cosC}}
+
+We introduce the notation $\cosC z = cos\_complex(z)$.
+
+\begin{zed}
+	\cosC == cos\_complex
+\end{zed}
+
+\subsection{Tangent}
+
+\subsubsection{$tan\_complex$}
+
+Let $tan\_complex(z) = \tan z$.
+
+\begin{axdef}
+	tan\_complex: \C \pfun \C
+\end{axdef}
+
+\subsubsection{\zcmd{tanC}}
+
+We introduce the notation $\tanC z = tan\_complex(z)$.
+
+\begin{zed}
+	\tanC == tan\_complex
+\end{zed}
+
+\printbibliography
+
+\end{document}

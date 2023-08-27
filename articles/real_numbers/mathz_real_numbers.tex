@@ -1,0 +1,1222 @@
+\documentclass{amsart}
+
+\usepackage{mathz_sets}
+\usepackage{mathz_topological_spaces}
+\usepackage{mathz_groups}
+\usepackage{mathz_real_numbers}
+
+\usepackage{mathz_preamble}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Real Numbers}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains Z Notation type declarations for the real numbers, $\R$, and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The real numbers, $\R$, are foundational to many mathematical objects such as vector spaces and manifolds,
+but are not built-in to Z Notation.
+This article provides type declarations for $\R$ and related objects so that they can be used and type checked in formal Z specifications.
+
+No attempt has been made to provide complete, axiomatic definitions of all these objects since that would only be of use for proof checking.
+Although proof checking is highly desirable, it is beyond the scope of this article.
+The type declarations given here are intended to provide a basis for future axiomatization.
+
+\section{Real Numbers}
+
+Z notation does not predefine the set of real numbers, so we define it here.
+
+\subsection{\zcmd{R}}
+
+Let $\R$ denote the set of real numbers.
+We define it to be simply a given set.
+We'll add further axioms as needed below.
+
+\begin{zed}
+[\R]
+\end{zed}
+
+\subsection{\zcmd{addR}, \zcmd{zeroR}, \zcmd{negR}, and \zcmd{subR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \addR y$ denote addition,
+let $\zeroR$ denote zero,
+let $\negR x$ denote negation,
+and let $x \subR y$ denote subtraction.
+
+\begin{axdef}
+	\_ \addR \_: \R \cross \R \fun \R \\
+	\zeroR: \R \\
+	\negR: \R \fun \R
+\end{axdef}
+
+Although these real number objects are displayed using the same symbols as the corresponding integer objects,
+they represent distinct mathematical objects.
+This distinction is apparent to the \fuzz\ type-checker and should not cause confusion to the human reader
+because the underlying types of objects will, as a rule, be clear from the context.
+Visually distinct symbols will be used in cases where confusion is possible.
+
+The real numbers form an Abelian group under addition.
+
+\begin{zed}
+(\_ \addR \_) \in \abgroup \R
+\also
+\zeroR = identity\_element(\_ \addR \_)
+\also
+\negR = inverse\_operation(\_ \addR \_)
+\end{zed}
+
+Subtraction is defined in terms of addition and negative.
+
+\begin{axdef}
+	\_ \subR \_: \R \cross \R \fun \R
+	\where
+	\forall x, y: \R @ x \subR y = x \addR (\negR y)
+\end{axdef}
+
+\subsection{\zcmd{Rnz}}
+
+Let $\Rnz$ denote the set of non-zero real numbers,
+also referred to as the {\it punctured real number line}.
+
+\begin{zed}
+	\Rnz == \R \setminus \{ \zeroR \}
+\end{zed}
+
+\subsection{\zcmd{mulR}}
+
+Let $x$ and $y$ be real numbers.
+Let $x \mulR y$ denote multiplication.
+
+\begin{axdef}
+	\_ \mulR \_: \R \cross \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{mulRnz}, \zcmd{oneR}, \zcmd{invRnz}, and \zcmd{divR}}
+
+Let $(\_ \mulRnz \_)$ denote the restriction of $(\_ \mulR \_)$ to $\Rnz$.
+
+\begin{axdef}
+	\_ \mulRnz \_: \Rnz \cross \Rnz \fun \Rnz
+	\where
+	(\_ \mulRnz \_) = (\lambda x, y: \Rnz @ x \mulR y)
+\end{axdef}
+
+Let $x$ be real number and let $y$ be a non-zero real number.
+let $\oneR$ denote one,
+let $y \invRnz$ denote inverse,
+and let $x \divR y$ denote division.
+
+\begin{axdef}
+	\oneR, \twoR: \Rnz \\
+	\_ \invRnz: \Rnz \fun \Rnz
+\end{axdef}
+
+The nonzero real numbers form an Abelian group under multiplication.
+
+\begin{zed}
+(\_ \mulRnz \_) \in \abgroup \Rnz
+\also
+\oneR = identity\_element(\_ \mulRnz \_)
+\also
+(\_ \invRnz) = inverse\_operation(\_ \mulRnz \_)
+\end{zed}
+
+Division is defined in terms of multiplicative inverse.
+
+\begin{axdef}
+	\_ \divR \_: \R \cross \Rnz \fun \R
+	\where
+	\forall x: \R; y: \Rnz @ x \divR y = x \mulR (y \invRnz)
+\end{axdef}
+
+Addition is distributive over multiplication.
+
+\begin{zed}
+	\forall x, y, z: \R @ (x \addR y) \mulR z = x \mulR z \addR y \mulR z
+\end{zed}
+
+\subsection{\zcmd{ltR}, \zcmd{leR}, \zcmd{gtR}, and \zcmd{geR}}
+
+Let $x \ltR y$, $x \leR y$, $x \gtR y$, and $x \geR y$ denote the usual comparison relations.
+
+\begin{axdef}
+	\_ \ltR \_: \R \rel \R \\
+	\_ \leR \_: \R \rel \R \\
+	\_ \gtR \_: \R \rel \R \\
+	\_ \geR \_: \R \rel \R
+\end{axdef}
+
+\subsection{\zcmd{absR}}
+
+Let $\absR(x)$ denote $\abs{x}$, the absolute value of $x$.
+
+\begin{axdef}
+	\absR: \R \fun \R
+\where
+	\forall x: \R @ \\
+	\t1	\absR(x) = \IF x \geR \zeroR \THEN x \ELSE \negR~x
+\end{axdef}
+
+\subsection{\zcmd{Rpos} and Friends}
+
+Let $\Rpos$ denote the set of positive real numbers.
+
+\begin{zed}
+	\Rpos == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+Similarly, we have the following useful subsets of $\R$.
+
+\begin{zed}
+	\Rneg == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rltz == \{~ x: \R | x \ltR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rltz = \Rneg
+\end{zed}
+\end{remark}
+
+\begin{zed}
+	\Rlez == \{~ x: \R | x \leR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgez == \{~ x: \R | x \geR \zeroR ~\}
+\end{zed}
+
+\begin{zed}
+	\Rgtz == \{~ x: \R | x \gtR \zeroR ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\Rgtz = \Rpos
+\end{zed}
+\end{remark}
+
+\subsection{\zcmd{sqrtR}}
+
+For non-negative $x$, let $\sqrtR(x)$ denote $\sqrt{x}$, the non-negative square root of $x$.
+
+\begin{axdef}
+	\sqrtR: \R \pfun \R
+\where
+	\sqrtR = \{~ x: \R | x \geR \zeroR @ x \mulR x \mapsto x ~\}
+\end{axdef}
+
+\section{Open Sets}
+
+\subsection{\zcmd{intervalR}}
+
+For any real numbers $a$ and $b$, let $\intervalR(a,b)$ denote $(a,b)$, the open interval bounded by $a$ and $b$.
+
+\begin{axdef}
+	\intervalR: \R \cross \R \fun \power \R
+\where
+	\forall a, b: \R @ \\
+	\t1	\intervalR(a,b) = \{~ x: \R | a \ltR x \ltR b ~\}
+\end{axdef}
+
+\begin{remark}
+If $a \geR b$ then $\intervalR(a,b) = \emptyset$.
+\end{remark}
+
+\subsection{\zcmd{ballR}}
+
+For any real numbers $x$ and $r$, let $\ballR(x,r)$ denote the set of all real numbers within distance $r$ of $x$.
+
+\begin{axdef}
+	\ballR: \R \cross \R \fun \power \R
+\where
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \{~ x': \R | \absR(x' \subR x) \ltR r ~\}
+\end{axdef}
+
+\begin{remark}
+Balls are intervals.
+
+\begin{zed}
+	\forall x, r: \R @ \\
+	\t1	\ballR(x,r) = \intervalR(x \subR r, x \addR r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \gtR 0$ then $x$ is in $\ballR(x, r)$. 
+
+\begin{zed}
+	\forall x: \R; r: \Rpos @ \\
+	\t1	x \in \ballR(x,r)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+If $r \leR 0$ then $\ballR(x,r)$ is empty.
+
+\begin{zed}
+	\forall x, r: \R | r \leR \zeroR @ \\
+	\t1	\ballR(x,r) = \emptyset
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{ballsR}}
+
+Let $\ballsR$ denote the set of all open balls in $\R$.
+
+\begin{axdef}
+	\ballsR: \Fam \R
+\where
+	\ballsR = \{~ x, r: \R @ \ballR(x,r) ~\}
+\end{axdef}
+
+\subsection{\zcmd{openR}}
+
+A subset $U$ of $\R$ is said to be {\it open} if every point $x \in U$ is surrounded by some open ball $B \subset U$ that lies
+strictly within $U$.
+Let $\openR$ denote the set of all open subsets of $\R$.
+
+\begin{axdef}
+	\openR: \Fam \R
+\where
+	\openR = \\
+	\t1	\{~ U:  \power \R | \\
+	\t2		\forall x: U @ \\
+	\t3			\exists B: \ballsR @ x \in B \subset U ~\}
+\end{axdef}
+
+\begin{remark}
+All balls are open.
+
+\begin{zed}
+	\ballsR \subset \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The empty set is open.
+
+\begin{zed}
+	\emptyset \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The set of all real numbers is open.
+
+\begin{zed}
+	\R \in \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{tauR}}
+
+The topology generated by the open balls of $\R$ is referred to as the {\it usual} or {\it standard} topology on $\R$ .
+Let $\tauR$ denote the usual topology on $\R$.
+
+\begin{axdef}
+	\tauR: top[\R]
+\where
+	\tauR = topGen[\R] \ballsR
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\tauR = \openR
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{Rtau}}
+
+Let $\Rtau$ denote the topological space defined by $\R$ with the usual topology.
+
+\begin{axdef}
+	\Rtau: topSpaces[\R]
+\where
+	\Rtau = (\R, \tauR)
+\end{axdef}
+
+\begin{example}
+
+\begin{zed}
+	\Rtau \in topSpace[\R]
+\end{zed}
+
+\end{example}
+
+\subsection{\zcmd{neighR}}
+
+Let $x$ be a real number.
+Any open set that contains $x$ is called a {\it neighbourhood} of it.
+Let $\neighR(x)$ denote the set of all neighbourhoods of $x$.
+
+\begin{axdef}
+	\neighR: \R \fun \Fam \R
+\where
+	\forall x: \R @ \\
+	\t1	\neighR(x) = \{~ U: \openR | x \in U~\}
+\end{axdef}
+
+Clearly, every real number has an infinity of neighbourhoods.
+
+\begin{remark}
+Any open ball that contains $x$ is a neighbourhood of $x$.
+
+\begin{zed}
+	\forall x: \R; B: \ballsR | \\
+	\t1	x \in B @ \\
+	\t2		B \in \neighR(x)
+\end{zed}
+
+\end{remark}
+
+\section{Functions}
+
+The following sections define continuity, limits, and differentiability, which are point-wise properties of functions.
+These properties are {\it local} in the sense that in order to determine if they hold at a given point it is sufficient to
+consider the restriction of the function to an arbitrarily small neighbourhood of the point.
+It is therefore useful to first introduce the set of {\it locally defined} functions, 
+namely those functions that are defined in some neighbourhood of each point of  their domains.
+
+\subsection{\zcmd{FunR}}
+
+For $x$ a real number,
+let $\FunR(x)$ denote the set of all real-valued, partial functions on $\R$ that are locally defined at $x$.
+
+\begin{axdef}
+	\FunR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\FunR(x) = \{~ f: \R \pfun \R | \exists U: \neighR(x) @ U \subseteq \dom f ~\}
+\end{axdef}
+
+\begin{remark}
+The function $\sqrtR$ is not locally defined at $0$ because it's defined only for non-negative numbers,
+but every neighbourhood of $0$ contains some negative numbers.
+
+\begin{zed}
+	\sqrtR \notin \FunR(\zeroR)
+\end{zed}
+
+\end{remark}
+
+\subsection{\zcmd{FunPR}}
+
+For $U$ a subset of $\R$,
+let $\FunPR(U)$ denote the set of all real-valued functions on $U$ that are locally defined at each point of $U$.
+
+\begin{axdef}
+	\FunPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) = \{~ f: U \fun \R | \forall x: U @ f \in \FunR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \FunPR(U)$ then $U \in \openR$.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\FunPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\section{Continuity}
+
+Let $f$ be a real-valued partial function on $\R$ 
+that is locally defined at $x$ and let $U$ be a neighbourhood of $x$
+contained within the domain of $f$.
+The function $f$ is said to be {\it continuous} at $x$ if 
+for any $\epsilon > 0$ there is some $\delta > 0$ for which 
+$f(x')$ is always within $\epsilon$ of $f(x)$
+when $x' \in U$ is within $\delta$ of $x$.
+\begin{argue}
+\forall \epsilon > 0 @ \exists \delta > 0 @ \forall x' \in U @ \\
+\t1	\abs{x' - x} < \delta \implies \abs{f(x') - f(x)} < \epsilon
+\end{argue}
+
+\begin{schema}{RealContinuous}
+	f: \R \pfun \R \\
+	x: \R
+\where
+	f \in \FunR(x)
+\also
+	\forall \epsilon: \Rpos @ \exists \delta: \Rpos@ \forall x': \dom f @ \\
+	\t1	\absR(x' \subR x) \ltR \delta \implies \absR(f(x') \subR f(x)) \ltR \epsilon
+\end{schema}
+
+\subsection{\zcmd{CzeroR}}
+
+Let $\CzeroR(x)$ denote the set of all real-valued partial functions on $\R$ that are continuous at $x$.
+\begin{axdef}
+	\CzeroR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CzeroR(x) = \{~ f: \FunR(x) | RealContinuous ~\}
+\end{axdef}
+
+\subsection{\zcmd{CzeroPR}}
+
+Let $U$ be any subset of $\R$. 
+Define $\CzeroPR(U)$ to be the set of all real-valued functions on $U$ that are continuous at each point in $U$.
+
+\begin{axdef}
+	\CzeroPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in   \CzeroR(x) ~\}
+\end{axdef}
+
+\begin{remark}
+If $f \in \CzeroPR(U)$ then $U$ is open.
+
+\begin{zed}
+	\forall U: \power \R @ \\
+	\t1	\CzeroPR(U) \neq \emptyset \implies U \in \openR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The $\epsilon-\delta$ definition of continuity given above is compatible with the definition
+of continuity for mappings between topological spaces when we consider $\Rtau$, the usual topology on $\R$,
+and $\Rtau \inducedTopSp U$, the topology induced on the subset $U$.
+
+\begin{zed}
+	\forall U: \openR @ \\
+	\t1	\CzeroPR(U) = \CzeroTT(\Rtau \inducedTopSp U, \Rtau)
+\end{zed}
+
+\end{remark}
+
+\section{Limits}
+
+Let $x$ and $l$ be real numbers and
+let $f$ be a real-valued partial function on $\R$ that is defined everywhere in some
+neighbourhood $U$ of $x$, except possibly at $x$.
+The function $f$ is said to approach the limit $l$ at $x$ if $f \oplus \{ x \mapsto l \}$ is continuous at $x$.
+$$
+	\lim_{x' \to x}{f(x')} = l
+$$
+
+\begin{schema}{Limit}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \oplus \{x \mapsto l\} \in \CzeroR(x)
+\end{schema}
+
+\subsection{\zcmd{limRR}}
+
+Let $\limRR(x,l)$ denote the set of all real-valued partial functions on $\R$ that approach the limit $l$ at $x$.
+
+\begin{axdef}
+	\limRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\limRR(x,l) = \{~ f: \R \pfun \R | Limit ~\}
+\end{axdef}
+
+\begin{theorem}
+If a function $f$ approaches some limit at $x$ then that limit is unique.
+\begin{zed}
+	\forall x, l, l': \R @ \\
+	\t1	\forall f : \limRR(x,l) \cap \limRR(x,l') @ \\
+	\t2		l = l'
+\end{zed}
+\end{theorem}
+
+\begin{proof}
+Suppose we are given real numbers
+\begin{argue}
+	x, l, l' \in \R 
+\end{argue}
+and a function
+\begin{argue}
+	f \in \limRR(x,l) \cap \limRR(x,l')
+\end{argue}
+Let $\epsilon$ be any positive real number
+\begin{argue}
+	\epsilon > 0
+\end{argue}
+Since $f$ approaches limits $l$ and $l'$ at $x$ there exists a real number $\delta > 0$ such that
+\begin{argue}
+	\forall x' \in \R |  \\
+	\t1	\zeroR \ltR \abs{x' \subR x}< \delta @ \\
+	\t2		 \abs{f(x') - l} < \epsilon \land \abs{f(x') - l'} < \epsilon
+\end{argue}
+For any such real number $x'$ we have
+\begin{argue}
+	\abs{l' - l} \\
+	\t1	= \abs{(f(x') - l) - (f(x') - l')} 			& add and subtract $f(x')$ \\
+	\t1	\leq \abs{f(x') - l} + \abs{f(x') - l'} 	& triangle inequality \\
+	\t1	= 2\epsilon					& definition of limits
+\end{argue}
+Since the above holds for any $\epsilon > 0$ we must have
+\begin{argue}
+	l = l'
+\end{argue}
+
+\end{proof}
+
+\subsection{\zcmd{limFR}}
+
+If $f$ approaches the limit $l$ at $x$ then let $\limFR(f,x)$ denote $l$.
+By the preceding theorem, $\limFR(f,x)$ is well-defined when it exists.
+
+\begin{axdef}
+	\limFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\limFR = \{~ Limit @ (f, x) \mapsto l ~\}
+\end{axdef}
+
+\section{Differentiability}
+
+Let $f$ be a real-valued partial function on $\R$, let $x$ be a real number,
+and let $f$ be defined on some neighbourhood $U$ of $x$.
+
+The function $f$ is said to be {\it differentiable} at $x$ if the following limit holds for some number denoted by $f'(x)$.
+$$
+\lim_{h \to 0} \frac{f(x+h) - f(x)}{h} = f'(x)
+$$
+
+\begin{remark}
+If $f$ is differentiable at $x$ then $f$ is continuous at $x$.
+\end{remark}
+
+The geometric intuition behind the concept of differentiability is that $f$ is differentiable at $x$
+when, very near $x$, the graph of $f$ is approximately a straight line through the point $(x, f(x))$ with slope $f'(x)$.
+$$
+f(x + h) \approx f(x) + f'(x) h \quad \text{when} \quad \abs{h} \approx 0
+$$
+The slope $f'(x)$ is called the {\it derivative} of $f$ at $x$
+and $f'$ is called the {\it derived function}.
+
+We can read this definition as saying that the approximate slope function $m(h)$ defined for 
+small enough, non-zero values of $h$ by
+$$
+	m(h) = \frac{f(x + h) - f(x)}{h}
+$$
+approaches the limit $l = f'(x)$ as $h \to 0$.
+$$
+	\lim_{h\to 0}{m(h)} = l = f'(x)
+$$
+
+\begin{schema}{Differentiable}
+	f: \R \pfun \R \\
+	x, l: \R
+\where
+	f \in \CzeroR(x)
+\also
+	\LET m == (\lambda h: \Rnz | x \addR h \in \dom f @ (f(x \addR h) \subR f(x)) \divR h) @ \\
+	\t1	\limFR(m, \zeroR) = l
+\end{schema}
+
+\begin{remark}
+If $f$ is differentiable at $x$ then the limit $l$ is unique.
+\end{remark}
+
+\subsection{\zcmd{diffRR}}
+
+Let $\diffRR(x,l)$ denote the set of all functions $f$ that are differentiable at $x$ with $f'(x) = l$.
+
+\begin{axdef}
+	\diffRR: \R \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x, l: \R @ \\
+	\t1	\diffRR(x, l) = \{~ f: \R \pfun \R | Differentiable ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffR}}
+
+Let $\diffR(x)$ denote the set of all functions that are differentiable at $x$.
+
+\begin{axdef}
+	\diffR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\diffR(x) = \bigcup \{~ l: \R @ \diffRR(x,l) ~\}
+\end{axdef}
+
+\subsection{\zcmd{diffPR}}
+
+Let $U$ be any subset of $\R$. 
+Let $\diffPR(U)$ denote the set of all functions on $U$
+that are differentiable at each point of $U$.
+
+\begin{axdef}
+	\diffPR: \power \R \fun \power(\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\diffPR(U) = \{~ f: \CzeroPR(U) | \forall x: U @ f \in \diffR(x) ~\}
+\end{axdef}
+
+\section{Derivatives}
+
+\subsection{\zcmd{derivFR}}
+
+Let $\derivFR(f,x)$ denote $f'(x)$, the derivative of $f$ at $x$.
+
+\begin{axdef}
+	\derivFR: (\R \pfun \R) \cross \R \pfun \R
+\where
+	\derivFR = \{~ Differentiable @ (f,x) \mapsto l ~\}
+\end{axdef}
+
+\subsection{\zcmd{derivF}}
+
+Let $\derivF(f)$ denote $f'$, the derived function.
+
+\begin{axdef}
+	\derivF: (\R \pfun \R) \fun (\R \pfun \R)
+\where
+	\forall f: \R \pfun \R @ \\
+		\t1	\derivF f = (\lambda x: \R | f \in \diffR(x) @ \derivFR(f,x)) 
+\end{axdef}
+
+\begin{remark}
+If $f$ is differentiable on $U$ then $f'$ is not necessarily continuous on $U$.
+Counterexamples exist.
+\end{remark}
+
+\begin{remark}
+If $f$ is uniformly differentiable on $U$ then $f'$ is continuous on $U$.
+A further discussion of uniform differentiability is beyond the scope of this article.
+\end{remark}
+
+\section{Higher Order Derivatives}
+
+Let $n$ be a natural number and let $x$ be a real number.
+In differential geometry we normally deal with $C^n(x)$, the set of functions
+that possess continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\subsection{\zcmd{CnR}}
+
+Let $\CnR(n,x)$ denote the set of all functions that have continuous derivatives of order $0, \ldots, n$ at $x$.
+
+\begin{axdef}
+	\CnR: \nat \cross \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\CnR(0,x) = \CzeroR(x)
+\also
+	\forall n: \nat; x: \R @ \\
+	\t1	\CnR(n + 1, x) = \{~ f: \diffR(x) | \derivF f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{CnPR}}
+
+Let $n$ be a natural number and let $U$ be a subset of $\R$.
+Let $\CnPR(n,U)$ denote the set of all functions on $U$ that have continuous derivatives of order $0, \ldots, n$
+at every point of $U$.
+
+\begin{axdef}
+	\CnPR: \nat \cross \power \R \fun \power(\R \pfun \R)
+\where
+	\forall n: \nat; U: \power \R @ \\
+	\t1	\CnPR(n,U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \CnR(n,x) ~\}
+\end{axdef}
+
+\section{Smoothness}
+
+\subsection{\zcmd{smoothR}}
+
+A function is said to be {\it smooth} if it possesses continuous derivatives of all orders.
+Let $x$ be a real number.
+Let $\smoothR(x)$ denote the set of all functions that are smooth at $x$.
+
+\begin{axdef}
+	\smoothR: \R \fun \power(\R \pfun \R)
+\where
+	\forall x: \R @ \\
+	\t1	\smoothR(x) = \{~ f: \FunR(x) | \forall n: \nat @ f \in \CnR(n, x) ~\}
+\end{axdef}
+
+\subsection{\zcmd{smoothPR}}
+
+Let $\smoothPR(U)$ denote the set of all functions on $U$ that are smooth at every point of $U$.
+
+\begin{axdef}
+	\smoothPR: \power \R \fun \power (\R \pfun \R)
+\where
+	\forall U: \power \R @ \\
+	\t1	\smoothPR(U) = \{~ f: \FunPR(U) | \forall x: U @ f \in \smoothR(x) ~\}
+\end{axdef}
+
+\section{Important Constants and Functions}
+
+This section defines several important constants and functions.
+
+\subsection{$integer\_as\_real$}
+
+The real numbers contain a natural copy of the integers.
+Let $integer\_as\_real$ denote this embedding.
+
+\begin{axdef}
+	integer\_as\_real : \num \inj \R
+\end{axdef}
+
+\subsection{\zcmd{asZR}}
+
+We introduce the notation $\asZR x = integer\_as\_real~x$ for this embedding.
+
+\begin{zed}
+	\asZR == integer\_as\_real
+\end{zed}
+
+The real numbers $\zeroR$ and $\oneR$ are the images of the corresponding integers under this
+embedding.
+
+\begin{zed}
+	\asZR 0 = \zeroR
+\also
+	\asZR 1 = \oneR
+\end{zed}
+
+\subsection{$IntegerTimesReal$}
+
+We can use the embedding to define the product $y = n * x$ where $n$ is an integer
+and $x$ and $y$ are real numbers.
+
+\begin{schema}{IntegerTimesReal}
+	n : \num \\
+	x, y : \R
+\where
+	y = (\asZR n) \mulR x
+\end{schema}
+
+\subsection{$integer\_times\_real$}
+
+Let $y = integer\_times\_real(n, y)$ denote this multiplication operation.
+
+\begin{zed}
+	integer\_times\_real == \{~ IntegerTimesReal @ (n, x) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{mulZR}}
+
+We introduce the notation $n \mulZR x = integer\_times\_real(n, x)$.
+
+\begin{zed}
+	(\_ \mulZR \_) == integer\_times\_real
+\end{zed}
+
+\subsection{$RealDivInteger$}
+
+Similarly, we can define division of a real number $x$ by a nonzero integer $n$
+to give the quotient $y = x / n$.
+
+\begin{schema}{RealDivInteger}
+	n : \num \\
+	x, y : \R
+\where
+	n \neq 0
+\also
+	y = x \divR (\asZR n)
+\end{schema}
+
+\subsection{$real\_div\_integer$}
+
+Let $y = real\_div\_integer(x, n)$ denote this division operation.
+
+\begin{zed}
+	real\_div\_integer == \{~ RealDivInteger @ (x, n) \mapsto y ~\}
+\end{zed}
+
+\subsection{\zcmd{divRZ}}
+
+We introduce the notation $y = x \divRZ n$.
+
+\begin{zed}
+	(\_ \divRZ \_) == real\_div\_integer
+\end{zed}
+
+\subsection{\zcmd{sinR}}
+
+Let $\sinR(x)$ denote the usual trigonometric sine function of the real number $x$.
+
+\begin{axdef}
+	\sinR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{cosR}}
+
+Let $\cosR(x)$ denote the usual trigonometric cosine function of the real number $x$.
+
+\begin{axdef}
+	\cosR : \R \fun \R
+\end{axdef}
+
+\subsection{\zcmd{piR}}
+
+Let $\piR$ denote the usual ratio of the perimeter of a circle to its diameter.
+
+\begin{axdef}
+	\piR : \R
+\end{axdef}
+
+\subsection{$sum\_real$}
+
+Given a sequence $a$ of zero or more real numbers,
+we define its sum $sum\_real(a)$ recursively as follows.
+
+\begin{axdef}
+	sum\_real : \seq \R \fun \R
+\where
+	sum\_real(\langle \rangle) = \zeroR
+\also
+	\forall x : \R; a : \seq \R @ \\
+	\t1	sum\_real(\langle x \rangle \cat a) = x \addR sum\_real(a)
+\end{axdef}
+
+\subsection{\zcmd{sumR}}
+
+We introduce the notation $\sumR(a) = sum\_real(a)$.
+
+\begin{zed}
+	\sumR == sum\_real
+\end{zed}
+
+\section{The Real Plane}
+
+In order to define what it means for an arrangement of test tubes to be balanced,
+we need to use some concepts from Euclidean geometry and classical mechanics.
+Classical mechanics is phrased in terms of real coordinate systems.
+We therefore start by defining the usual real plane and its coordinates.
+
+\subsection{\zcmd{Rtwo}}
+
+We model the real plane as pairs of real numbers.
+Let $\Rtwo$ denote the real plane.
+
+\begin{zed}
+	\Rtwo == \R \cross \R
+\end{zed}
+
+\subsection{$zero\_real\_plane$}
+
+Let the point $zero\_real\_plane \in \Rtwo$ denote the origin of the real plane.
+
+\begin{zed}
+	zero\_real\_plane == (\zeroR, \zeroR)
+\end{zed}
+
+\subsection{\zcmd{zeroRtwo}}
+
+We introduce the usual notation $\zeroRtwo = zero\_real\_plane$ for the origin of the real plane.
+
+\begin{zed}
+	\zeroRtwo == zero\_real\_plane
+\end{zed}
+
+\subsection{$RealPlane$}
+
+Let $point \in \Rtwo$ be a point in the real plane.
+Its Cartesian coordinates are denoted by $x$ and $y$.
+Let the schema $RealPlane$ denote this situation.
+
+\begin{schema}{RealPlane}
+	point: \Rtwo \\
+	x, y : \R
+\where
+	point = (x, y)
+\end{schema}
+
+\subsection{$ScaleRealPlane$}
+
+Let $a \in \R$ be a scaling factor and let $point \in \Rtwo$ be a point.
+Let $point' = a * point$ be  $point$ scaled by $a$.
+Let the schema $ScaleRealPlane$ denote this situation.
+
+\begin{schema}{ScaleRealPlane}
+	a : \R \\
+	RealPlane \\
+	RealPlane'
+\where
+	x' = a \mulR x
+\also
+	y' = a \mulR x
+\end{schema}
+
+\subsection{$scale\_real\_plane$}
+
+Let $point' = scale\_real\_plane(a, point)$ denote the operation of scalar multiplication.
+
+\begin{zed}
+	scale\_real\_plane == \{~ ScaleRealPlane @ (a, point) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{smulRtwo}}
+
+We introduce the notation $a \smulRtwo point = scale\_real\_plane(a, point)$
+for scalar multiplication.
+
+\begin{zed}
+	(\_ \smulRtwo \_) == scale\_real\_plane
+\end{zed}
+
+\subsection{$ScaleIntRealPlane$}
+
+It is convenient to allow scaling of points in the real plane by integers.
+Let $n \in \num$ be a scaling factor and let $point \in \Rtwo$ be a point.
+Let $point' = n * point$ be  $point$ scaled by $n$.
+Let the schema $ScaleIntRealPlane$ denote this situation.
+
+\begin{schema}{ScaleIntRealPlane}
+	n : \num \\
+	RealPlane \\
+	RealPlane'
+\where
+	x' = n \mulZR x
+\also
+	y' = n \mulZR x
+\end{schema}
+
+\subsection{$scale\_int\_real\_plane$}
+
+Let $point' = scale\_int\_real\_plane(n, point)$ denote the operation of scalar multiplication
+by an integer.
+
+\begin{zed}
+	scale\_int\_real\_plane == \{~ ScaleIntRealPlane @ (n, point) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{smulZRtwo}}
+
+We introduce the notation $n \smulZRtwo point = scale\_int\_real\_plane(n, point)$
+for scalar multiplication.
+
+\begin{zed}
+	(\_ \smulZRtwo \_) == scale\_int\_real\_plane
+\end{zed}
+
+\subsection{$AddRealPlane$}
+
+Let $point_1$ and $point_2$ be points.
+We can define their sum $point' = point_1 + point_2$ by component-wise addition.
+Let the schema $AddRealPlane$ denote this situation.
+
+\begin{schema}{AddRealPlane}
+	RealPlane_1 \\
+	RealPlane_2 \\
+	RealPlane'
+\where
+	x' = x_1 \addR x_2
+\also
+	y' = y_1 \addR y_2
+\end{schema}
+
+\subsection{$add\_real\_plane$}
+
+Let $add\_real\_plane(point_1, point_2) = point_1 + point_2$ denote addition of points in the
+real plane.
+
+\begin{zed}
+	add\_real\_plane == \{~ AddRealPlane @ (point_1, point_2) \mapsto point' ~\}
+\end{zed}
+
+\subsection{\zcmd{addRtwo}}
+
+We introduce the usual notation $point_1 \addRtwo point_2 = add\_real\_plane(point_1, point_2)$
+to denote addition of points in the real plane.
+
+\begin{zed}
+	(\_ \addRtwo \_) == add\_real\_plane
+\end{zed}
+
+\subsection{$sum\_real\_plane$}
+
+Given a sequence $a$ of zero or more points in the real plane,
+we define its sum $sum\_real\_plane(a)$ recursively as follows.
+
+\begin{axdef}
+	sum\_real\_plane : \seq \Rtwo \fun \Rtwo
+\where
+	sum\_real\_plane(\langle \rangle) = \zeroRtwo
+\also
+	\forall point : \Rtwo; a : \seq \Rtwo @ \\
+	\t1	sum\_real\_plane(\langle point \rangle \cat a) = point \addRtwo sum\_real\_plane(a)
+\end{axdef}
+
+\subsection{\zcmd{sumRtwo}}
+
+We introduce the notation $\sumRtwo(a) = sum\_real\_plane(a)$.
+
+\begin{zed}
+	\sumRtwo == sum\_real\_plane
+\end{zed}
+
+\subsection{\zcmd{addFRtwo}}
+
+Let $\genT$ be any set and let $f$ and $g$ be partial functions from $\genT$ to $\Rtwo$.
+Let $h(x) = f(x) + g(x)$ denote their pointwise sum on their common domain of definition.
+Let the schema $AddFunctionsRealPlane$ denote this situation.
+
+\begin{schema}{AddFunctionsRealPlane}[\genT]
+	f, g, h : \genT \pfun \Rtwo
+\where
+	h = (\lambda x : \dom f \cap \dom g @ f~x \addRtwo g~x)
+\end{schema}
+
+Let the function $add\_functions\_real\_plane(f, g) = h$ map two functions with values in $\Rtwo$ to their pointwise sum.
+
+\begin{gendef}[\genT]
+	add\_functions\_real\_plane : (\genT \pfun \Rtwo) \cross (\genT \pfun \Rtwo) \fun (\genT \pfun \Rtwo)
+\where
+	add\_functions\_real\_plane = \\
+	\t1	\{~ AddFunctionsRealPlane[\genT] @ (f, g) \mapsto h ~\}
+\end{gendef}
+
+We introduce the notation $f \addFRtwo g = add\_functions\_real\_plane(f, g)$.
+
+\begin{zed}
+	(\_ \addFRtwo \_)[\genT] == add\_functions\_real\_plane[\genT]
+\end{zed}
+
+
+\subsection{$PolarRealPlane$}
+
+Let $(x, y)$ be the Cartesian coordinates of a point in the plane.
+Let $r$ denote the distance of the point from the origin and
+let $a$ denote the counter-clockwise angle of the point from the $x$-axis.
+The pair $(r, a)$ is called the \textit{polar coordinates} of the point.
+Conversely, given an pair $(r, a)$ we can compute the corresponding
+Cartesian coordinates.
+Let the schema $PolarRealPlane$ denote this situation.
+
+\begin{schema}{PolarRealPlane}
+	RealPlane \\
+	r, a : \R
+\where
+	x = r \mulR \cosR a
+\also
+	y = r \mulR \sinR a
+\end{schema}
+
+\subsection{$polar\_to\_cartesian$}
+
+Let the function $polar\_to\_cartesian(r, a) = (x, y)$ denote the mapping from
+polar to Cartesian coordinates.
+
+\begin{zed}
+	polar\_to\_cartesian == \{~ PolarRealPlane @ (r, a) \mapsto (x, y) ~\}
+\end{zed}
+
+Note that this function is not one-to-one for the following reasons.
+\begin{itemize}
+	\item The pairs $(r, a + 2k\pi)$ for any $k \in \num$ map to the same points.
+	\item The pairs $(r, a)$ and $(-r, a + \pi)$ map to the same points.
+	\item The pairs $(0, a)$ and $(0, a')$ map to the same points.
+\end{itemize}
+
+\subsection{The Dot Product}
+
+Given two points $v_1 = (x_1,y_1), v_2 = (x_2, y_2) \in \Rtwo$, 
+their \textit{dot product} $v_1 \cdot v_2$ is defined as follows.
+\begin{equation}
+	v_1 \cdot v_2 = x_1 x_2 + y_1 y_2
+\end{equation}
+Let the schema $DotRealPlane$ denote this situation where $product = v_1 \cdot v_2$.
+
+\begin{schema}{DotRealPlane}
+	RealPlane_1 \\
+	RealPlane_2 \\
+	product: \R
+\where
+	product = x_1 \mulR x_2 \addR y_1 \mulR y_2
+\end{schema}
+
+Let the function $dot\_real\_plane(v_1, v_2) = v_1 \cdot v_2$ map a pair of points to their dot product.
+
+\begin{axdef}
+	dot\_real\_plane: \Rtwo \cross \Rtwo \fun \R
+\where
+	dot\_real\_plane = \{~ DotRealPlane @ (point_1, point_2) \mapsto product ~\}
+\end{axdef}
+
+We introduce the usual notation $v_1 \dotRtwo v_2 = dot\_real\_plane(v_1, v_2)$.
+
+\begin{zed}
+	(\_ \dotRtwo \_) == dot\_real\_plane
+\end{zed}
+
+\subsection{Norm}
+
+The \textit{norm} of a point in the plane is defined to be the square root of its dot product with itself.
+Let the schema $NormRealPlane$ denote this situation where $norm$ denotes the norm of the point.
+
+\begin{schema}{NormRealPlane}
+	RealPlane \\
+	norm: \Rgez
+\where
+	norm = \sqrtR(point \dotRtwo point)
+\end{schema}
+
+Let the function $norm\_real\_plane(point) = norm$ map a point to its norm.
+
+\begin{axdef}
+	norm\_real\_plane: \Rtwo \fun \Rgez
+\where
+	norm\_real\_plane = \{~ NormRealPlane @ point \mapsto norm ~\}
+\end{axdef}
+
+We introduce the notation $\normRtwo(point) = norm\_real\_plane(point)$.
+
+\begin{zed}
+	\normRtwo == norm\_real\_plane
+\end{zed}
+
+\subsection{The Unit Circle}
+
+A point in the plane is said to be a \textit{unit vector} when it has norm $1$.
+The set of all unit vectors make up the \textit{unit circle}.
+Let the schema $UnitCircle$ denote this situation.
+
+\begin{schema}{UnitCircle}
+	RealPlane
+\where
+	\normRtwo(point) = \oneR
+\end{schema}
+
+Let $unit\_circle$ denote the set of all unit vectors in the real plane.
+
+\begin{axdef}
+	unit\_circle: \power \Rtwo
+\end{axdef}
+
+We introduce the usual notation $\sphereOne = unit\_circle$.
+
+\begin{zed}
+	\sphereOne == unit\_circle
+\end{zed}
+
+\printbibliography
+
+\end{document}

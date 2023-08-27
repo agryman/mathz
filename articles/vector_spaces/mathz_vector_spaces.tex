@@ -1,0 +1,821 @@
+\documentclass{amsart}
+
+\usepackage{mathz_sets}
+\usepackage{mathz_groups}
+\usepackage{mathz_topological_spaces}
+\usepackage{mathz_real_numbers}
+\usepackage{mathz_vector_spaces}
+
+\usepackage{mathz_preamble}
+
+\addbibresource{mathz_references.bib}
+
+\begin{document}
+
+\title{Vector Spaces}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains Z Notation type declarations for vector spaces and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Real Vector Spaces}
+
+Real vector spaces are multidimensional generalizations of real numbers.
+They are the objects studied in linear algebra and are foundational to differential geometry.
+
+In the following let $\genT$ denote a set of elements which we'll refer to as {\em vectors}
+and let $A$ denote an Abelian group over the vectors in which the binary operation is denoted as addition.
+Let $v$ and $w$ denote vectors and
+and let $x$ and $y$ denote real numbers.
+
+\subsection{Notation for Vector Addition, Zero, and Negative: \zcmd{addV}, \zcmd{zeroV}, and \zcmd{negV}}
+
+Let $v \addV w$ denote vector addition,
+let $\zeroV$ denote the zero vector,
+and let $\negV v$ denote the negative vector.
+
+\subsection{Real Scalar Multiplication: \zcmd{mulS}, \zcmd{timesS}, and $RealScalarMultiplication$}
+
+A {\em real scalar multiplication} operation on the vectors is an operation $smul$ 
+that maps the pair $(x, v)$ to another vector, typically denoted $x \mulS v$ or $x \timesS y$,
+such that
+multiplication by 0 maps all vectors to the group identity element,
+multiplication by 1 maps each vector to itself,
+multiplication preserves group addition, 
+and multiplication distributes over both real and group addition.
+
+Let $RealScalarMultiplication$ denote this situation.
+
+\begin{schema}{RealScalarMultiplication}[\genT]
+A: \abgroup \genT \\
+smul: \R \cross \genT \fun \genT
+\where
+\LET (\_ \addV \_) == A; \\
+\t1	\zeroV == identity\_element~A; \\
+\t1	(\_ \mulS \_) == smul @ \\
+\t2		\forall x, y: \R; v, w: \genT @ \\
+\t3			\zeroR \mulS v = \zeroV \land \\
+\t3			\oneR \mulS v = v \land \\
+\t3			(x \mulR y) \mulS v = x \mulS (y \mulS v) \land \\
+\t3			(x \addR y) \mulS v = x \mulS v \addV y \mulS v \land \\
+\t3			x \mulS (v \addV w) = x \mulS v \addV x \mulS w
+\end{schema}
+
+\begin{itemize}
+	\item Multiplying by $\zeroR$ gives the zero vector.
+	\item Multiplying by $\oneR$ gives the same vector.
+	\item Scalar multiplication is associative.
+	\item Scalar addition distributes over scalar multiplication.
+	\item Vector addition distributes over scalar multiplication.
+\end{itemize}
+
+\subsection{The Set of All Real Vector Spaces: \zcmd{vecR}}
+
+A {\em real vector space} is a pair $(A, smul)$ where $A$ is an Abelian group and $smul$
+is a real scalar multiplication on the elements of $A$.
+The elements of $A$ are referred to as \textit{vectors}.
+
+Let $\vecR \genT$ denote the set of all real vector spaces over $\genT$,
+
+\begin{zed}
+\vecR \genT == \{~ RealScalarMultiplication[\genT] @ (A, smul) ~\}
+\end{zed}
+
+\subsection{Real Linear Transformations: $RealLinearTransformation$}
+
+Let $V_1$ and $V_2$ be real vector spaces and let $f$ be a homomorphism of the underlying
+Abelian groups.
+The map $f$ is said to be a {\em linear transformation} if $f$ maps scalar multiples of vectors to the
+scalar multiple of the mapped vectors.
+
+Let $RealLinearTransformation$ denote this situation.
+
+\begin{schema}{RealLinearTransformation}[\genT, \genU]
+f: \genT \fun \genU \\
+V_1: \vecR \genT \\
+V_2: \vecR \genU
+\where
+\LET A_1 == first~V_1; (\_ \mulS \_) == second~V_1; \\
+\t1	A_2 == first~V_2; (\_ \timesS \_) == second~V_2 @ \\
+\t2		f \in \homGroup(A_1, A_2) \land \\
+\t2		(\forall x: \R; v: \genT @ \\
+\t3			f(x \mulS v) = x \timesS(f~v))
+\end{schema}
+
+\begin{itemize}
+\item The vector space $V_1$ has Abelian group $A_1$ and scalar multiplication $(\_ \mulS \_)$.
+\item The vector space $V_2$ has Abelian group $A_2$ and scalar multiplication $(\_ \timesS \_)$.
+\item The map $f$ is a homomorphism of the underlying Abelian groups.
+\item The map $f$ maps scalar multiples of vectors in $\genT$ to scalar multiples of the mapped vectors in $\genU$.
+\end{itemize}
+
+\subsection{The Set of All Real Linear Transformations: \zcmd{homVecR}}
+
+Let $V_1$ and $V_2$ be real vector spaces.
+Let $\homVecR(V_1, V_2)$ denote the set of all linear transformations from $V_1$ to $V_2$.
+A linear transformation is also referred to as a \textit{homomorphism} of vector spaces.
+
+\begin{zed}
+\homVecR[\genT, \genU] == \\
+\t1	(\lambda V_1: \vecR \genT; V_2: \vecR \genU @ \\
+\t2		\{~ f: \genT \fun \genU | \\
+\t3			RealLinearTransformation[\genT, \genU] ~\})
+\end{zed}
+
+\section{Real $n$-tuples}
+
+The preceding section described real vector spaces abstractly.
+In this section we define a family of finite-dimensional real vector spaces
+whose elements are finite sequences of real numbers, also referred to as \textit{real tuples}.
+
+\subsection{The Set of All Finite Sequences of Real Numbers: \zcmd{Rinf}}
+
+Let $n$ be a natural number.
+A finite sequence of $n$ real numbers is called a {\it real $n$-tuple}.
+Let $\Rinf$ denote the set of all real $n$-tuples for any $n$.
+
+\begin{zed}
+	\Rinf == \seq \R
+\end{zed}
+
+\subsection{The Component Projection Function: \zcmd{piRinf}}
+
+The real numbers that comprise an $n$-tuple are called its \textit{components}.
+Let $v$ be a real $n$-tuple and let $i$ be an integer where $1 \le i \le n$.
+The real number $v(i)$ is the $i$-th component of $v$.
+Let $\piRinf(i)$ be the projection function that maps an $n$-tuple $v$ to its $i$-th component $v(i)$.
+
+\begin{axdef}
+	\piRinf: \nat_1 \fun \Rinf \pfun \R
+\where
+	\forall i: \nat_1 @ \\
+	\t1	\piRinf(i) = (\lambda v: \Rinf | i \in \dom v @ v(i))
+\end{axdef}
+
+\subsection{The Set of All Well-Dimensioned Subsets of $\Rinf$: \zcmd{DeltaRinf}}
+
+A non-empty subset of $\Rinf$ is said to be \textit{well-dimensioned} if each of its elements has the same number
+of components.
+Let $\DeltaRinf$ denote the family of all well-dimensioned subsets of $\Rinf$ .
+
+\begin{axdef}
+	\DeltaRinf: \Fam \Rinf
+\where
+	\DeltaRinf = \{~ S: \power_1 \Rinf | \forall v, w: S @ \# v = \# w ~\}
+\end{axdef}
+
+\subsection{The Dimension of a Well-Dimensioned Set of Tuples: \zcmd{dimRinf}}
+
+Let $S \in \DeltaRinf$ be a well-dimensioned set of tuples.
+The number of components of each tuple in $S$ is called its \textit{dimension}.
+Let $\dimRinf(S)$ denote the dimension of $S$.
+
+\begin{axdef}
+\dimRinf: \DeltaRinf \fun \nat
+\where
+%	\forall n: \nat @ \forall U: \power(\Rtup(n)) @ \\
+%	\t1	\dimRinf(U) = n
+\forall S: \DeltaRinf @ \\
+\t1	\dimRinf S = (\mu v: S @ \# v)
+\end{axdef}
+
+\subsection{The Set of All Compatible Pairs of Tuples: \zcmd{RinfDelta}}
+
+The pair of real tuples $(v, w)$ is said to be \textit{compatible} if each member has the same number of components.
+Let $\RinfDelta$ denote the set of all compatible pairs of real tuples.
+If the pair $(v, w)$ is compatible then $v$ and $w$ are said to be compatible with each other.
+
+\begin{axdef}
+	\RinfDelta: \Rinf \rel \Rinf
+\where
+	\RinfDelta = \{~ v, w: \Rinf | \# v = \# w ~\}
+\end{axdef}
+
+\subsection{Addition of Compatible Tuples: \zcmd{addRinf}}
+
+Let $v$ and $w$ be $n$-tuples.
+Vector addition of $v$ and $w$ is the $n$-tuple $v \addRinf w$ defined by component-wise addition.
+
+\begin{axdef}
+	\_ \addRinf \_: \RinfDelta \fun \Rinf
+\where
+	\langle \rangle \addRinf \langle \rangle = \langle \rangle
+\also
+\forall n: \nat_1; v, w: \Rinf | n = \#v = \# w @ \\
+\t1	v \addRinf w = (\lambda i: 1 \upto n @ v~i \addR w~i)
+\end{axdef}
+
+\subsection{Subtraction of Compatible Tuples: \zcmd{subRinf}}
+
+Vector subtraction is defined similarly.
+
+\begin{axdef}
+	\_ \subRinf \_: \RinfDelta \fun \Rinf
+\where
+	\langle \rangle \subRinf \langle \rangle = \langle \rangle
+\also
+\forall n: \nat_1; v, w: \Rinf | n = \#v = \# w @ \\
+\t1	v \subRinf w = (\lambda i: 1 \upto n @ v~i \subR w~i)
+\end{axdef}
+
+\subsection{The Negative of a Tuple: \zcmd{negRinf}}
+
+Let $\negRinf v$ denote the negative of $v$.
+
+\begin{axdef}
+\negRinf: \Rinf \fun \Rinf
+\where
+\negRinf \langle \rangle = \langle \rangle
+\also
+\forall n: \nat_1; v: \Rinf | n = \# v @ \\
+\t1	\negRinf v = (\lambda i: 1 \upto n @ \negR(v~i))
+\end{axdef}
+
+\subsection{Scalar Multiplication of a Tuple: \zcmd{smulRinf}}
+
+Let $v$ be an $n$-tuple and let $c$ be a real number.
+Scalar multiplication of $v$ by $c$ is the $n$-tuple $c \smulRinf v$ defined by component-wise multiplication.
+
+\begin{axdef}
+\_ \smulRinf \_ : \R \cross \Rinf \fun \Rinf 
+\where
+\forall c: \R @ \\
+\t1	c \smulRinf \langle \rangle = \langle \rangle
+\also
+\forall c: \R; n: \nat_1; v: \Rinf | n = \# v @ \\
+\t1	c \smulRinf v = (\lambda i: 1 \upto n @ c \mulR (v~i))
+\end{axdef}
+
+\begin{remark}
+Scalar multiplication is associative in the sense that $(a \mulR b) \smulRinf v = a \smulRinf (b \smulRinf v)$
+
+\begin{zed}
+	\forall a, b: \R; v: \Rinf @ \\
+	\t1	(a \mulR b) \smulRinf v = a \smulRinf (b \smulRinf v)
+\end{zed}
+
+\end{remark}
+
+\subsection{The Set of All Real $n$-tuples: \zcmd{Rtup}}
+
+Let $\Rtup(n)$ denote $\R^n$, the set of all $n$-tuples for some given $n$.
+\begin{axdef}
+	\Rtup: \nat \fun \power \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\Rtup(n) = \{~ v: \Rinf | \# v = n ~\}
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\Rinf = \bigcup \{~ n: \nat @ \Rtup(n) ~\}
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The subset $\Rtup(n)$ is well-dimensioned.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\Rtup(n) \in \DeltaRinf
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The dimension of $\Rtup(n)$ is $n$.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\dimRinf(\Rtup(n)) = n
+\end{zed}
+
+\end{remark}
+
+\subsection{Addition of $n$-tuples: $addRtup$}
+
+Let $addRtup(n)$ denote the restriction of addition to $\Rtup(n)$.
+
+\begin{zed}
+addRtup == \\
+\t1	(\lambda n: \nat @ \\
+\t2		(\lambda v, w: \Rtup(n) @ v \addRinf w))
+\end{zed}
+
+\begin{example}
+The binary operation $addRtup(n)$ defines an Abelian group over $\Rtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	addRtup(n) \in \abgroup(\Rtup(n))
+\end{zed}
+
+\end{example}
+
+\subsection{Subtraction of $n$-tuples: $subRtup$}
+
+Let $subRtup(n)$ denote the restriction of subtraction to $\Rtup(n)$.
+
+\begin{zed}
+subRtup == \\
+\t1	(\lambda n: \nat @ \\
+\t2		(\lambda v, w: \Rtup(n) @ v \subRinf w))
+\end{zed}
+
+\subsection{The Negative of an $n$-tuple: $negRtup$}
+
+Let $negRtup(n)$ denote the restriction of the negative operation to $\Rtup(n)$.
+
+\begin{zed}
+negRtup == \\
+\t1	(\lambda n: \nat @ \\
+\t2		(\lambda v: \Rtup(n) @ \negRinf v))
+\end{zed}
+
+\begin{remark}
+The operation $negRtup(n)$ is the inverse operation of the Abelian group $addRtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	negRtup(n) = inverse\_operation(addRtup(n))
+\end{zed}
+
+\end{remark}
+
+
+\subsection{The Zero Real $n$-tuple: \zcmd{zeroRtup}}
+
+Let $\zeroRtup(n)$ denote the $n$-tuple consisting of all zeroes.
+
+\begin{axdef}
+	\zeroRtup: \nat \fun \Rinf
+\where
+	\zeroRtup(0) = \langle \rangle
+\also
+	\forall n: \nat_1 @ \\
+	\t1	\zeroRtup(n) = (\lambda i: 1 \upto n @ \zeroR)
+\end{axdef}
+
+\begin{remark}
+Every component of $\zeroRtup(n)$ is $\zeroR$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	\forall i: 1 \upto n @ \\
+\t2	(\piRinf i)(\zeroRtup n) = \zeroR
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The tuple $\zeroRtup(n)$ is in $\Rtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	\zeroRtup(n) \in \Rtup(n)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The tuple $\zeroRtup(n)$ is the identity element of the Abelian group $addRtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	\zeroRtup(n) = identity\_element(addRtup(n))
+\end{zed}
+
+\end{remark}
+
+\subsection{Scalar Multiplication of an $n$-tuple: $smulRtup$}
+
+Let $smulRtup(n)$ denote scalar multiplication restricted to $\Rtup(n)$.
+
+\begin{zed}
+smulRtup == \\
+\t1	(\lambda n: \nat @ \\
+\t2		(\lambda c: \R; v: \Rtup(n) @ c \smulRinf v))
+\end{zed}
+
+\subsection{The Real Vector Space of $n$-tuples: $vecRtup$}
+
+Let $vecRtup(n)$ denote the real vector space of $n$-tuples.
+
+\begin{zed}
+vecRtup == \\
+\t1	(\lambda n: \nat @ (addRtup(n), smulRtup(n)))
+\end{zed}
+
+\begin{remark}
+The pair $vecRtup(n)$ defines a vector space over $\Rtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	vecRtup(n) \in \vecR(\Rtup(n))
+\end{zed}
+
+\end{remark}
+
+\subsection{Linear Transformations of $n$-tuples: \zcmd{linRtup}}
+
+Define $\linRtup(n,m)$ to be the set of all linear transformations from $\R^n$ to $\R^m$.
+\begin{axdef}
+	\linRtup: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
+\where
+	\forall n,m: \nat @ \\
+	\t1	\linRtup(n,m) = \homVecR(vecRtup(n), vecRtup(m))
+\end{axdef}
+
+\subsection{The Identity Transformation of $n$-tuples: \zcmd{idRtup}}
+
+Let $\idRtup(n)$ denote the identity function on $\Rtup(n)$.
+
+\begin{axdef}
+	\idRtup: \nat \fun \Rinf \pfun \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\idRtup(n) = \id(\Rtup(n))
+\end{axdef}
+
+\begin{remark}
+The function $\idRtup(n)$ is a linear transformation.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\idRtup(n) \in \linRtup(n, n)
+\end{zed}
+
+\end{remark}
+
+\section{The Metric Topology on Real $n$-tuples}
+
+\subsection{The Dot Product of Tuples: \zcmd{dotRinf}}
+
+The {\it inner} or {\it dot} product of $n$-tuples $v$ and $w$ is the real number $v \dotRinf w$ 
+defined by the sum of the component-wise products.
+
+\begin{axdef}
+	\_ \dotRinf \_ : \RinfDelta \fun \R
+\where
+	\langle \rangle \dotRinf \langle \rangle = \zeroR
+\also
+	\forall x, y: \R; v, w: \Rinf | \# v = \# w @ \\
+	\t1	(\langle x \rangle \cat v) \dotRinf (\langle y \rangle \cat w) = x \mulR y \addR v \dotRinf w
+\end{axdef}
+
+Each $\Rtup(n)$ is a real inner product space under the operation of dot product defined above.
+
+\subsection{The Norm of a Tuple: \zcmd{normRinf}}
+
+The norm $\norm{v}$ of the $n$-tuple $v$ is the positive square root of its dot product with itself.
+$$
+	\norm{v} = \sqrt{v \dotRinf v}
+$$
+
+Define $\normRinf(v)$ to be $\norm{v}$.
+\begin{axdef}
+	\normRinf: \Rinf \fun \R
+\where
+	\forall v: \Rinf @ \\
+	\t1	\normRinf(v) = \sqrtR(v \dotRinf v)
+\end{axdef}
+
+The concepts of continuity, limits, and differentiability extend to functions between normed vector spaces such as $\R^n$.
+
+\subsection{The Open Ball at a Tuple: \zcmd{ballRinf}}
+
+Let $\ballRinf(v,r)$ denote the \textit{open ball} in $\Rtup(n)$ of radius $r  \in \Rpos$ centred at $v \in \Rtup(n)$.
+
+\begin{axdef}
+\ballRinf: \Rinf \cross \Rpos \fun \power \Rinf
+\where
+\forall v: \Rinf; r: \Rpos @ \\
+\t1	\LET n == \# v @ \\
+\t2		\ballRinf(v, r) = \{~ w: \Rtup(n) | \normRinf(v \subRinf w) \ltR r ~\}
+\end{axdef}
+
+\subsection{The Set of All Open Balls at an $n$-tuple: \zcmd{ballsRtup}}
+
+Let $\ballsRtup(n)$ denote the family of all open balls in $\Rtup(n)$.
+
+\begin{axdef}
+	\ballsRtup: \nat \fun \Fam \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\ballsRtup(n) =  \{~ v: \Rtup(n); r: \Rpos @ \ballRinf(v,r) ~\}
+\end{axdef}
+
+\begin{remark}
+The set of all open balls in $\Rtup(n)$ is a family of sets in $\Rtup(n)$.
+
+\begin{zed}
+\forall n: \nat @ \\
+\t1	\ballsRtup(n) \in \Fam (\Rtup(n))
+\end{zed}
+
+\end{remark}
+
+\subsection{The Usual Topology on $n$-tuples: \zcmd{tauRtup}}
+
+The \textit{usual topology} on $\Rtup(n)$ is the topology generated by the open balls in $\Rtup(n)$.
+Let $\tauRtup(n)$ denote the usual topology on $\Rtup(n)$.
+
+\begin{axdef}
+	\tauRtup: \nat \fun \Fam \Rinf
+\where
+	\forall n: \nat @ \\
+	\t1	\tauRtup(n) = topGen[\Rtup(n)] (\ballsRtup(n))
+\end{axdef}
+
+\begin{remark}
+
+If $n \in \nat$ then $\tauRtup(n)$ is a topology on $\Rtup(n)$.
+
+\begin{zed}
+	\forall n: \nat @ \tauRtup(n) \in top[\Rtup(n)]
+\end{zed}
+\end{remark}
+
+\subsection{The Set of All Neighbourhoods of a Tuple: \zcmd{neighRinf}}
+
+Let $v \in \Rtup(n)$. 
+An open set $U$ in the usual topology $\tauRtup(n)$ that contains $v$
+is called a \textit{neighbourhood} of $v$.
+Let $\neighRinf(v)$ denote the set of all neighbourhoods of $x$.
+
+\begin{axdef}
+\neighRinf: \Rinf \fun \Fam \Rinf
+\where
+\forall n: \nat; v: \Rinf | n = \#v @ \\
+\t1	\neighRinf(v) = \{~ U: \tauRtup(n) | v \in U ~\}
+\end{axdef}
+
+\begin{remark}
+
+The set of all neighbourhoods of $v \in \Rtup(n)$ is a family of sets in $\Rtup(n)$.
+
+\begin{zed}
+\forall n: \nat; v: \Rinf | n = \#v @ \\
+\t1	\neighRinf(v) \in \Fam (\Rtup(n))
+\end{zed}
+
+\end{remark}
+
+\subsection{The Topological Space of $n$-tuples: \zcmd{tsRtup}}
+
+Let $\tsRtup(n)$ denote the topological space defined by the usual topology on $\Rtup(n)$.
+
+\begin{axdef}
+	\tsRtup: \nat \fun topSpaces[\Rinf]
+\where
+	\forall n: \nat @ \\
+	\t1	\tsRtup(n) = (\Rtup(n), \tauRtup(n))
+\end{axdef}
+
+\section{Continuity}
+
+\subsection{Real-Valued Functions That Are Continuous on the Set of All $n$-tuples: \zcmd{CzeroRtup}}
+
+A function $f \in \R^n \fun \R$ is said to be \textit{continuous} if it is continuous with respect to the usual topologies
+on $\R^n$ and $\R$.
+Let $\CzeroRtup(n)$ denote the set of these continuous functions.
+
+\begin{axdef}
+	\CzeroRtup: \nat \fun \power(\Rinf \pfun \R)
+\where
+	\forall n: \nat @ \\
+	\t1	\CzeroRtup(n) = \CzeroTT(\tsRtup(n), \Rtau)
+\end{axdef}
+
+\subsection{Real-Valued Functions That Are Continuous on a Subset of $n$-tuples: \zcmd{CzeroSubsetRtup}}
+
+Let $U$ be a subset of $\R^n$.
+A function $f \in U \fun \R$ is said to be \textit{continuous on} $U$
+if it is continuous with respect to the topology induced on $U$.
+Let $\CzeroSubsetRtup(U)$ denote the set of these continuous functions.
+
+\begin{axdef}
+	\CzeroSubsetRtup: \DeltaRinf \fun \power(\Rinf \pfun \R)
+\where
+	\forall U: \DeltaRinf @ \\
+	\t1	\LET n == \dimRinf U @ \\
+	\t2		\CzeroSubsetRtup(U) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \Rtau)
+\end{axdef}
+
+\subsection{Real-Valued Functions That Are Continuous at an $n$-tuple: \zcmd{CzeroPointRtup}}
+
+A partial function $f$ from $\R^n$ to $\R$ is said to be \textit{continuous at} $x \in \R^n$ if its domain contains a neighbourhood $U$ of $x$
+such that its restriction to $U$ is continuous on $U$.
+Let $\CzeroPointRtup(x)$ denote the set of such functions.
+
+\begin{axdef}
+	\CzeroPointRtup: \Rinf \fun \power(\Rinf \pfun \R)
+\where
+	\forall x: \Rinf @ \\
+	\t1	\LET n == \# x @ \\
+	\t2		\CzeroPointRtup(x) = \{~ f: \Rtup(n) \pfun \R | \exists U: \neighRinf(x) | U \subseteq \dom f @ U \dres f \in \CzeroSubsetRtup(U) ~\}
+\end{axdef}
+
+\subsection{$m$-tuple-Valued Functions That Are Continuous on the Set of All $n$-tuples: \zcmd{CzeroRtupRtup}}
+
+A mapping $f$ from $\Rtup(n)$ to $\Rtup(m)$ is said to be continuous if it is continuous with respect to the usual topologies.
+Let $\CzeroRtupRtup(n,m)$ denote the set of these continuous mappings.
+
+\begin{axdef}
+	\CzeroRtupRtup: \nat \cross \nat \fun \power(\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \\
+	\t1	\CzeroRtupRtup(n,m) = \CzeroTT(\tsRtup(n), \tsRtup(m))
+\end{axdef}
+
+\begin{example}
+The function $\idRtup(n)$ is continuous.
+
+\begin{zed}
+	\forall n: \nat @ \\
+	\t1	\idRtup(n) \in \CzeroRtupRtup(n,n)
+\end{zed}
+
+\begin{theorem}
+Linear functions are continuous.
+
+\begin{zed}
+	\forall n, m: \nat@ \\
+	\t1	\linRtup(n, m) \subseteq \CzeroRtupRtup(n,m)
+\end{zed}
+
+\end{theorem}
+
+\end{example}
+
+\subsection{$m$-tuple-Valued Functions That Are Continuous on a Subset of $n$-tuples: \zcmd{CzeroSubsetRtupRtup}}
+
+Let $U$ be any subset of $\Rtup(n)$.
+Let $\CzeroSubsetRtupRtup(U,m)$ denote the set of continuous mappings from the topology induced by $\tsRtup(n)$ on $U$ to $\tsRtup(m)$.
+
+\begin{axdef}
+	\CzeroSubsetRtupRtup: \DeltaRinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \\
+	\t1	\forall U: \DeltaRinf | \dimRinf(U) = n @ \\
+	\t2		\CzeroSubsetRtupRtup(U, m) = \CzeroTT(\tsRtup(n) \inducedTopSp U, \tsRtup(m))
+\end{axdef}
+
+\begin{remark}
+
+\begin{zed}
+	\forall n, m: \nat @ \\
+	\t1	\CzeroSubsetRtupRtup(\Rtup(n),m) = \CzeroRtupRtup(n,m)
+\end{zed}
+
+\end{remark}
+
+\subsection{$m$-tuple-Valued Functions That Are Continuous at an $n$-tuple: 
+$VectorConinuous$, \zcmd{CzeroPointRtupRtup}}
+
+Let $x \in \Rtup(n)$ and let $f$ be a partial function from $\Rtup(n)$ to $\Rtup(m)$
+whose domain includes some neighbourhood $U$ of $x$ such that $f$ restricted to $U$ is continuous.
+In this case $f$ is said to be {\it continuous at $x$}.
+
+\begin{schema}{VectorContinuous}
+	n, m: \nat \\
+	f: \Rinf \pfun \Rinf \\
+	x: \Rinf
+\where
+	f \in \Rtup(n) \pfun \Rtup(m)
+\also
+	\exists U: \neighRinf(x) | \\
+	\t1	U \subseteq \dom f @ \\
+	\t2		U \dres f \in \CzeroSubsetRtupRtup(U,m)
+\end{schema}
+
+Let $\CzeroPointRtupRtup(x,m)$ denote the set of all partial functions $f$ from $\Rtup(n)$ to $\Rtup(m)$
+that are continuous at $x$.
+
+\begin{axdef}
+	\CzeroPointRtupRtup: \Rinf \cross \nat \fun \power (\Rinf \pfun \Rinf)
+\where
+	\forall n, m: \nat @ \forall x: \Rtup(n)  @ \\
+	\t1	\CzeroPointRtupRtup(x, m) = \\
+	\t2		\{~ f: \Rtup(n) \pfun \Rtup(m) | VectorContinuous ~\}
+\end{axdef}
+
+\begin{example}
+The function $\idRtup(n)$ is continuous at every point $x \in \Rtup(n)$.
+
+\begin{zed}
+	\forall n: \nat @ \forall x: \Rtup(n) @ \\
+	\t1	\idRtup(n) \in \CzeroPointRtupRtup(x, n)
+\end{zed}
+
+\end{example}
+
+\begin{theorem}
+Linear functions are continuous everywhere.
+
+\begin{zed}
+	\forall n, m: \nat @ \\
+	\t1	\forall x: \Rtup(n); L: \linRtup(n,m) @ \\
+	\t2		L \in \CzeroPointRtupRtup(x, m)
+\end{zed}
+
+\end{theorem}
+
+
+\section{Differentiability}
+
+Let $x \in \R^n$ and let $f: \R^n \pfun \R^m$ be continuous at $x$.
+Then $f$ is said to be {\it differentiable at $x$} if there exists a linear transformation $L: \R^n \fun \R^m$
+such that $f(x + h) - f(x)$ is approximately linear in $h$ for very small $h$.
+$$
+f(x + h) - f(x) \approx  L(h) + O(h^2) \quad \text{when} \quad \norm{h} \approx 0
+$$
+
+This condition can be written as a limit.
+$$
+\lim_{h \to 0} \frac{\norm{f(x+h) - f(x) - L(h)}}{\norm{h}} = 0
+$$
+
+\subsection{The Difference Quotient: $DifferenceQuotient$ and $diffQuot$}
+
+The limit exists when the following difference quotient function $q: \R^n \pfun \R$ is continuous at $0$.
+$$
+q(h) = 
+\begin{cases}
+	\frac{\norm{f(x+h) - f(x) - L(h)}}{\norm{h}}	&	\text{if } h \neq 0\\
+	0								&	\text{otherwise}
+\end{cases}
+$$
+
+Given a function $f$ that is continuous at $x$, and a linear transformation $L$,
+we can define the difference quotient $q$.
+Clearly $q$ is uniquely determined by $f$, $x$, and $L$.
+Let $DifferenceQuotient$ denote this situation.
+
+\begin{schema}{DifferenceQuotient}
+	VectorContinuous \\
+	L: \Rinf \pfun \Rinf \\
+	q: \Rinf \pfun \R
+\where
+	L \in \linRtup(n, m)
+\also
+	\dom q = \{~ h: \Rtup(n) | x \addRinf h \in \dom f ~\}
+\also
+	\forall h: \dom q | h \neq \zeroRtup(n) @ \\
+	\t1	q(h) = \normRinf(f(x \addRinf h) \subRinf f(x) \subRinf L(h)) \divR \normRinf(h)
+\also
+	q(\zeroRtup(n)) = \zeroR
+\end{schema}
+
+\begin{itemize}
+\item $L$ is a linear transformation from $\Rtup(n)$ to $\Rtup(m)$.
+\item The difference quotient $q$ is defined on a subset of $\Rtup(n)$ that contains $\zeroRtup(n)$.
+\item $q(h)$ is defined as the quotient when $h$ is non-zero.
+\item $q(0)$ is defined as zero.
+\end{itemize}
+
+Let $diffQuot(f,x,L)$ denote the difference quotient $q$.
+
+\begin{zed}
+diffQuot == \{~ DifferenceQuotient @ (f, x, L) \mapsto q ~\}
+\end{zed}
+
+\subsection{The Derivative of a Continuous $m$-tuple-Valued Function: $VectorDifferentiable$}
+
+The continuous function $f$ is \textit{differentiable at} $x$ when there exists a linear transformation $L$ 
+such that the difference quotient $q$ is continuous at $0$.
+In this case $L$ is unique and is referred to as the \textit{derivative at} $x$.
+
+\begin{schema}{VectorDifferentiable}
+VectorContinuous \\
+L: \Rinf \pfun \Rinf
+\where
+\LET q == diffQuot(f, x, L) @ \\
+\t1	q \in \CzeroPointRtup(\zeroRtup(n))
+\end{schema}
+
+\begin{itemize}
+\item The continuous function $f$ is differentiable at $x$ with derivative $L$ if the resulting
+difference quotient $q$ is continuous at $\zeroRtup(n)$.
+\end{itemize}
+
+\begin{remark}
+If $L$ exists then it is unique.
+\end{remark}
+
+
+Let $\smoothRnm(x,m)$ denote the set of all functions $f \in \Rtup(n) \pfun \Rtup(m)$ that are smooth at $x \in \Rtup(n)$.
+
+\printbibliography
+
+\end{document}
