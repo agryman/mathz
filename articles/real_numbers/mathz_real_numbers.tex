@@ -1,5 +1,6 @@
 \documentclass{amsart}
 
+\usepackage{mathz_core}
 \usepackage{mathz_sets}
 \usepackage{mathz_topological_spaces}
 \usepackage{mathz_groups}
@@ -69,14 +70,14 @@ This distinction is apparent to the \fuzz\ type-checker and should not cause con
 because the underlying types of objects will, as a rule, be clear from the context.
 Visually distinct symbols will be used in cases where confusion is possible.
 
-The real numbers form an Abelian group under addition.
+The real numbers form an abelian group under addition.
 
 \begin{zed}
-(\_ \addR \_) \in \abgroup \R
+(\R, (\_ \addR \_)) \in \abgroup \R
 \also
-\zeroR = identity\_element(\_ \addR \_)
+\zeroR = identity\_element(\R, (\_ \addR \_))
 \also
-\negR = inverse\_operation(\_ \addR \_)
+\negR = inverse\_operation(\R, (\_ \addR \_))
 \end{zed}
 
 Subtraction is defined in terms of addition and negative.
@@ -125,14 +126,14 @@ and let $x \divR y$ denote division.
 	\_ \invRnz: \Rnz \fun \Rnz
 \end{axdef}
 
-The nonzero real numbers form an Abelian group under multiplication.
+The nonzero real numbers form an abelian group under multiplication.
 
 \begin{zed}
-(\_ \mulRnz \_) \in \abgroup \Rnz
+(\Rnz, (\_ \mulRnz \_)) \in \abgroup \Rnz
 \also
-\oneR = identity\_element(\_ \mulRnz \_)
+\oneR = identity\_element(\Rnz, (\_ \mulRnz \_))
 \also
-(\_ \invRnz) = inverse\_operation(\_ \mulRnz \_)
+(\_ \invRnz) = inverse\_operation(\Rnz, (\_ \mulRnz \_))
 \end{zed}
 
 Division is defined in terms of multiplicative inverse.

@@ -284,6 +284,7 @@
 
 \usepackage{mathz_project}
 \usepackage{mathz_core}
+
 \usepackage{mathz_preamble}
 
 \addbibresource{mathz_references.bib}
@@ -306,7 +307,7 @@ namely formal generic parameters and arbitrary sets.
 
 \section{Introduction}
 
-This is the Introduction
+The \texttt{core} package contains definitions for formal generic parameters and arbitrary sets.
 
 \section{Formal Generic Parameters}
 
@@ -316,22 +317,43 @@ It is useful to typographically distinguish formal generic parameters from other
 Therefore, as a purely stylistic convention, we use the symbols $\genA, \genB, \dots, \genZ$ to denote formal generic parameters.
 These symbols are produced using the \LaTeX\ commands \verb|\genA|, \verb|\genB|, $\dots$, \verb|\genZ|.
 
-For example, the generic constant $triple[\genT]$ is defined to be the set of all triples of elements of $\genT$ as follows.
+For example, define the generic constant $triple[\genT]$ to be the set of all triples of elements of $\genT$ 
+where $\genT$ is any set.
 \begin{zed}
 	triple[\genT] == \genT \cross \genT \cross \genT
 \end{zed}
 
 \section{Arbitrary Sets}
 
-It is often of interest to state theorems, remarks, and examples about generic constants and schema.
-Such statements must hold when each formal generic parameter is replaced by an arbitrary set.
+In mathematical writing, we often need to state theorems, remarks, and examples about generic constructions.
+Such statements must hold when each formal generic parameter is replaced by any arbitrary set.
+This condition is equivalent to universally quantifying the statement over the set of all sets.
 However, \ZN\ does not allow universal quantification over the set of all sets since this leads to the Russell paradox.
 In fact, typed set theory was motivated by a desire to avoid the Russell paradox.
 
-As a workaround, we adopt the convention of stating theorems, remarks, and examples that hold for arbitrary sets in terms
-of predefined given sets with the understanding that these sets are completely unconstrained by additional axioms.
+Some formal languages avoid the Russell paradox by making a distinction between sets and types,
+and by introducing an explicit hierarchy of universes of types in which the collection of all types at a given level belongs to the next level.
+Another approach is to distinguish between small sets and large sets, with the set of all small sets being a large set.
+\ZN\ avoids the Russel paradox by not allowing universal quantification over types.
 
-It is an error to use any of these predefined sets outside of the statement of a theorem, remark, or example.
+In more detail, although \ZN\ is based on typed type theory, 
+it does not actually include a syntactic mechanism to represent types. 
+New base types are introduced by declaring them as \textit{given sets}.
+It is a \ZN\ type error to compare or combine subsets of distinct given sets.
+A given set is not a proper subset of any other set, and is therefore a \textit{maximal set}.
+Thus, in \ZN, a new type is equated to its maximal set.
+
+As a workaround for the absence in \ZN\ of a way to universally quantify over types, 
+we adopt the convention of stating theorems, remarks, and examples that are asserted to hold for arbitrary sets 
+by stating them in terms of certain predefined given sets, with the understanding that these 
+predefined given sets are completely unconstrained by additional axioms.
+We refer to these predefined given sets as \textit{arbitrary sets}.
+It is therefore a \mathz\ error to use any of these predefined arbitrary sets outside of the statement of a theorem, remark, or example.
+
+This workaround is similar to the introduction rule for universal quantification in predicate calculus.
+To prove a universally quantified statement in predicate calculus, one assumes an arbitrary element and then proves the conclusion for it.
+Since the element was arbitrary, one can then universally quantify over it.
+Of course, in \mathz\ we will only prove statements for some arbitrary set, and not explicitly quantify over it.
 
 Let the symbols $\setA, \setB, \dots \setZ$ denote these predefined arbitrary sets.
 \begin{zed}
@@ -351,7 +373,7 @@ Equality is reflexive.
 \printbibliography
 
 \end{document}  \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{mathz-integers}[2022/02/01 Z Notation for Lie groups and algebras package]
+\ProvidesPackage{mathz_lie_groups_and_algbras}[2022/02/01 Z Notation for Lie groups and algebras package]
 
 % Lie groups and algebras
 
