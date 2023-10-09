@@ -84,7 +84,10 @@ A {\em real vector space} is a pair $(A, smul)$ where $A$ is an Abelian group an
 is a real scalar multiplication on the elements of $A$.
 The elements of $A$ are referred to as \textit{vectors}.
 
-Let $\vecR \genT$ denote the set of all real vector spaces over $\genT$,
+Let $\vecR \genT$ denote the set of all real vector spaces over $\genT$.
+
+TODO: Do not assume that the set of vectors coincides with $\genT$.
+In general, it will be a subset of $\genT$.
 
 \begin{zed}
 \vecR \genT == \{~ RealScalarMultiplication[\genT] @ (A, smul) ~\}
@@ -318,7 +321,7 @@ The binary operation $addRtup(n)$ defines an Abelian group over $\Rtup(n)$.
 
 \begin{zed}
 \forall n: \nat @ \\
-\t1	addRtup(n) \in \abgroup(\Rtup(n))
+\t1	(\Rtup(n), addRtup(n)) \in \abgroup(\Rtup(n))
 \end{zed}
 
 \end{example}
@@ -344,11 +347,11 @@ negRtup == \\
 \end{zed}
 
 \begin{remark}
-The operation $negRtup(n)$ is the inverse operation of the Abelian group $addRtup(n)$.
+The operation $negRtup(n)$ is the inverse operation of the Abelian group $(\Rtup(n), addRtup(n))$.
 
 \begin{zed}
 \forall n: \nat @ \\
-\t1	negRtup(n) = inverse\_operation(addRtup(n))
+\t1	negRtup(n) = inverse\_operation(\Rtup(n), addRtup(n))
 \end{zed}
 
 \end{remark}
@@ -393,7 +396,7 @@ The tuple $\zeroRtup(n)$ is the identity element of the Abelian group $addRtup(n
 
 \begin{zed}
 \forall n: \nat @ \\
-\t1	\zeroRtup(n) = identity\_element(addRtup(n))
+\t1	\zeroRtup(n) = identity\_element(\Rtup(n), addRtup(n))
 \end{zed}
 
 \end{remark}
@@ -414,7 +417,7 @@ Let $vecRtup(n)$ denote the real vector space of $n$-tuples.
 
 \begin{zed}
 vecRtup == \\
-\t1	(\lambda n: \nat @ (addRtup(n), smulRtup(n)))
+\t1	(\lambda n: \nat @ ((\Rtup(n), addRtup(n)), smulRtup(n)))
 \end{zed}
 
 \begin{remark}
