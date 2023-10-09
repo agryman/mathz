@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 cd $(dirname $0)
-pwd
 cat ../../shared/fuzzlib\
  ../core/mathz_core.sty\
  ../core/mathz_core.tex\
