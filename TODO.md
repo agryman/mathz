@@ -47,8 +47,8 @@ by a script that takes as input a project description
 file, possibly written in JSON, YAML, or TOML, that
 lists the packages and documentation.
 
-The script should parse the packages are generate a set of
-declared dependencies as given by usepackage commands.
+The script should parse the packages and generate a set of
+declared dependencies as given by `usepackage` commands.
 The script should generate the make file or files for the packages.
 The make file for a package should generate the prelude file.
 
@@ -56,7 +56,7 @@ The make file should also have an entry that parses the output
 from fuzz and determines the true dependencies.
 
 Another script should compare the true dependencies and compare
-then to the declared dependencies.
+them to the declared dependencies.
 It should list the unused declared dependencies so that the author
 can delete them.
 
