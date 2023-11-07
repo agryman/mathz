@@ -1,0 +1,11 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mathz"
+version = "0.1.0"
+readme = "README.md"
+authors = [
+    { name = "Arthur Ryman", email = "arthur.ryman@gmail.com" }
+]

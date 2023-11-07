@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-cp articles/*/*.pdf docs
+cp articles/*/*/*.pdf tex-docs

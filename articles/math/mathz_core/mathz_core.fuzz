@@ -1,0 +1,53 @@
+(EQEQ 41
+  (LHS 41
+    (NAME "triple" "")
+    (LIST
+      (NAME "\genT" "")))
+  (CROSS 41
+    (LIST
+      (REF 41 (NAME "\genT" "") ())
+      (REF 41 (NAME "\genT" "") ())
+      (REF 41 (NAME "\genT" "") ()))))
+
+(GIVEN 78
+  (LIST
+    (NAME "\setA" "")
+    (NAME "\setB" "")
+    (NAME "\setC" "")
+    (NAME "\setD" "")
+    (NAME "\setE" "")
+    (NAME "\setF" "")
+    (NAME "\setG" "")
+    (NAME "\setH" "")
+    (NAME "\setI" "")
+    (NAME "\setJ" "")
+    (NAME "\setK" "")
+    (NAME "\setL" "")
+    (NAME "\setM" "")
+    (NAME "\setN" "")
+    (NAME "\setO" "")
+    (NAME "\setP" "")
+    (NAME "\setQ" "")
+    (NAME "\setR" "")
+    (NAME "\setS" "")
+    (NAME "\setT" "")
+    (NAME "\setU" "")
+    (NAME "\setV" "")
+    (NAME "\setW" "")
+    (NAME "\setX" "")
+    (NAME "\setY" "")
+    (NAME "\setZ" "")))
+
+(PRED 87
+  (FORALL 87
+    (BODY 87
+      (LIST
+        (DECL 87
+          (LIST
+            (NAME "x" ""))
+          (REF 87 (NAME "\setX" "") ())))
+      ())
+    (EQUAL 87
+      (REF 87 (NAME "x" "") ())
+      (REF 87 (NAME "x" "") ()))))
+
