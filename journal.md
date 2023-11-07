@@ -2,6 +2,58 @@
 
 ## 2023-11-06
 
+### 9:21 PM
+
+I played with `cookiecutter`. It creates a project from a template.
+I tried the template that is recommended by
+https://py-pkgs.org/03-how-to-package-a-python.
+That template uses `poetry`.
+The Scientific Python site recommends `hatchling`.
+I'd prefer to use a tool that is built in to Python.
+I assume this means `setuptools`.
+
+Read https://packaging.python.org/en/latest/overview/.
+This points to the docs for `setuptools`:
+https://setuptools.pypa.io/en/latest/userguide/quickstart.html.
+I created a minimal `pyproject.toml` that uses `setuptools`
+and has enough metadata.
+```text
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mathz"
+version = "0.1.0"
+readme = "README.md"
+authors = [
+    { name = "Arthur Ryman", email = "arthur.ryman@gmail.com" }
+]
+```
+
+I can now install an editable version of the package
+by running the following command in the directory that
+contains `pyproject.toml`, namely the root directory of the project.
+```shell
+pip install -e .
+```
+
+Note that following the Scientific Python guidelines,
+I named my virtual environment directory `.venv`.
+However, GitHub included it even though I added it to the
+`.gitignore` file. 
+I therefore reverted the name to `venv`.
+I had to delete the `.venv` directory because the name `.venv`
+was baked into the shell prompt.
+
+By next goal is to create `make` files to perform the build steps 
+currently performed by shell scripts:
+* `install-all-docs.sh` - copies all article PDFs to `tex-docs`
+* `install-all-packages.sh` - copies all LaTeX packages to `~/Library/texmf/tex/latex/mathz/`
+* `<article-group>/typecheck-all.sh` - type checks all articles in a group
+* `<article>/install.sh` - copies article LaTeX package to `~/Library/texmf/tex/latex/mathz/`
+* `<article>/typecheck.sh` - type checks article and builds its prelude file
+
 ### 1:56 PM
 
 I read the first few chapters of Dane Hillard's Python Packaging book.
