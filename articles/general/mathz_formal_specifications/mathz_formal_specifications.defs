@@ -1,0 +1,435 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz_formal_specifications}[2022/02/01 Z Notation for formal specifications package]
+
+% interval notation (a,b)
+\newcommand{\lowerBound}{\boldsymbol{(}}
+\newcommand{\upperBound}{\boldsymbol{)}}
+\newcommand{\intersect}{\mathbin{\boldsymbol{,}}}
+
+%%postop \upperBound
+%%inop \intersect 4
+
+% typed intervals
+\newcommand{\openLowerBound}{\boldsymbol{(}}
+\newcommand{\closedLowerBound}{\boldsymbol{[}}
+\newcommand{\openUpperBound}{\boldsymbol{)}}
+\newcommand{\closedUpperBound}{\boldsymbol{]}}
+\newcommand{\intersectRightLeft}{\mathbin{\boldsymbol{,}}}
+
+%%postop \openUpperBound \closedUpperBound
+%%inop \intersectRightLeft 4
+\documentclass{amsart}
+
+\usepackage{mathz_core}
+\usepackage{mathz_sets}
+\usepackage{mathz_topological_spaces}
+\usepackage{mathz_real_numbers}
+\usepackage{mathz_formal_specifications}
+
+\usepackage{mathz_preamble}
+
+\addbibresource{mathz_references.bib}
+
+\begin{document}
+
+\title{The Role of Formalization and \ZN\ }
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+The notion of {\it type} was introduced into set theory by Russel in an effort to establish a firm foundation for mathematics.
+Types are now a standard feature of many computer programming languages.
+\ZN\  is a formal language based on typed set theory for specifying computer programs.
+Since \ZN\  is a formal language, a Z specification can itself be automatically checked for type errors.
+Writing valid Z specifications requires that the author explicitly define all terms.
+This encourages a style in which complex terms are gradually built up from simpler, previously defined terms.
+This article proposes to use \ZN\  to formally specify mathematical structures, even if there is no intention of using
+them in computer programs.
+The hoped for benefits of doing so are that the exercise of formalization will lead the author to a better understanding of the subject
+matter, resulting in a clearer, higher quality, result.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Types}
+
+Computer languages can be divided into two major groups, namely those that are strongly typed and those that are weakly typed.
+Strongly-typed languages, such as Java, have complex type systems and require that all expressions and variable declarations 
+have well-defined types.
+Weakly-typed languages, such as Javascript, have simpler type systems and allow greater flexibility in expressions and the use of variables.
+Although no compiler can possibly tell you if your program is correct, a compiler for a strongly-typed language can at least detect type errors.
+Correcting these errors at compile-time is often quicker than doing so at execution-time.
+
+There are many similarities between mathematics and programming. 
+Both require the definition and use of named objects that are built up from simpler objects.
+The concept of type applies to both.
+Bertrand Russell discovered typed set theory in his efforts to solve some problems in the foundations of mathematics 
+long before computers were a reality.
+Theoretical computer science now makes extensive use of types.
+Mathematics can be used to specify the requirements for programs.
+Specifications act as a bridge between mathematics and programs.
+\ZN\  is a strongly-typed formal specification language.
+However, \ZN\  can be used to formalize mathematics even if the goal is not to program a computer.
+
+\section{Formalization}
+
+\ZN\  can be used to precisely define mathematical objects and a Z specification can be type checked by a program.
+I have found that the exercise of expressing mathematics using \ZN\  is a great way make sure that concepts are well-defined.
+This is especially helpful, although somewhat labour-intensive, when dealing with complex mathematical structures.
+I propose to formalize all definitions using \ZN\  and to validate
+the document using the \fuzz\ type checker.
+
+I believe that the effort of precisely defining every needed concept pays off. 
+Consider how C\'{e}dric Villani \cite{villani-hbm} described the mathematical writing style of Alexander Grothendieck:
+\begin{displayquote}
+Let me quote a famous mathematical text by Alexander Grothendieck, 
+one of the most famous mathematicians of all times, who wrote long writings.
+In one of them he talks about the metaphor \textit{de la noix}.
+You know the parable, the metaphor, of the nut
+to explain the difference between his style and 
+the style of his fellow mathematician Jean-Pierre Serre.
+Both of them working in the same area of mathematics, but very different styles. 
+Grothendieck said, 
+\textquote{Imagine that we have a nut to open.
+The style of Serre would be take a
+hammer and, Bang!, smash the nut.
+My style would be to take the nut and put
+it in a sea of acid so that it would be
+dissolved very slowly, the crust of the nut, without noticing anything.}
+And yes, experts tell us that the style of Grothendieck is like everything is very
+incremental from one step to another to
+another by very tiny steps so that you
+have the impression that nothing occurs
+and we are really making no progress, and
+at the end it's proven, there it is, the big theorem is done.
+\end{displayquote}
+Similarly, Pierre Deligne~\cite{artin-ag1} said:
+\begin{displayquote}
+From Grothendieck I have also learned not to take glory in the difficulty of a proof: 
+difficulty means we have not understood.
+The ideal is to be able to paint a landscape in which the proof is obvious.
+I admire how often he succeeded in reaching this ideal.
+\end{displayquote}
+The message is clear: a slow, methodical build-up of concepts is a good thing in mathematics.
+
+\section{Given Sets and Signatures}
+
+Although the integers are built into \ZN, the real numbers are not.
+In principle, one could first build up the rational numbers from the integers,
+and then the real numbers from the rational numbers, but that would take a lot of time and not really
+accomplish much.
+I'll assume that the real numbers are sufficiently well-understood and do not need a complete formalization.
+Instead, I'll define real numbers as a given set and then declare the types and signatures of the usual constants and operations of real arithmetic.
+
+\section{Names and Symbols}
+
+Integers and reals are distinct types in the sense of typed set theory.
+But distinct types are disjoint sets.
+This implies that the $0$ element of the integers is not the same object as the $0$ element of the reals.
+In fact, they aren't even comparable within a Z specification since doing so is a type error and the 
+specification would therefore not be valid.
+The name \texttt{0} is built-in to \ZN\  as the name of the $0$ element of the integers.
+A Z specification must therefore introduce a new name to refer to the $0$ element of the reals.
+However, working mathematicians regard the integers as a subset of the reals and therefore have no need to deal with duplicate names.
+As Henri Poincar\'{e} \cite{poincare-fm} said:
+\begin{displayquote}
+I think I have already said somewhere that mathematics is the art of giving the same name to different things. 
+It is enough that these things, though differing in matter, should be similar in form, to permit of their being, so to speak, run in the same mould.\end{displayquote}
+
+How then can we make a Z specification valid while still honouring normal mathematical practice?
+The way out of this difficulty is that if a mathematician would normally regard two distinct objects as the same
+then we give then distinct \ZN\  names, but display them using the same typographic symbol.
+To paraphrase Poincar\'{e}:
+\begin{quote}
+Formalizing mathematics is the art of giving different names, but the same symbol, to different things. 
+It is enough that these things, though differing in type, should be similar in typography, 
+to permit of their being, so to speak, run in the same mould.
+\end{quote}
+
+For example, Mike Spivey \cite{spivey-fm} describes three typographic symbols defined in the \fuzz\ package 
+that are each used to display two distinct objects:
+\begin{displayquote}
+A few symbols have two names, reflecting two different uses for the
+symbol in Z:
+\begin{itemize}
+\item The symbol $\semi$ is called 
+\cmd{semi} when it is used as an operation on schemas, and 
+\cmd{comp} when it is used for composition of relations.
+\item The symbol $\hide$ is called
+\cmd{hide} as the hiding operator of the schema calculus, and 
+\cmd{setminus} as the set difference operator. 
+\item The symbol $\project$ is called
+\cmd{project} as the schema projection operator, and 
+\cmd{filter} as the filtering operator on sequences.
+\end{itemize}
+Although the printed appearance of
+each of these pairs of symbols is the same, the type checker
+recognizes each member of the pair only in the appropriate
+\hbox{context}.
+\end{displayquote}
+This approach keeps both the Z type checker and the mathematician reader happy.
+For example, in my formalization of the reals:
+\begin{itemize} 
+\item The symbol $0$ is called 
+\texttt{0} when it is used as an integer, and 
+\cmd{zeroR} as a real number.
+\item The symbol $+$ is called 
+\texttt{+} as the addition operator on the integers, and
+\cmd{addR} as the addition operator on the reals.
+\end{itemize}
+The mathematician reader will always be able to infer the actual type of an object from its context.
+
+\section{Theorems, Examples, and Remarks}
+
+In mathematical writing it is good practice to follow a definition with some examples.
+When an example is given, there is a proof obligation associated with it,
+namely that whatever the author is asserting about the example is in fact true.
+Similarly, when the author makes a remark or states a theorem, there is also a proof obligation.
+In each of these cases, the author makes a statement and asserts it to be true, but may not offer any proof.
+
+\ZN\ allows the author to add constraints to a specification.
+However, if the constraint is a logical consequence of the preceding definitions then it adds nothing to the specification.
+Therefore, we can freely add examples, remarks, and theorems to a specification without changing its meaning.
+These statements should be placed in a \cmd{zed} box that is enclosed in an appropriate \LaTeX\ theorem-like environment.
+
+For example, the following statement is true and therefore does not change the meaning of
+the specification but will be type-checked by \fuzz, .
+
+\begin{example}
+
+\begin{zed}
+	1 + 1 = 2
+\end{zed}
+	
+\end{example}
+
+The benefit of placing theorem-like statements in \cmd{zed} boxes is that the \fuzz\ type checker will check their type-correctness.
+
+\subsection{Generic Theorem-Like Statements}
+
+It will often be the case that a theorem-like statement will involve generic constructs.
+Although \ZN\ provides a mechanism for introducing formal generic parameters into the definition of
+generic constants and schemas, it does not provide such a mechanism for constraints.
+We can work around this limitation by declaring a set of global given sets which are understood to be used in theorem-like
+statements where they are taken to represent arbitrary sets.
+The article on \href{topological-spaces.pdf}{topological spaces} 
+introduces the global given sets $\setX$, $\setY$, and $\setZ$ for this purpose.
+
+Testing hyperlinks to another PDF document:
+
+\begin{verbatim}
+\url{https://agryman.github.io/mathz/complex-numbers.pdf}
+\end{verbatim}
+
+\url{https://agryman.github.io/mathz/complex-numbers.pdf}
+
+\begin{verbatim}
+\url{complex-numbers.pdf}
+\end{verbatim}
+
+\url{complex-numbers.pdf}
+
+\begin{verbatim}
+\url{./complex-numbers.pdf}
+\end{verbatim}
+
+\url{./complex-numbers.pdf}
+
+
+For example, we can remark that every element $x$ of an arbitrary set $\setX$ is a member of that set.
+
+\begin{remark}
+
+\begin{zed}
+	\forall x: \setX @ x \in \setX
+\end{zed}
+
+\end{remark}
+
+\section{Simulating Standard Mathematical Notation}
+
+The expression $(a,b)$ usually denotes an ordered pair in mathematical writing.
+Sometimes an author asks us to interpret $(a,b)$ as an open interval of the real number line.
+In this case we recognize that the symbols used in the expression $(a,b)$ do not have their usual meanings
+and we interpret them accordingly.
+The notation $(a,b)$ for denoting an open interval of the real number line is
+arguably very compact, convenient, and easy to understand. 
+In contrast, the \ZN\  function application $\intervalR(a,b)$, defined in the article on real numbers,
+may strike the reader as somewhat verbose and clumsy, albeit precise.
+
+%\subsection{Prefix, Infix, and Postfix Operators in \fuzz}
+\subsection{Prefix, Infix, and Postfix Operators in fuzz}
+
+There is a way to achieve some of the compactness of standard mathematical notation in Z while
+preserving its precision and type-correctness.
+The approach is to take advantage of the \fuzz\ type checker's ability to define infix and postfix 
+operator symbols. 
+In the grammar used by \fuzz, postfix operators have higher precedence than prefix operators,
+and prefix operators have higher precedence than infix operators.
+Infix operators are assigned numerical priorities of 1 through 6 with higher priorities taking precedence 
+over lower ones.
+We can use these relative precedences to define operators that allow us to construct expressions 
+that resemble usual mathematical writing.
+
+%\subsection{\zcmd{lowerBound}, \zcmd{upperBound}, and \zcmd{intersect}}
+\subsection{Defining Intervals with Operators}
+
+First, we use \LaTeX\ bold styling to provide a visual cue that helps the reader
+distinguish the interval $\lowerBound a \intersect b \upperBound$ from the
+usual ordered pair $(a, b)$.
+Next, we interpret the symbols as prefix, infix, and postfix operators.
+The symbol $\lowerBound$ is a prefix operator that maps $a$ to $\lowerBound a$, 
+the open interval bounded below by $a$.
+Similarly, $\upperBound$ is a postfix operator that maps $b$ to $b \upperBound$, 
+the open interval bounded above by $b$.
+Finally, we interpret the symbol $\intersect$ as an infix operator that forms the intersection of the two intervals.
+
+\begin{axdef}
+	\lowerBound: \R \fun \power \R \\
+	\_ \upperBound: \R \fun \power \R \\
+	\_ \intersect \_ : \power \R \cross \power \R \fun \power \R
+\where
+	\forall a: \R @ \lowerBound a = \{~ x: \R | a \ltR x ~\}
+\also
+	\forall b: \R @ b \upperBound = \{~ x: \R | x \ltR b ~\}
+\also
+	\forall a, b: \R @ \lowerBound a \intersect b \upperBound = \{~ x: \R | a \ltR x \ltR b ~\}
+\end{axdef}
+
+This design is a step in the right direction, but it doesn't prevent the writer from abusing the notation.
+For example, the following paragraph looks odd but makes perfect sense to \fuzz.
+
+\begin{zed}
+	\forall a, b: \R @ \lowerBound a \intersect b \upperBound = b \upperBound \intersect \lowerBound a 
+\end{zed}
+
+When we are asked to interpret $(a,b)$ as an interval, we are, in a sense, being asked to parse a sentence
+in a new mathematical mini-language that defines intervals.
+If we want to enforce the usual syntax for intervals,
+we can introduce new types to represent fragments of the expression so that the operators can only be applied to
+fragments in some prescribed order.
+
+To illustrate this point, let's expand the example to include closed intervals $[a,b]$ as well as semi-closed intervals
+$(a,b]$ and $[a,b)$.
+Regard $(a$ and $[a$ as open and closed right half lines, and $b)$ and $b]$ as open and closed left half lines.
+Only allow a right half line to be combined with a left half line.
+
+\subsection{Right Half Lines}
+
+Let \hypertarget{RightHalfLine}{$RightHalfLine$} denote the type of syntactic fragments that define open and closed right half-lines.
+
+\begin{zed}
+	RightHalfLine ::= \openLowerBound \ldata \R \rdata | \closedLowerBound \ldata \R \rdata
+\end{zed}
+
+\begin{example}
+
+\begin{zed}
+	\openLowerBound \zeroR \in RightHalfLine
+\also
+	\closedLowerBound \oneR \in RightHalfLine
+\end{zed}
+
+\end{example}
+
+Let $rightSet(R)$ denote the set of real numbers that the right half-line syntactic fragment $R$ represents.
+
+\begin{axdef}
+	rightSet: RightHalfLine \fun \power \R
+\where
+	\forall a : \R @ rightSet(\openLowerBound a) = \{~ x: \R | a \ltR x ~\}
+\also
+	\forall a : \R @ rightSet(\closedLowerBound a) = \{~ x: \R | a \leR x ~\}
+\end{axdef}
+
+For example
+
+\begin{zed}
+	\zeroR \notin rightSet(\openLowerBound \zeroR)
+\also
+	\oneR \in rightSet(\closedLowerBound \oneR)
+\end{zed}
+
+\subsection{Left Half Lines}
+
+Let $LeftHalfLine$ denote the type of syntactic fragments that define open and closed left half-lines.
+
+\begin{zed}
+	LeftHalfLine ::= (\_ \openUpperBound)  \ldata \R \rdata | (\_ \closedUpperBound)  \ldata \R \rdata
+\end{zed}
+
+For example
+
+\begin{zed}
+	\zeroR \openUpperBound \in LeftHalfLine
+\also
+	\oneR \closedUpperBound \in LeftHalfLine
+\end{zed}
+
+Let $leftSet(L)$ denote the set of real numbers that the left half-line syntactic fragment $L$ represents.
+
+\begin{axdef}
+	leftSet: LeftHalfLine \fun \power \R
+\where
+	\forall b : \R @ leftSet(b \openUpperBound) = \{~ x: \R | x \ltR b ~\}
+\also
+	\forall b : \R @ leftSet(b \closedUpperBound) = \{~ x: \R | x \leR b ~\}
+\end{axdef}
+
+For example
+
+\begin{zed}
+	\zeroR \notin leftSet(\zeroR \openUpperBound)
+\also
+	\oneR \in leftSet(\oneR \closedUpperBound)
+\end{zed}
+
+\subsection{Intersection of Half Lines}
+
+Let $R \intersectRightLeft L$ denote the set of real numbers in the intersection of the sets represented by
+the half-line syntactic fragments $R$ and $L$.
+
+\begin{axdef}
+	\_ \intersectRightLeft \_ : RightHalfLine \cross LeftHalfLine \fun \power \R
+\where
+	\forall R: RightHalfLine; L: LeftHalfLine @ \\
+	\t1	R \intersectRightLeft L = rightSet~R \cap leftSet~L
+\end{axdef}
+
+For example
+
+\begin{zed}
+	\zeroR \in \closedLowerBound \zeroR \intersectRightLeft \oneR \openUpperBound
+\end{zed}
+
+\subsection{Improvements}
+
+After reading the above, my reaction is that it would be clearer to first define the relevant objects using meaningful names
+and then define the symbols as abbreviations for them.
+
+TODO:
+\begin{itemize}
+\item Fix up the above discussion.
+\item Use the example environment for examples.
+\item Improve the Summary. It should summarize the whole article, not just how to simulate mini-languages.
+\end{itemize}
+
+
+\subsection{Summary}
+
+A lot of standard mathematical notation can be written directly using the built-in capabilities of \ZN\  and \fuzz.
+However, mathematics contains many specialized notations including those for intervals, probability, and quantum mechanics (Dirac bra-ket notation).
+One can view these specialized notations as mathematical mini-languages.
+As demonstrated above for the case of intervals, it is possible to simulate these notations in Z by introducing new syntactic types along with infix and postfix operators that construct, combine, and reduce fragments of this syntax.
+The general pattern is for the opening and closing symbols to correspond to prefix and postfix operators that
+construct fragments, and for internal symbols to correspond to infix operators that combine and then finally 
+reduce fragments.
+Reduction occurs when the final infix operator is applied and maps the completed mini-language sentence to a 
+some usual mathematical type.
+
+\printbibliography
+
+\end{document}  
