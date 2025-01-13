@@ -1811,6 +1811,7 @@ Addition over the integers is an abelian group.
 %%inop \prodTopSp 5
 \documentclass{amsart}
 
+\usepackage{mathz_core}
 \usepackage{mathz_sets}
 \usepackage{mathz_topological_spaces}
 \usepackage{mathz_preamble}

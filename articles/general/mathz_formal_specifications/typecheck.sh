@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/zsh
 cd $(dirname $0)
 MATHPATH=../../math
-FUZZLIB=/usr/local/bin/fuzzlib
+FUZZLIB=/usr/local/lib/fuzzlib
 cat $FUZZLIB\
  $MATHPATH/mathz_core/mathz_core.sty\
  $MATHPATH/mathz_core/mathz_core.tex\

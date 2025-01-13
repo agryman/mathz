@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/zsh
 ./mathz_categories/typecheck.sh
 ./mathz_complex_numbers/typecheck.sh
 ./mathz_core/typecheck.sh

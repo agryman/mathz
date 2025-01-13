@@ -1040,6 +1040,7 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 %%inop \prodTopSp 5
 \documentclass{amsart}
 
+\usepackage{mathz_core}
 \usepackage{mathz_sets}
 \usepackage{mathz_topological_spaces}
 \usepackage{mathz_preamble}
