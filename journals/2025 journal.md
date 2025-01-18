@@ -220,3 +220,5 @@ but now no longer think that is a good idea.
 * [x] format all articles to get the PDF versions
 * [ ] simplify the groups article
 * [ ] reuse the commands defined in the groups package instead of defining more in the rings package
+
+I renamed the `master` branch to `main`.
