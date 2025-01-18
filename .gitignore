@@ -435,3 +435,6 @@ _readthedocs
 
 /.venv/
 .venv/
+
+# MacOS
+.DS_Store
