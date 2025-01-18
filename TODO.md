@@ -22,23 +22,23 @@ order according to their dependencies on other articles
 
 ### General Articles
 
-- [x] `mathz_article_template`: `mathz_core`
-- [ ] `mathz_project`
-- [ ] `mathz_formal_specifications` : 
+- [x] `mathz-article-template`: `mathz-core`
+- [ ] `mathz-project`
+- [ ] `mathz-formal-specifications` : 
 
 ### Math Articles
 
-- [ ] `mathz_core`
-- [ ] `mathz_sets` (`mathz_core`)
-- [ ] `mathz_categories` (`mathz_core`) - in-progress
-- [ ] `mathz_groups`
-- [ ] `mathz_integers`
-- [ ] `mathz_real_numbers`
-- [ ] `mathz_complex_numbers`
-- [ ] `mathz_vector_spaces`
-- [ ] `mathz_topological_spaces`
-- [ ] `mathz_manifolds`
-- [ ] `mathz_lie_groups_and_algebras`
+- [ ] `mathz-core`
+- [ ] `mathz-sets` (`mathz-core`)
+- [ ] `mathz-categories` (`mathz-core`) - in-progress
+- [ ] `mathz-groups`
+- [ ] `mathz-integers`
+- [ ] `mathz-real-numbers`
+- [ ] `mathz-complex-numbers`
+- [ ] `mathz-vector-spaces`
+- [ ] `mathz-topological-spaces`
+- [ ] `mathz-manifolds`
+- [ ] `mathz-lie-groups-and-algebras`
 
 ## Create a `make` file for type checking
 

@@ -131,7 +131,7 @@ including the installed `mathz` style files and bibliography file.
 │   │       ├── mathz_lie_groups_and_algebras.sty
 │   │       ├── mathz_manifolds.sty
 │   │       ├── mathz_preamble.sty
-│   │       ├── mathz_project.sty
+│   │       ├── mathz-project.sty
 │   │       ├── mathz_real_numbers.sty
 │   │       ├── mathz_sets.sty
 │   │       ├── mathz_topological_spaces.sty
@@ -178,7 +178,7 @@ I have added a Z paragraph. Next I need to create a shell script to typecheck it
 
 Break 6:07 pm
 
-## 2024-01-12
+## 2025-01-12
 
 ### 9:00 am
 
@@ -195,5 +195,28 @@ I added `install` and `typecheck` shell scripts to the `courses/supervised-learn
 I created a placeholder `supervised-learning.sty` file.
 Now the file typechecks cleanly.
 
-- [ ] Create an article for the Computational Commutative Algebra and Algebraic Geometry course.
+- [x] Create an article for the Computational Commutative Algebra and Algebraic Geometry course.
 
+## 2025-01-18
+
+I made progress on an article about rings but think the formal definitions in it, 
+and previous articles, are too complex.
+I have listed several simplifications in a 
+[GitHub ticket](https://github.com/agryman/mathz/issues/1).
+
+I moved the rings article from `courses` into `mathz`.
+
+I renamed the files in `mathz` to use hyphens instead of underscores as the separator character.
+I previously thought it would be a good idea to use filenames that were valid Python module names
+but now no longer think that is a good idea.
+
+* [x] eliminate the `mzRing` prefixes from `mathz-rings.sty`
+  * I replaced `mzRing` with `ring`
+* [x] try using globally defined binary operators, e.g. (\_ + \_) as schema components
+  * no problem for binary operators, it typechecks correctly
+  * problem for unary minus (negation), so use a LaTeX command
+  * note that I had to define LaTeX commands for 0, 1, and unary -
+  * clean up the sty file
+* [x] format all articles to get the PDF versions
+* [ ] simplify the groups article
+* [ ] reuse the commands defined in the groups package instead of defining more in the rings package

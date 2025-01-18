@@ -1,2 +1,2 @@
 #!/bin/zsh
-./mathz_formal_specifications/typecheck.sh
+./mathz-formal-specifications/typecheck.sh

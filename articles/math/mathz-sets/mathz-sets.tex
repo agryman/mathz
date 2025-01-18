@@ -1,0 +1,314 @@
+\documentclass{amsart}
+
+\usepackage{mathz-core}
+\usepackage{mathz-sets}
+
+\usepackage{mathz-preamble}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Sets}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains \ZN\ definitions for 
+concepts related to sets.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+Typed set theory forms the mathematical foundation of \ZN\cite{spivey-zrm}.
+Many set theory concepts are defined in its built-in mathematical toolkit. 
+This article augments the toolkit with some additional concepts.
+It has been type checked by \fuzz\cite{spivey-fm}.
+
+\section{Binary Digits}
+
+Let $bit$ denote the set of \textit{binary digits}, namely the set $\{ 0, 1\} \subseteq \num$.
+
+\begin{zed}
+	bit == \{ 0, 1 \}
+\end{zed}
+
+Let the notation $\B$ denote the set of bits.
+
+\begin{zed}
+	\B == bit
+\end{zed}
+
+\begin{example}
+Zero and one are bits, but two isn't.
+\begin{zed}
+	0 \in \B
+\also
+	1 \in \B
+\also
+	2 \notin \B
+\end{zed}
+\end{example}
+
+\section{Families of Subsets}
+
+Let $\genT$ be a set.
+A \textit{family} of subsets of $\genT$ is a set of subsets of $\genT$.
+Let $Fam[\genT]$ denote the set of all families of subsets of $\genT$.
+
+\begin{zed}
+	Fam[\genT] == \power(\power \genT)
+\end{zed}
+
+\begin{example}
+The set consisting of the empty set and $\setX$ is a family of subsets of $\setX$.
+\begin{zed}
+	\{ \emptyset, \setX \} \in Fam[\setX]
+\end{zed}
+\end{example}
+
+Let the notation $\Fam \genT$ denote the family of subsets of $\genT$ .
+
+\begin{zed}
+	\Fam \genT == Fam[\genT]
+\end{zed}
+
+\section{Functions}
+
+\subsection{Binary Functions}
+
+Let $\genT$ be a set. A function that maps $\genT$ to $\B$ is called a \textit{binary function} on $\genT$.
+
+\begin{zed}
+	binary\_function[\genT] == \genT \fun \B
+\end{zed}
+
+\begin{example}
+The function that maps the set $\setT$ to $0$ is a binary function.
+\begin{zed}
+	(\lambda x: \setT @ 0) \in binary\_function[\setT]
+\end{zed}
+\end{example}
+
+\subsection{Constant Functions}
+
+Let $\genT$ and $\genU$ be sets and let $c$ be some given element of  $\genU$.
+The mapping $f$ that sends every element $x$ of $\genT$ to $c$ is called the \textit{constant function} on $\genT$ with value $c$.
+
+\begin{schema}{ConstantFunction}[\genT, \genU]
+	c: \genU \\
+	f: \genT \fun \genU
+\where
+	f = (\lambda x: \genT @ c)
+\end{schema}
+
+Let $constant\_function~c$ denote the constant function $f$ on $\genT$ with value $c$.
+
+\begin{zed}
+	constant\_function[\genT, \genU] == \{~ConstantFunction[\genT, \genU] @ c \mapsto f ~\}
+\end{zed}
+
+\begin{remark}
+The mapping $constant\_function$ maps each element $c \in \setU$ to a function $\setT \fun \setU$.
+\begin{zed}
+	constant\_function[\setT, \setU] \in \setU \fun (\setT \fun \setU)
+\end{zed}
+\end{remark}
+
+Let the notation $\const c$ denote the constant function with value $c$.
+
+\begin{zed}
+	\const[\genT, \genU] == constant\_function[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	\forall c: \setU; x: \setT @ \const[\setT, \setU] c~x = c
+\end{zed}
+\end{remark}
+
+\subsection{Delta Functions}
+
+Let $\genT$ be a set and let $x, y \in \genT$. 
+Define the \textit{equality indicator bit} $z$ of $(x, y)$ to be $1$ if $x = y$ and $0$ otherwise.
+
+\begin{schema}{EqualityIndicator}[\genT]
+	x, y: \genT \\
+	z: \B
+\where
+	z = \IF x = y \THEN 1 \ELSE 0
+\end{schema}
+
+Define the delta function $delta(x, y)$ to be the equality indication bit of $(x, y)$.
+
+\begin{zed}
+	delta[\genT] == \{~ EqualityIndicator[\genT] @ (x, y) \mapsto z ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	delta[\setX] \in \setX \cross \setX \fun \B
+\end{zed}
+\end{remark}
+
+\begin{example}
+\begin{zed}
+	delta(0, 0) = 1
+\also
+	delta(0, 1) = 0
+\end{zed}
+\end{example}
+
+\begin{remark}
+\begin{zed}
+	\forall x: \setX @ \\
+	\t1	delta(x, x) = 1
+\end{zed}
+\end{remark}
+
+Let the notation $\deltaF \genT$ denote the delta function $delta[\genT]$.
+
+\begin{zed}
+	\deltaF \genT == delta[\genT]
+\end{zed}
+
+\begin{example}
+\begin{zed}
+	(\deltaF \num) (0,1) = 0
+\end{zed}
+\end{example}
+
+\subsection{Function Restriction}
+
+Let $\genT$ and $\genU$ be sets, let $f: \genT \fun \genU$, and let $T \subseteq \genT$ be a subset.
+Let $g$ denote the restriction of $f$ to $T$.
+
+\begin{schema}{FunctionRestriction}[\genT, \genU]
+	f: \genT \fun \genU \\
+	T: \power \genT \\
+	g: \genT \pfun \genU
+\where
+	g = T \dres f
+\end{schema}
+
+Let  $restriction(f, T)$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	restriction[\genT, \genU] == \{~ FunctionRestriction[\genT, \genU] @ (f, T) \mapsto g ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	restriction[\setT, \setU] \in (\setT \fun \setU) \cross \power \setT \fun (\setT \pfun \setU)
+\end{zed}
+\end{remark}
+
+Let the notation $f \restrictU T$ denote the restriction of $f$ to $T$.
+
+\begin{zed}
+	(\_ \restrictU \_)[\genT, \genU] == restriction[\genT, \genU]
+\end{zed}
+
+\begin{remark}
+Function restriction is domain restriction with arguments reversed.
+\begin{zed}
+	\forall FunctionRestriction[\setT, \setU] @ \\
+	\t1	f \restrictU T = T \dres f
+\end{zed}
+\end{remark}
+
+\subsection{Indicator Functions}
+
+Let $\genT$ be a set and let $X \subseteq \genT$ be a subset.
+The \textit{indicator function}  $f$  of $X$ maps each element $a \in \genT$ to 1 if $a \in X$ and 0 otherwise.
+The indicator function is also referred to as the \textit{characteristic function} of $X$.
+
+\begin{schema}{IndicatorFunction}[\genT]
+	X: \power \genT \\
+	f: \genT \fun \B
+\where
+	f = (\lambda a: \genT @ \IF a \in X \THEN 1 \ELSE 0)
+\end{schema}
+
+Let $indicator\_function~X$ denote the indicator function of $X$.
+
+\begin{zed}
+	indicator\_function[\genT] == \{~ IndicatorFunction[\genT] @ X \mapsto f ~\}
+\end{zed}
+
+\begin{remark}
+For each subset $X \subseteq \setT$, the indicator function of $X$ is a binary function on $\setT$.
+\begin{zed}
+	indicator\_function[\setT] \in \power \setT \fun \setT \fun \B
+\end{zed}
+\end{remark}
+
+We introduce the prefix generic symbol $(\indF \_)$ where $(\indF \genT)X = indicator\_function[\genT] X$.
+
+\begin{zed}
+	\indF \genT == indicator\_function[\genT]
+\end{zed}
+
+\begin{remark}
+The domain of the range restriction of the indicator function of a set $X$ to the range $\{1\}$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1	\dom((\indF \setT)X \rres \{1\}) = X
+\end{zed}
+\end{remark}
+
+\section{The Support of a Function}
+
+Let $\genT$ be a set and let $f$ be an integer-valued function on $\genT$.
+The \textit{support} $S$ of $f$ is the set of elements $x$ in $\genT$  that take nonzero values.
+
+\begin{schema}{Support}[\genT]
+	f: \genT \fun \num \\
+	S: \power \genT
+\where
+	S = \{~ x: \genT | f~x \neq 0 ~\}
+\end{schema}
+
+Let $support~f$ denote the support $S$ of $f$.
+
+\begin{zed}
+	support[\genT] == \{~ Support[\genT] @ f \mapsto S ~\}
+\end{zed}
+
+\begin{example}
+The support of the indicator function of a set $X$ is $X$.
+\begin{zed}
+	\forall X: \power \setT @ \\
+	\t1 support((\indF \setT)X) = X
+\end{zed}
+\end{example}
+
+An integer-valued function is said to have \textit{finite support} if its support is a finite set.
+
+\begin{schema}{FiniteSupport}[\genT]
+	Support[\genT]
+\where
+	S \in \finset \genT
+\end{schema}
+
+Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $\genT$ that have finite support.
+
+\begin{zed}
+	finite\_support[\genT] == \{~ FiniteSupport[\genT] @ f ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	finite\_support[\setT] \subseteq \setT \fun \num
+\end{zed}
+\end{remark}
+
+\printbibliography
+
+\end{document}

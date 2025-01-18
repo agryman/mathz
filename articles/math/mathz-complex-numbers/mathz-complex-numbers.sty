@@ -1,0 +1,103 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-complex-numbers}[2022/01/15 Z Notation for complex numbers]
+
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+
+% complex numbers
+
+% the set of complex numbers
+\newcommand{\C}{\mathbb{C}}
+
+% the real part of a complex number
+\DeclareMathOperator{\realC}{Re}
+
+% the imaginary part of a complex number
+\DeclareMathOperator{\imagC}{Im}
+
+% embedding real numbers as complex numbers
+\DeclareMathOperator{\asRC}{\mathsf{complex}}
+
+% the complex conjugate postfix operator
+%%postop \conjC
+\newcommand{\conjC}{^*}
+
+% the complex number 0
+\newcommand{\zeroC}{0}
+
+% the complex number 1
+\newcommand{\oneC}{1}
+
+% the complex number i
+\newcommand{\iC}{i}
+
+% the negation prefix operator -x
+\DeclareMathOperator{\negC}{-}
+
+% the set of non-zero complex numbers
+\newcommand{\Cnz}{\C_{*}}
+
+% the addition infix operator x + y
+%%inop \addC 3
+\newcommand{\addC}{\mathbin{+}}
+
+% the subtraction infix operator x - y
+%%inop \subC 3
+\newcommand{\subC}{\mathbin{-}}
+
+% the multiplication infix operator x * y
+%%inop \mulC 4
+\newcommand{\mulC}{\mathbin{*}}
+
+% the multiplication infix operator x * y where x is real
+%%inop \mulRC 4
+\newcommand{\mulRC}{\mathbin{*}}
+
+% the multiplication infix operator x * y where y is real
+%%inop \mulCR 4
+\newcommand{\mulCR}{\mathbin{*}}
+
+% the division infix operator x / y
+%%inop \divC 4
+\newcommand{\divC}{\mathbin{/}}
+
+% the division infix operator x / y where y is real
+%%inop \divCR 4
+\newcommand{\divCR}{\mathbin{/}}
+
+% the multiplication infix operator restricted to non-zero real numbers
+%%inop \mulCnz 4
+\newcommand{\mulCnz}{\mathbin{*}}
+
+% the division infix operator restricted to non-zero real numbers
+%%inop \divCnz 4
+\newcommand{\divCnz}{\mathbin{/}}
+
+% the inverse postfix operator defined on non-zero real numbers
+%%postop \invCnz
+\newcommand{\invCnz}{^{-1}}
+
+% the power infix operator z^n
+%%inop \powCN 5
+\newcommand{\powCN}{\mathbin{**}}
+
+% the set of all open sets of complex numbers
+\newcommand{\openC}{\mathsf{open}}
+
+% the norm function norm(x) = |x|
+\DeclareMathOperator{\normC}{norm}
+
+% the exp function
+\DeclareMathOperator{\expC}{exp}
+
+% the log function
+\DeclareMathOperator{\logC}{log}
+
+% the sin function
+\DeclareMathOperator{\sinC}{sin}
+
+% the cos function
+\DeclareMathOperator{\cosC}{cos}
+
+% the tan function
+\DeclareMathOperator{\tanC}{tan}

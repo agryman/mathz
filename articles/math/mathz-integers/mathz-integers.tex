@@ -1,0 +1,282 @@
+\documentclass{amsart}
+
+\usepackage{mathz-integers}
+
+\usepackage{mathz-preamble}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Integers}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains \ZN\ definitions for 
+concepts related to the integers, $\num$.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The integers $\num$ are built-in to \ZN.
+This article provides definitions for some related objects so that they can be used and type checked in formal Z specifications.
+
+\section{Exponentiation}
+
+Let $x \in \num$ and $n \in \nat$. Then $x$ raised to the exponent $n$ is the product of $x$ multiplied by itself $n$ times,
+with the convention that for $n = 0$ the result is $1$.
+Let $exp(x, n)$ denote the result.
+
+\begin{axdef}
+	exp: \num \cross \nat \fun \num
+\where
+	\forall x: \num @ exp(x, 0) = 1
+\also
+	\forall x: \num; n: \nat_1 @ exp(x, n) = x * exp(x, n - 1)
+\end{axdef}
+
+\begin{example}
+\begin{zed}
+	exp(5,2) = 25
+\end{zed}
+\end{example}
+
+\begin{remark}
+\begin{zed}
+	\forall x: \num @ \\
+	\t1	exp(x, 0) = 1
+\end{zed}
+\end{remark}
+
+\begin{remark}
+\begin{zed}
+	\forall x: \num @ \\
+	\t1	exp(x, 1) = x
+\end{zed}
+\end{remark}
+
+\begin{remark}
+\begin{zed}
+	\forall x: \num; n, m: \nat @ \\
+	\t1	exp(x, n + m) = exp(x, n) * exp(x, m)
+\end{zed}
+\end{remark}
+
+\begin{remark}
+\begin{zed}
+	\forall x, y: \num; n: \nat @ \\
+	\t1	exp(x * y, n) = exp(x, n) * exp(y, n)
+\end{zed}
+\end{remark}
+
+Exponentiation is normally denoted $x^n$ but \ZN\ cannot reproduce that.
+Instead we use the infix operator notation that is common to programming languages such as FORTRAN and Python.
+Define the notation $x \expN n = exp(x, n)$.
+
+\begin{zed}
+	(\_ \expN \_) == exp
+\end{zed}
+
+\begin{example}
+\begin{zed}
+	5 \expN 2 = 25
+\end{zed}
+\end{example}
+
+\section{Divisibility}
+
+This section defines \textit{divisibility} of integers.
+
+Given integers $x$ and $y$ we say that $x$ \textit{divides} $y$ if there is some integer $q$ such 
+that $q x = y$.
+
+\begin{schema}{Divides}
+	x, y, q : \num
+\where
+	q * x = y
+\end{schema}
+
+Let $divides$ denote the divisibility relation between integers
+where $(x,y) \in divides$ means that $x$ divides $y$.
+
+\begin{zed}
+	divides == \{~ Divides @ x \mapsto y ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	divides \in \num \rel \num
+\end{zed}
+\end{remark}
+
+We introduce the usual infix notation $x \divides y$ to denote that $(x, y) \in divides$.
+\begin{zed}
+(\_ \divides \_) == divides
+\end{zed}
+
+\begin{example}
+The integer $7$ divides $42$ because $6 * 7 = 42$.
+
+\begin{zed}
+	7 \divides 42
+\end{zed}
+\end{example}
+
+\begin{remark}
+Every integer $x$ divides $0$ because $0 * x = 0$.
+
+\begin{zed}
+	\forall x : \num @ x \divides 0
+\end{zed}
+\end{remark}
+
+\section{Divisors}
+
+Let $x$ be a nonzero integer that divides the integer $y$.
+We say that $x$ is a \textit{divisor} of $y$.
+
+\begin{schema}{Divisor}
+	Divides
+\where
+	x \neq 0
+\end{schema}
+
+Let the relation $(x, y) \in is\_divisor\_of$ denote that $x$ is a divisor of $y$.
+
+\begin{zed}
+	is\_divisor\_of == \{~ Divisor @ x \mapsto y ~\}
+\end{zed}
+
+Let the set $divisors(y)$ denote the set of all divisors of the integer $y$.
+
+\begin{zed}
+	divisors == (\lambda y: \num @ \{~ x : \num | (x, y) \in is\_divisor\_of  ~\})
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	divisors \in \num \fun \power \num
+\end{zed}
+\end{remark}
+
+\begin{example}
+The integer $6$ has the following divisors.
+
+\begin{zed}
+	divisors(6) = \{-6, -3, -2, -1, 1, 2, 3, 6 \}
+\end{zed}
+\end{example}
+
+Let the set $positive\_divisors(y)$ denote the set of all positive divisors of the integer $y$.
+
+\begin{zed}
+	positive\_divisors == (\lambda y: \num @ divisors(y)  \cap \nat_1)
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	positive\_divisors \in \num \fun \power \nat_1
+\end{zed}
+\end{remark}
+
+\begin{example}
+The integer $6$ has the following positive divisors.
+\begin{zed}
+	positive\_divisors(6) = \{1, 2, 3, 6 \}
+\end{zed}
+\end{example}
+
+\section{Prime Numbers}
+
+An integer $p$ is \textit{prime} if it is greater than one 
+and only has one and itself as positive divisors.
+
+\begin{schema}{Prime}
+	p: \num
+\where
+	p > 1
+\also
+	positive\_divisors(p) = \{ 1, p \}
+\end{schema}
+\begin{itemize}
+	\item $p$ is greater than $1$.
+	\item $1$ and $p$ are the only positive divisors of $p$.
+\end{itemize}
+
+\begin{example}
+The integer $2$ is prime.
+
+\begin{zed}
+	\LET p == 2 @ \\
+	\t1	Prime
+\end{zed}
+\end{example}
+
+Let $primes$ denote the set of all primes.
+
+\begin{zed}
+	primes == \{~ Prime @ p ~\}
+\end{zed}
+
+\begin{remark}
+\begin{zed}
+	primes \subset \nat_1
+\end{zed}
+\end{remark}
+
+\begin{example}
+The natural numbers $2, 3, 5,$ and $7$ are primes.
+
+\begin{zed}
+	\{2, 3, 5, 7\} \subseteq primes
+\end{zed}
+\end{example}
+
+\section{Addition of Integer Sequences}
+
+Let $l$ be a natural number and
+let $x$ and $y$ be two integer sequences of length $l$.
+Their sum $z = x + y$ is the integer sequence of length $l$ defined by pointwise addition
+of the terms in $x$ and $y$.
+
+\begin{schema}{AddIntegerSequences}
+	l : \nat \\
+	x, y, z : \seq \num
+\where
+	l = \# x = \# y
+\also
+	z = (\lambda i : 1 \upto l @ x~i + y~i)
+\end{schema}
+\begin{itemize}
+	\item The sequence $z$ is defined by pointwise addition of the sequences $x$ and $y$.
+\end{itemize}
+
+Let the function $add\_int\_seq(x, y) = z$ be the sum of two equal-length integer sequences.
+
+\begin{zed}
+	add\_int\_seq == \{~ AddIntegerSequences @ (x, y) \mapsto z ~\}
+\end{zed}
+
+\begin{remark}
+Addition is a partial function on the set of all pairs of integer sequences.
+\begin{zed}
+	add\_int\_seq \in \seq \num \cross \seq \num \pfun \seq \num
+\end{zed}
+\end{remark}
+
+We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
+
+\begin{zed}
+	(\_ \addSeqZ \_) == add\_int\_seq
+\end{zed}
+
+\printbibliography
+
+\end{document}

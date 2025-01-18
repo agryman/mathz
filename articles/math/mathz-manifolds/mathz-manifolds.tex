@@ -1,0 +1,106 @@
+\documentclass{amsart}
+
+\usepackage{mathz-real-numbers}
+\usepackage{mathz-manifolds}
+
+\usepackage{mathz-preamble}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Manifolds}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+This article contains Z Notation type declarations for manifolds and some related objects.
+It has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+
+    \section{Introduction}
+
+    Manifolds can be defined in several ways.
+    The way I prefer to think about them is that, first of all, they are  based on topological spaces.
+    A manifold is therefore a topological space with some additional structure.
+    This additional structure allows one to regard a manifold as, locally, being like an open subset of $\R^n$
+    for some natural number $n$ referred to as the dimension of the manifold.
+    In the following, let $M$ be a topological space of dimension $n$.
+
+    \section{Charts}
+    A chart $\phi$ on $M$ is a continuous injection of some open subset $U \subseteq M$ into $\R^n$.
+    A chart gives every point $p \in U$ in its domain of definition a tuple of $n$ real number coordinates.
+    \begin{equation}
+        \phi: U \inj \R^n
+    \end{equation}
+
+    \subsection{Transition Functions}
+    Let $U, V, W$ be open subsets of $M$ with $W = U \cap V$.
+    Let $\phi: U \inj \R^n$ and $\psi: V \inj \R^n$ be charts.
+    Every point $p \in W$ is therefore given two, typically distinct, tuples of coordinates.
+    The mapping from one coordinate tuple to the other is called the transition function defined by the pair of charts.
+    Let $t_{\phi,\psi}$ denote that transition function that maps the $\phi$ coordinates to the $\psi$ coordinates.
+    \begin{equation}
+        \forall x \in \phi(W) @ t_{\phi,\psi}(x) = \psi(\phi^{-1}(x))
+    \end{equation}
+
+    \subsection{Compatible Charts}
+    Let $\mathcal{F}$ be some family of partial injections from $\R^n$ to $\R^n$, e.g. continuous, differentiable, smooth, defined on the open subsets.
+    \begin{equation}
+        \mathcal{F} \subseteq \R^n \pinj \R^n
+    \end{equation}
+
+    A pair of charts are said to be compatible with respect to $\mathcal{F}$ when their transition functions belong to $\mathcal{F}$.
+
+    \section{Atlases}
+    A set of pairwise compatible charts that cover $M$ is called an atlas for $M$.
+    An atlas gives $M$ a manifold structure.
+    If the charts are only required to be continuous then $M$ is called a topological manifold.
+    If the charts are required to be differentiable then the atlas is called a differential or differentiable structure and $M$ is called
+    a differentiable manifold.
+    Infinitely differentiable charts are called smooth charts.
+    We are only concerned with smooth charts and manifolds.
+
+    In general, we normally consider an atlas to be a maximal set of charts.
+    A given set of mutually compatible charts belongs to a unique maximal atlas.
+    The given set is said to generate the maximal atlas.
+
+    \section{Smooth Mappings}
+    Mappings from one smooth manifold to another are called smooth when they are smooth when expressed in their coordinate charts.
+    A smooth mapping that has a smooth inverse is called a diffeomorphism.
+
+    \section{Tangent Vectors}
+    A tangent vector $X$ at the point $p \in M$ is a mapping from the set of smooth functions at $p$ to $\R$ that satisfies the following
+    for all $c \in \R$ and $f,g \in C^{\infty}(M,p)$
+    \begin{align}
+        X(cf) &= cX(f) \\
+        X(f + g) &= X(f) + X(g) \\
+        X(fg) &= g(p)X(f) + f(p)X(g)
+    \end{align}
+
+    A smooth curve $\gamma: \R \fun M$ defines a tangent vector $X$ at $p=\gamma(0)$ by
+    \begin{equation}
+        X(f) = \left.\frac{df(\gamma(t))}{dt}\right|_{t=0}
+    \end{equation}
+
+    \section{Tangent Bundles}
+
+    The set of all tangent vectors at $p$ is denoted $M_p$ or $T_p(M)$.
+    It is an $n$-dimensional vector space and is called the tangent space at $p$.
+    The set of all tangent spaces is called the tangent bundle and is denoted $T(M)$
+    \begin{equation}
+        T(M) = \{~ (p,X) | p \in M, X \in M_p ~\}
+    \end{equation}
+
+    The tangent bundle $T(M)$ is a smooth vector bundle over $M$ under the natural projection
+    $\pi: T(M) \fun M, \pi(p,X) = p$.
+
+    \printbibliography
+
+\end{document}

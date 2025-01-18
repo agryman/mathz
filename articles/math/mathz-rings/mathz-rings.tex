@@ -1,0 +1,465 @@
+\documentclass{amsart}
+
+% include mathz package dependencies here
+\usepackage{mathz-core}
+\usepackage{mathz-real-numbers}
+\usepackage{mathz-rings}
+
+\usepackage{mathz-preamble}
+\usepackage{babel}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Notes on Rings}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+    This article contains formal definitions for mathematical concepts related to rings.
+    It uses \ZN\ and has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+This article contains notes from the course \textit{Computational Commutative Algebra and Algebraic Geometry}
+taught by Professor Michael Stillman in Winter 2025 as part of the Fields Academy Shared Graduate Courses
+program.
+It contains formal definitions for mathematical concepts related to rings.
+It uses \ZN\cite{spivey-zrm} and has been type checked by \fuzz\cite{spivey-fm}.
+
+\subsection{Source Material}
+
+The course is concerned with Computational Commutative Algebra and Algebraic Geometry.
+The course uses \mzMtwo\ for computation.
+I'll use \cite{atiyah-itca} as the source for Commutative Algebra
+and \cite{hartshorne-ag} as the source for Algebraic Geometry.
+
+\subsection{Typechecking}
+
+I'll start by pulling in the set of real numbers $\R$, and its zero element $\zeroR$.
+So far, these are just \LaTeX\ commands.
+
+Next, I'll say something formal about them.
+
+\begin{remark}
+Zero is a real number.
+\begin{zed}
+	\zeroR \in \R
+\end{zed}
+\end{remark}
+
+\subsection{TODO List}
+
+Define enough terms so that I can express the problem sets.
+Also try to write formal specifications for the data types and functions in \mzMtwo.
+
+Define the following terms:
+\begin{itemize}
+	\item ring
+	\item homomorphism
+	\item ideal
+	\item field
+	\item quotient of ring modulo an ideal
+	\item ideal quotient, colon ideal
+	\item Hilbert series, function
+	\item monomial order
+	\item Gröbner basis
+	\item elimination as in \mzMtwo
+\end{itemize}
+
+\section{Rings and Ideals}
+
+Refer to \cite[Chapter~1]{atiyah-itca} for definitions.
+
+\subsection{Rings and Ring Homomorphisms}
+
+A \textit{ring} $A$ is a set with addition and multiplication  operations such that:
+\begin{enumerate}
+\item The set $A$ is an abelian group with respect to addition. 
+The zero element is denoted by $0$ and the additive inverse of $x \in A$ is denoted by $-x$.
+\item Multiplication is associative ($(xy)z = x(yz)$) and distributive over addition 
+($x(y+z) = x y + x z, (y+z)x=yx+zx$).
+\item The ring is said to be \textit{commutative} if the multiplication is commutative.
+\item The ring is said to have an \textit{identity element} if it has an element that is a left and right multiplicative
+identity 
+\end{enumerate}
+
+\subsubsection{Elements}
+
+A ring has a set of elements.
+
+\begin{schema}{Ring\_Elements}[\genT]
+	A: \power \genT
+\end{schema}
+
+\subsubsection{Addition}
+
+A ring has a binary operation of addition on its element.
+
+\begin{schema}{Ring\_Add}[\genT]
+	Ring\_Elements[\genT] \\
+	\_ + \_: \genT \cross \genT \pfun \genT
+\where
+	(\_ + \_) \in A \cross A \fun A
+\end{schema}
+
+\begin{itemize}
+	\item addition is a binary operation on $A$
+\end{itemize}
+
+Addition is associative.
+
+\begin{schema}{Ring\_Add\_Associative}[\genT]
+	Ring\_Add[\genT]
+\where
+	\forall x, y, z: A @ (x + y) + z = x + (y + z)
+\end{schema}
+
+\begin{itemize}
+	\item addition is associative
+\end{itemize}
+
+A ring has a zero element that is the identity element under addition.
+
+\begin{schema}{Ring\_Zero}[\genT]
+	Ring\_Add[\genT] \\
+	\ringZero: \genT
+\where
+	\ringZero \in A
+\also
+	\forall x: A @ \ringZero + x = x = x + \ringZero
+\end{schema}
+
+\begin{itemize}
+	\item $A$ has an element $\ringZero$
+	\item $\ringZero$ is an additive identity element
+\end{itemize}
+
+A ring has a unary operation of negation that that maps each element to its additive inverse.
+
+\begin{schema}{Ring\_Neg}[\genT]
+	Ring\_Zero[\genT] \\
+	\ringNeg: \genT \pfun \genT
+\where
+	\ringNeg \in A \fun A
+\also
+	\forall x: A @ x + (\ringNeg x) = \ringZero = (\ringNeg x) + x
+\end{schema}
+
+\begin{itemize}
+	\item negation is a unary operation on $A$
+	\item $- x$ is the additive inverse of $x$
+\end{itemize}
+
+It is convenient to define the binary operation of subtraction in terms of addition and negation.
+
+\begin{schema}{Ring\_Sub}[\genT]
+	Ring\_Neg[\genT] \\
+	\_ - \_: \genT \cross \genT \pfun \genT
+\where
+	(\_ - \_) \in A \cross A \fun A
+\also
+	\forall x, y: A @ x - y = x + (\ringNeg y)
+\end{schema}
+
+\begin{itemize}
+	\item subtraction is a binary operation on $A$
+	\item subtraction is defined in terms of addition and negation
+\end{itemize}
+
+A ring is a group under addition.
+
+\begin{schema}{Ring\_Add\_Group}[\genT]
+	Ring\_Add\_Associative[\genT] \\
+	Ring\_Zero[\genT] \\
+	Ring\_Neg[\genT]
+\end{schema}
+
+Addition is commutative.
+
+\begin{schema}{Ring\_Add\_Commutative}[\genT]
+	Ring\_Add[\genT]
+\where
+	\forall x, y: A @ x + y = y + x
+\end{schema}
+
+\begin{itemize}
+	\item addition is commutative
+\end{itemize}
+
+A ring is an abelian group under addition.
+
+\begin{schema}{Ring\_Add\_AbelianGroup}[\genT]
+	Ring\_Add\_Group[\genT] \\
+	Ring\_Add\_Commutative[\genT]
+\end{schema}
+
+\subsubsection{Multiplication}
+
+A ring has a binary operation of multiplication on its elements.
+
+\begin{schema}{Ring\_Mul}[\genT]
+	Ring\_Elements[\genT] \\
+	\_ * \_: \genT \cross \genT \pfun \genT
+\where
+	(\_ * \_) \in A \cross A \fun A
+\end{schema}
+
+\begin{itemize}
+	\item multiplication is a binary operation on $A$
+\end{itemize}
+
+Multiplication is associative.
+
+\begin{schema}{Ring\_Mul\_Associative}[\genT]
+	Ring\_Mul[\genT]
+\where
+	\forall x, y, z: A @ (x * y) * z = x * (y * z)
+\end{schema}
+
+\begin{itemize}
+	\item multiplication is associative
+\end{itemize}
+
+Multiplication distributes over addition.
+
+\begin{schema}{Ring\_Mul\_Distributive}[\genT]
+	Ring\_Add[\genT] \\
+	Ring\_Mul[\genT]
+\where
+	\forall x, y, z: A @ x * (y + z) = (x * y) + (x * z)
+\also
+	\forall x, y, z: A @ (y + z) * x  = (y * x) + (z * x)
+\end{schema}
+
+\begin{itemize}
+	\item left multiplication distributes over addition
+	\item right multiplication distributes over addition
+\end{itemize}
+
+\subsubsection{Ring}
+
+A ring is a set of elements with associative binary operations of addition and multiplication such that
+the elements are an abelian group under addition and multiplication distributes over addition.
+
+\begin{schema}{Ring}[\genT]
+	Ring\_Add\_AbelianGroup[\genT] \\
+	Ring\_Mul\_Distributive[\genT]
+\end{schema}
+
+\subsubsection{Commutative Ring}
+
+The multiplication operation may be commutative.
+
+\begin{schema}{Ring\_Mul\_Commutative}[\genT]
+	Ring\_Mul[\genT]
+\where
+	\forall x, y: A @ x * y = y * x
+\end{schema}
+
+\begin{itemize}
+	\item multiplication is commutative
+\end{itemize}
+
+A ring is said to be \textit{commutative} if its multiplication is commutative.
+
+\begin{schema}{CommutativeRing}[\genT]
+	Ring[\genT] \\
+	Ring\_Mul\_Commutative[\genT]
+\end{schema}
+
+\subsection{Unital Ring}
+
+A ring is said to have an \textit{identity element} if it has a left and right multiplicative identity element.
+
+\begin{schema}{Ring\_One}[\genT]
+	Ring\_Mul[\genT] \\
+	\ringOne: \genT
+\where
+	\ringOne \in A
+\also
+	\forall x: A @ \ringOne * x = x = x * \ringOne
+\end{schema}
+
+\begin{itemize}
+	\item the ring contains an element $\ringOne$
+	\item $\ringOne$ is a left and right multiplicative identity element
+\end{itemize}
+
+Suppose a ring has a second identity element, say $\ringOne'$.
+
+\begin{schema}{Ring\_Ones}[\genT]
+	Ring\_One[\genT] \\
+	\ringOne': \genT
+\where
+	\ringOne' \in A
+\also
+	\forall x: A @ \ringOne' * x = x = x * \ringOne'
+\end{schema}
+
+\begin{itemize}
+	\item the ring contains an element $\ringOne'$
+	\item $\ringOne'$ is a left and right multiplicative identity element
+\end{itemize}
+
+\begin{remark} If a ring has an identity element then it is uniquely determined.
+\begin{zed}
+	\forall Ring\_Ones[\setT] @ \ringOne' = \ringOne
+\end{zed}
+
+\begin{proof}
+\begin{argue}
+\ringOne' \\
+\t1	= \ringOne' * \ringOne	& $\ringOne$ is an identity element \\
+\t1	= \ringOne						& $\ringOne'$ is an identity element
+\end{argue}
+\end{proof}
+
+\end{remark}
+
+A ring with an identity element is also said to be a \textit{unital} ring.
+
+\begin{schema}{UnitalRing}[\genT]
+	Ring[\genT] \\
+	Ring\_One[\genT]
+\end{schema}
+
+\subsection{Commutative Algebra}
+
+Commutative algebra is primarily concerned with commutative, unital rings.
+
+\begin{schema}{CURing}[\genT]
+	CommutativeRing[\genT] \\
+	UnitalRing[\genT]
+\end{schema}
+
+For the remainder of this article the term \textit{ring} will denote a commutative ring with an identity element.
+However, the formal notation will always be explicit.
+
+\subsubsection{Zero Ring}
+
+If the zero element and the one element are the same then the ring is said to be a \textit{zero} ring.
+
+\begin{schema}{ZeroRing}[\genT]
+	CURing[\genT]
+\where
+	\ringOne = \ringZero
+\end{schema}
+
+\begin{itemize}
+	\item the zero and one elements are the same
+\end{itemize}
+
+\begin{remark}
+A zero ring contains exactly one element, namely the zero element.
+\begin{zed}
+	\forall ZeroRing[\setT] @ A = \{ \ringZero \}
+\end{zed}
+
+\begin{proof}
+\begin{argue}
+x: A 							& assumption-intro\\
+x \\
+\t1	= x * \ringOne	& $\ringOne$ is the identity element \\
+\t1	= x * \ringZero	& $\ringOne = \ringZero$ by $ZeroRing$ \\
+\t1	= \ringZero				& $\ringZero$ is the zero element \\
+x: A \implies x = \ringZero		& assumption-elim \\
+A = \{ \ringZero \}				& set extensionality
+\end{argue}
+\end{proof}
+
+\end{remark}
+
+\subsubsection{Ring Homomorphism}
+
+A ring homomorphism is a mapping $f$ from ring $A$ into ring $A'$ that
+preserves addition, multiplication, and identity elements.
+
+\begin{schema}{CURing\_Hom}[\genT, \genU]
+	CURing[\genT] \\
+	CURing'[\genU] \\
+	f: \genT \pfun \genU
+\where
+	f \in A \fun A'
+\also
+	\forall x, y: A @ f(x + y) = f(x) +' f(y)
+\also
+	\forall x, y: A @ f(x * y) = f(x) *' f(y)
+\also
+	f(\ringOne) = \ringOne'
+\end{schema}
+
+\subsubsection{Subring}
+
+A subring $A$ of $A'$ is a subset of elements that contains the identity element and is closed under
+addition and multiplication.
+
+\begin{schema}{CURing\_Subring}[\genT]
+	CURing'[\genT] \\
+	A: \power \genT
+\where
+	A \subseteq A'
+\also
+	\ringOne' \in A
+\also
+	\forall x, y: A @ x +' y \in A
+\also
+	\forall x, y: A @ x *' y \in A	
+\end{schema}
+
+A subring itself becomes a ring by restriction of the enclosing ring operations.
+
+\begin{schema}{CURing\_Restriction}[\genT]
+	CURing\_Subring[\genT] \\
+	CURing[\genT]
+\where
+	(\_ + \_) = (\lambda x, y: A @ x +' y)
+\also
+	(\_ * \_) = (\lambda x, y: A @ x *' y)
+\end{schema}
+
+Set inclusion defines a map $f$ from the subring to the ring.
+
+\begin{schema}{CURing\_Inclusion}[\genT]
+	CURing\_Restriction[\genT] \\
+	f: \genT \pfun \genT
+\where
+	f = (\lambda x: A @ x)
+\end{schema}
+
+\begin{remark}
+Subring inclusion is a ring homomorphism.
+
+\begin{zed}
+\forall CURing\_Inclusion[\setT] @ CURing\_Hom[\setT, \setT]
+\end{zed}
+
+\end{remark}
+
+\subsubsection{Composition}
+
+Given homomorphisms $f : A \fun A'$ and $f': A' \fun A''$ their composition 
+$f' \circ f$ is a mapping $g: A \fun A''$.
+
+\begin{schema}{CURing\_Composition}[\genT, \genU, \genV]
+	CURing\_Hom[\genT, \genU] \\
+	CURing\_Hom'[\genU, \genV] \\
+	g: \genT \pfun \genV
+\where
+	g = f' \circ f
+\end{schema}
+
+\begin{remark}
+The composition of homomorphisms is a homomorphism.
+\end{remark}
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,34 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathz-preamble}[2022/02/01 mathz preamble package]
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{commath}
+\RequirePackage[autostyle]{csquotes}
+\RequirePackage{biblatex}
+\RequirePackage{parskip}
+
+\RequirePackage{mathz-project}
+
+% put hyperref second last
+\RequirePackage{hyperref}
+
+% put fuzz last because it redefines \t
+\RequirePackage{fuzz}
+
+\newcommand{\ZN}{Z Notation}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{example}{Example}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\cmd}[1]{{\tt\char`\\#1}}
+\newcommand{\zcmd}[1]{$\csname #1\endcsname$ \cmd{#1}}
+
+\setcounter{tocdepth}{1}

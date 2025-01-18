@@ -1,0 +1,630 @@
+\documentclass{amsart}
+
+\usepackage{tikz-cd}
+
+\usepackage{mathz-core}
+\usepackage{mathz-categories}
+
+\usepackage{mathz-preamble}
+
+\addbibresource{mathz-references.bib}
+
+\begin{document}
+
+\title{Categories}
+\author{Arthur Ryman}
+\email[Arthur Ryman]{arthur.ryman@gmail.com}
+\date{\today}
+
+\begin{abstract}
+    This article is part of the \mathz\ library.
+    It contains formal definitions for mathematical concepts related to categories.
+    It uses \ZN\ and has been type checked by \fuzz.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section*{Introduction}
+
+This article is part of the \mathz\ library.
+It contains formal definitions for mathematical concepts related to categories.
+It uses \ZN\cite{spivey-zrm} and has been type checked by \fuzz\cite{spivey-fm}.
+
+Category theory provides a unifying organizational framework for mathematics.
+It abstracts and generalizes many concepts and constructions that occur throughout mathematics.
+For example, maps of sets, homomorphisms of groups, and linear transformations of vector spaces
+all form categories.
+Without these, and other important motivating examples, category theory might seem to be merely ``general abstract nonsense''.
+
+A formal definition in \ZN\ may depend on other formal definitions.
+However, any formal definition may only depend on previous definitions, i.e. the dependencies must be noncircular.
+The dependency relation between definitions induces a dependency relation between articles,
+namely an article depends on another article if any of its definitions depend on definitions contained in the other article.
+Furthermore, the articles in the \mathz\ library are organized such that the dependencies between articles are also noncircular.
+
+The requirement for noncircular dependencies between articles raises the question of where to position categories within the \mathz\ library.
+Should categories be foundational or advanced?
+Here the distinction between being foundational versus advanced is that a
+foundational article should depend on very few other articles whereas an advanced article may depend on many others.
+In the present case, the question is whether an article on categories should stand on its own or depend on articles that 
+define the motivating examples?
+
+I have taken the position that categories should be foundational and 
+should therefore not depend on any other advanced articles.
+Accordingly, the definitions presented here will be \emph{informally} illustrated with examples that are formally defined in
+later articles.
+For example, although this article states that groups and homomorphisms form a category, 
+it does not use the formal definition of group or homomorphism.
+Such formal definitions are deferred to later articles.
+This approach allows later, advanced articles to reference the foundational definitions of categories 
+contained here without introducing circularity in the article dependency graph.
+
+The structure of this article follows that of Mac Lane\cite{maclane-cftwm},
+which the reader should consult for motivating examples.
+The section numbers here correspond to those in that reference.
+
+\section{Categories, Functors, and Natural Transformations}
+
+\subsection{Axioms for Categories}
+
+Mac Lane\cite{maclane-cftwm} begins by giving logical axioms for \textit{metagraph} and \textit{metacategory} without reference to set theory.
+The movtivation for doing so is to avoid the well-known paradoxes of set theory that would follow when trying to make sense of concepts such as 
+``the category of all categories''.
+
+Russell\cite[Appendix~B]{russell-tpom} introduced \textit{types} precisely to avoid these paradoxes 
+and to put mathematics on a more consistent foundation.
+ \ZN\ is based on \textit{typed set theory} and so the introduction of these ``meta'' concepts is unnecessary.
+However, there is no free lunch.
+The tax one pays when using \ZN\ is to make definitions explicitly depend on formal generic parameters that represent arbitrary given sets.
+Specifically, a category generically depends on two arbitrary sets, one for its objects and another for its arrows.
+
+A \textit{graph} consists of a set of \textit{objects} $a, b, c, \dots$, a set of \textit{arrows} $f, g, h, \dots$, 
+and two operations, \textit{domain} and \textit{codomain}, that assign objects to arrows.
+Arrows are also referred to as \textit{morphisms}.
+The domain and codomain of an arrow are also referred to as its \textit{source} and \textit{target}.
+The domain of the arrow $f$ is denoted $\domCat f$
+and its codomain is denoted $\codCat f$.
+The set of all arrows with domain $a$ and codomain $b$ is denoted $a \arrCat b$ and is referred to as a $hom$ set.
+\begin{schema}{Category\_Graph\_Data}[\genO, \genA]
+	objects: \power \genO \\
+	arrows: \power \genA \\
+	domain, \domCat: \genA \rel \genO \\
+	codomain, \codCat: \genA \rel \genO \\
+	hom, \_ \arrCat \_: \genO \cross \genO \rel \power \genA
+\where
+	\domCat = domain
+\also
+	\codCat = codomain
+\also
+	(\_ \arrCat \_) = hom
+\end{schema}
+
+Table~\ref{table:category_graph_notation} gives the \LaTeX\ commands for these notations.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Notation		& Command		& Description \\
+\hline
+$\domCat f$	& \verb|\domCat f|	& domain \\
+$\codCat f$	& \verb|\codCat f|	& codomain \\
+$a \arrCat b$	& \verb|a \arrCat b|	& arrows \\
+\hline
+\end{tabular}
+\vspace{1ex}
+\caption{Notation for domain, codomain, and arrows.}
+\label{table:category_graph_notation}
+\end{table}
+
+Figure~\ref{fig:f_a_b} shows
+an arrow $f$ with domain $a$ and codomain $b$ diagrammed as an arrow pointing from $a$ to $b$.
+\begin{figure}[h!]
+$$
+ \begin{tikzcd}
+	a \arrow{r}{f} & b 
+\end{tikzcd}
+$$
+\caption{An arrow $f: a \arrCat b$.}
+\label{fig:f_a_b}
+\end{figure}
+
+\begin{schema}{Category\_Graph}[\genO, \genA]
+	Category\_Graph\_Data[\genO, \genA]
+\where
+	domain \in arrows \fun objects
+\also
+	codomain \in arrows \fun objects
+\also
+	hom = (\lambda a, b: objects @ \\
+	\t1	\{~ f: arrows | \domCat f = a \land \codCat f = b ~\})
+\end{schema}
+
+Recall that the term \textit{graph} has two distinct uses in mathematics, 
+namely as a set of nodes (objects) connected by arcs (arrows) as above or
+as a set of ordered pairs that define a binary relation.
+Indeed, \ZN\ identifies a binary relation with its graph.
+The intended meaning of the term ``graph'' should be clear from context.
+
+A \textit{category} is a graph with two additional operations, \textit{identity} and \textit{composition}.
+
+The identity operation maps each object $a$ to its \textit{identity arrow} in $a \arrCat a$.
+The identity arrow for the object $a$ is denoted $\idCat a$.
+\begin{schema}{Category\_Identity\_Data}[\genO, \genA]
+	identity, \idCat: \genO \rel \genA
+\where
+	\idCat = identity
+\end{schema}
+
+Table~\ref{table:category_identity_notation} gives the \LaTeX\ command for this notation.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Notation		& Command		& Description \\
+\hline
+$\idCat a$		&\verb|\idCat a|		& identity \\
+\hline
+\end{tabular}
+\vspace{1ex}
+\caption{Notation for identity.}
+\label{table:category_identity_notation}
+\end{table}
+
+\begin{schema}{Category\_Identity}[\genO, \genA]
+	Category\_Graph[\genO, \genA] \\
+	Category\_Identity\_Data[\genO, \genA] \\
+\where
+	\idCat \in objects \fun arrows
+\also
+	\forall a: objects @ \\
+	\t1	\idCat a \in a \arrCat a
+\end{schema}
+
+A pair of arrows $(g, f)$ is \textit{composable} if the domain of $g$ is the codomain of $f$.
+The composition operation maps each composable pair of arrows $(g, f)$ where $g: b \arrCat c$ and $f: a \arrCat b$ to some arrow $h: a \arrCat c$
+called their \textit{composite}.
+If $(g, f)$ is a composable pair of arrows then their composite is denoted $g \compCat f$.
+\begin{schema}{Category\_Composition\_Data}[\genA]
+	composable: \genA \rel \genA \\
+	composition, \_ \compCat \_: \genA \cross \genA \rel \genA
+\where
+	(\_ \compCat \_) = composition
+\end{schema}
+
+Table~\ref{table:category_composition_notation} gives the \LaTeX\ command for this notation.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Notation		& Command		& Description \\
+\hline
+$g \compCat f$		&\verb|g \compCat f|		& composition \\
+\hline
+\end{tabular}
+\vspace{1ex}
+\caption{Notation for composition.}
+\label{table:category_composition_notation}
+\end{table}
+
+\begin{schema}{Category\_Composition}[\genO, \genA]
+	Category\_Graph[\genO, \genA] \\
+	Category\_Composition\_Data[\genA]
+\where
+	composable = \{ g, f: arrows | \domCat g = \codCat f ~\}
+\also
+	composition \in composable \fun arrows
+\also
+	\forall f, g:arrows | \\
+	\t1	(g, f) \in composable@ \\
+	\t2		g \compCat f \in \domCat f \arrCat \codCat g
+\end{schema}
+
+Figure~\ref{fig:g_f} is a diagram of a composable pair of arrows $(g, f)$.
+
+\begin{figure}[h!]
+$$
+  \begin{tikzcd}
+    a \arrow{r}{f} & b \arrow{r}{g} & c
+  \end{tikzcd}
+$$
+\caption{A composable pair of arrows $(g, f)$.}
+\label{fig:g_f}
+\end{figure}
+
+Figure~\ref{fig:g_comp_f} illustrates the composition operation.
+
+\begin{figure}[h!]
+$$
+\begin{tikzcd}[column sep=tiny]
+& b \arrow{rd}{g} & \\
+a \arrow{ru}{f} \arrow[swap]{rr}{g \compCat f} & & c
+\end{tikzcd}
+$$
+\caption{Composition of $g$ and $f$.}
+\label{fig:g_comp_f}
+\end{figure}
+
+The composition operation for arrows is inspired by the composition operation for functions.
+It is an accident of history that we happen to write a function application $f(x)$ with the function $f$ on the left and the argument $x$ on the right.
+Consequently, the order of functions in a composition is opposite to the order in which they are applied,
+e.g. $(g \circ f)(x) = g(f(x))$.
+One can visually eliminate this order mismatch by drawing arrows that point from right to left, as in Figure~\ref{fig:g_comp_f_left}.
+
+\begin{figure}[h!]
+$$
+  \begin{tikzcd}
+    c & b \arrow{l}{g} & a \arrow{l}{f}
+  \end{tikzcd}
+$$
+\caption{Composition of $g$ and $f$ with right-to-left arrows.}
+\label{fig:g_comp_f_left}
+\end{figure}
+
+The composition $h: a \arrCat c$ of arrows $g: b \arrCat c$ and $f: a \arrCat b$ is diagrammed as a directed graph whose 
+vertices are labelled by the objects $a, b, c$ and whose edges are labelled by the arrows $f, g, h$.
+In such a diagram of objects and arrows, any directed path between two objects defines an arrow by composition of the edge labels.
+If all directed paths between any given pair of objects define the same arrow then the diagram is said be \textit{commutative}.
+Figure~\ref{fig:cd_h_gf} shows the commutative diagram of the composition $h = g \compCat f$.
+
+\begin{figure}[h!]
+$$
+  \begin{tikzcd}
+    a \arrow{r}{f} \arrow[swap]{dr}{h} & b \arrow{d}{g} \\
+     & c
+  \end{tikzcd}
+$$
+\caption{Commutative diagram of $h = g \compCat f$.}
+\label{fig:cd_h_gf}
+\end{figure}
+
+Consider the configuration of objects and arrows shown in Figure~\ref{fig:fgk}.
+
+\begin{figure}[h!]
+$$
+\begin{tikzcd}
+	a \arrow{r}{f} & b \arrow{r}{g} & c \arrow{r}{k} & d
+\end{tikzcd}
+$$
+\caption{The composition $k \compCat g \compCat f$.}
+\label{fig:fgk}
+\end{figure}
+
+The composition operation must satisfy \textit{associativity}.
+\begin{schema}{Category\_Associativity}[\genO, \genA]
+	Category\_Composition[\genO, \genA]
+\where
+	\forall a, b, c, d: objects; f, g, k: arrows | \\
+	\t1	f \in a \arrCat b \land \\
+	\t1	g \in b \arrCat c \land \\
+	\t1	k \in c \arrCat  d @\\
+	\t2		k \compCat (g \compCat f) = (k \compCat g) \compCat f
+\end{schema}
+
+Figure~\ref{fig:associativity} illustrates associativity.
+
+\begin{figure}[h!]
+$$
+\begin{tikzcd}[column sep=6em]
+a \arrow[swap]{d}{f} 
+\arrow{r}{k \compCat (g \compCat f) = (k \compCat g) \compCat f} 
+\arrow[swap]{rd}[near start]{g \compCat f} & 
+d \\
+b \arrow[swap]{r}{g} 
+\arrow[crossing over]{ru}[near end]{k \compCat g}& 
+c \arrow[swap]{u}{k}
+\end{tikzcd}
+$$
+\caption{Commutative diagram for associativity.}
+\label{fig:associativity}
+\end{figure}
+
+The identity operation must satisfy the \textit{unit law}.
+\begin{schema}{Category\_UnitLaw}[\genO, \genA]
+	Category\_Identity[\genO, \genA] \\
+	Category\_Composition[\genO, \genA]
+\where
+	\forall a, b, c: objects @ \\
+	\t1	\forall f: a \arrCat b; g: b \arrCat c @ \\
+	\t2		\idCat b \compCat f = f \land \\
+	\t2		g \compCat \idCat b = g
+\end{schema}
+
+Figure~\ref{fig:cd_unit_law} illustrates the unit law.
+
+\begin{figure}[h!]
+$$
+\begin{tikzcd}
+	a \arrow{r}{f} \arrow[swap]{rd}{f}		& b \arrow{d}{\idCat b} \arrow{rd}{g} \\
+								& b \arrow[swap]{r}{g}					& c
+\end{tikzcd}
+$$
+\caption{Commutative diagram for the unit law.}
+\label{fig:cd_unit_law}
+\end{figure}
+
+A \textit{category} is a graph with a composition operation that satisfies associativity and an identity operation that
+satisfies the unit law.
+\begin{schema}{Category}[\genO, \genA]
+	Category\_Associativity[\genO, \genA] \\
+	Category\_UnitLaw[\genO, \genA]
+\end{schema}
+
+\begin{remark}
+The identity operation of a category is an injection from the set of objects into the set of arrows.
+\begin{zed}
+	\forall Category[\setO, \setA] @ \\
+	\t1	\idCat \in objects \inj arrows
+\end{zed}
+
+\begin{proof}
+Let $a$ and $b$ be arbitrary objects.
+It suffices to show that
+\[
+	\idCat a = \idCat b \implies a = b
+\]
+
+\begin{argue}
+	a \\
+	\t1	= \domCat (\idCat a)	& $Category$ \\
+	\t1	= \domCat (\idCat b)	& By assumption \\
+	\t1	= b				& $Category$
+\end{argue}
+\end{proof}
+
+\end{remark}
+
+The significance of this remark is that the identity operation is an isomorphism from the set of objects to the set of identity arrows.
+This implies that a category can be specified, up to an isomorphism of the set of objects, 
+by its set of arrows, its subset of identity arrows, and its composition operation,
+with all mentions of objects replaced by mentions of identity arrows.
+Therefore, any true statement about a category can, in principle, be made without reference to its objects.
+That being said, replacing objects by identity arrows would be awkward. 
+It is more intuitive to think of a category in terms of both its objects and arrows, 
+even though its objects are, technically, somewhat redundant.
+
+\begin{remark}
+The composition operation of a category is a surjection onto its set of arrows.
+\begin{zed}
+	\forall Category[\setO, \setA] @ \\
+	\t1	\ran (\_ \compCat \_) = arrows
+\end{zed}
+\begin{proof}
+The proof follows immediately because every arrow is a composition of itself and the identity arrow of its domain (or codomain).
+
+Although the above brief outline of the proof is perfectly acceptable in everyday mathematical writing, 
+we give a more detailed proof here as a warm-up for future formal proofs.
+
+\begin{argue}
+	\ran (\_ \compCat \_) = arrows \\
+	\t1 \iff \ran (\_ \compCat \_) \subseteq arrows \land arrows \subseteq  \ran (\_ \compCat \_) 			& Definition of $=$
+\end{argue}
+
+We have
+\begin{argue}
+	(\_ \compCat \_) \in composable \fun arrows 			& $Category$ \\
+	\t1	\implies \ran (\_ \compCat \_) \subseteq arrows		& Definition of $\fun$
+\end{argue}
+
+Therefore, it suffices to show that
+\[
+	arrows \subseteq  \ran (\_ \compCat \_)
+\]
+
+Let $f$ be an arbitrary member of $arrows$.
+It suffices to show that
+\[
+	f \in \ran (\_ \compCat \_)
+\]
+
+Let $a = \domCat f$.
+We have
+\begin{argue}
+	f \\
+	\t1	= f \compCat (\idCat a)					& $Category$ \\
+	\t1	\in \ran (\_ \compCat \_)					& Definition of $\ran$
+\end{argue}
+
+\end{proof}
+\end{remark}
+
+The significance of this remark is that if we are given the composition operation of a category,
+then we can recover its set of arrows by taking the range.
+
+If $b$ is any object of a category, the corresponding identity arrow $\idCat b$ is uniquely determined by the unit law.
+Consider two categories that have the same composition operations, but possibly different identity operations.
+\begin{schema}{Category\_SameComposition}[\genO, \genA]
+	Category_1[\genO, \genA] \\
+	Category_2[\genO, \genA]
+\where
+	\theta Category\_Composition_1 = \theta Category\_Composition_2
+\end{schema}
+
+\begin{remark}[Identity Is Unique]
+Any two categories that have the same composition operation must also have the same identity operation.
+\begin{zed}
+	\forall Category\_SameComposition[\setO, \setA] @ \\
+	\t1	\idCat_1 = \idCat_2
+\end{zed}
+
+\begin{proof}
+Let $b$ be an arbitrary object. It suffices to show that
+\[
+	\idCat_1 b = \idCat_2 b
+\]
+
+We have
+\begin{argue}
+	\idCat_1 b \\
+	\t1	= (\idCat_1 b) \compCat_2 (\idCat_2 b)	& $Category\_UnitLaw_2$ \\
+	\t1	= (\idCat_1 b) \compCat_1 (\idCat_2 b)	& $Category\_SameComposition$ \\
+	\t1	= \idCat_2 b						& $Category\_UnitLaw_1$
+\end{argue}
+
+\end{proof}
+\end{remark}
+
+The significance of this remark is that given an associative composition operation on a graph, there is at most one identity operation that
+satisfies the unit law. Hence, given a category, the identity operation is uniquely determined.
+
+When defining a specific category, it is useful to base the definition on a structure that collects together all the 
+unconstrained data required in any generic category.
+\begin{schema}{Category\_Data}[\genO, \genA]
+	Category\_Graph\_Data[\genO, \genA] \\
+	Category\_Identity\_Data[\genO, \genA] \\
+	Category\_Composition\_Data[\genA]
+\end{schema}
+
+STOPPED AT p8: An example is the metacategory of sets.
+
+Mac Lane \cite[p8]{maclane-cftwm} defines the \textit{metacategory of sets} whose objects are all sets and whose
+arrows are all functions, where here the definition of a function includes its domain and codomain.
+As mentioned above, we can avoid the introduction of metacategories because we are using \ZN\ which prevents the usual
+paradoxes of set theory.
+Instead we define the category of sets whose objects are subsets of a given set that is provided as a generic parameter.
+We begin by formalizing the definition of function appropriate for this category.
+
+Let $\genT$ and $\genU$ be given sets.
+A \textit{function} in $\genT \cross \genU$ consists of a domain, codomain, and graph.
+The domain is a subset of $\genT$, the codomain is a subset of $\genU$, and the graph is a set of pairs that 
+associate to each element of the domain a unique element of the codomain.
+\begin{schema}{Function}[\genT, \genU]
+	domain: \power \genT \\
+	codomain: \power \genU \\
+	graph: \genT \pfun \genU
+\where
+	graph \in domain \fun codomain
+\end{schema}
+
+Given a function $f$, we can \textit{apply} it to any element $x$ of its domain to obtain a corresponding element $y$ of its codomain.
+\begin{schema}{Function\_Application}[\genT, \genU]
+	f: Function[\genT, \genU] \\
+	x: \genT \\
+	y: \genU
+\where
+	x \in f.domain
+\also
+	y = f.graph(x)
+\end{schema}
+
+Note that although we can apply a function to an element of its domain, general category-theoretic statements do not assume that
+objects have elements and arrows are functions.
+
+Let $\genV$ be another given set. 
+Let $f$ be a function in $\genT \cross \genU$
+and $g$ a function in $\genU \cross \genV$.
+The pair $(g, f)$ is said to be \textit{composable}
+if the domain of $g$ is equal to the codomain of $f$.
+\begin{schema}{Function\_Composable}[\genT, \genU, \genV]
+	f: Function[\genT, \genU] \\
+	g: Function[\genU, \genV]
+\where
+	g.domain = f.codomain
+\end{schema}
+
+Let $(g, f)$ be a pair of composable functions. 
+Their \textit{composition} is the function $h$ in $\genT \cross \genV$ 
+whose graph is the usual function composition of the graphs of $g$ and $f$.
+\begin{schema}{Function\_Composition}[\genT, \genU, \genV]
+	Function\_Composable[\genT, \genU, \genV] \\
+	h: Function[\genT, \genV]
+\where
+	h.domain = f.domain
+\also
+	h.codomain = g.codomain
+\also
+	h.graph = g.graph \circ f.graph
+\end{schema}
+
+Let $S$ be a subset of $\genT$. The \textit{identity} function $id$ on $S$ has domain and codomain equal to $S$ and has graph equal to the usual
+identity graph.
+\begin{schema}{Function\_Identity}[\genT]
+	S: \power \genT \\
+	id: Function[\genT, \genT]
+\where
+	id.domain = S
+\also
+	id.codomain = S
+\also
+	id.graph = \id S
+\end{schema}
+
+Let $SET[\genT]$ denote the set of subsets of $\genT$, i.e. its power set.
+\begin{zed}
+	SET[\genT] == \power \genT
+\end{zed}
+
+Let $FUNCTION[\genT]$ denote the set of all functions in $\genT \cross \genT$.
+\begin{zed}
+	FUNCTION[\genT] == Function[\genT, \genT]
+\end{zed}
+
+The objects of the category of sets in $\genT$ are elements of $SET[\genT]$
+and its arrows are elements of $FUNCTION[\genT]$.
+\begin{schema}{Set\_Data}[\genT]
+	Category\_Data[SET[\genT], FUNCTION[\genT]]
+\end{schema}
+
+\begin{schema}{Set\_Objects}[\genT]
+	Set\_Data[\genT]
+\where
+	objects = SET[\genT]
+\end{schema}
+
+\begin{schema}{Set\_Arrows}[\genT]
+	Set\_Data[\genT]
+\where
+	arrows = FUNCTION[\genT]
+\end{schema}
+
+The domain and codomain of the arrows are defined in the obvious way.
+\begin{schema}{Set\_Graph}[\genT]
+	Set\_Objects[\genT] \\
+	Set\_Arrows[\genT]
+\where
+	domain = (\lambda f: arrows @ f.domain)
+\also
+	codomain = (\lambda f: arrows @ f.codomain)
+\end{schema}
+
+Composition of arrows is composition of functions.
+\begin{schema}{Set\_Composition}[\genT]
+	Set\_Graph[\genT]
+\where
+	composition = \{~ Function\_Composition[\genT, \genT, \genT] @ (g, f) \mapsto h ~\}
+\also
+	composable = \dom composition
+\end{schema}
+
+Identify arrows are identity functions.
+\begin{schema}{Set\_Identity}[\genT]
+	Set\_Graph[\genT]
+\where
+	identity = \{~ Function\_Identity[\genT] @ S \mapsto id ~\}
+\end{schema}
+
+Let $Set[\genT]$ be the structure with objects, arrows, composition, and identity as defined above.
+\begin{schema}{Set}[\genT]
+	Set\_Composition[\genT] \\
+	Set\_Identity[\genT]
+\end{schema}
+
+\begin{theorem}
+Sets and functions with composition and identity as defined above form a category.
+\begin{zed}
+	\forall Set[\setT] @ \\
+	\t1	Category[SET[\setT], FUNCTION[\setT]]
+\end{zed}
+\end{theorem}
+
+TODO: Sketch the proof of this theorem. Break up the proof into proofs for objects, arrows, composition, and identity.
+State all the proof obligations. It may be better to first define the category of relations and then specialize that into functions.
+Define infections, surjections, bijections, partial functions, total functions.
+
+\printbibliography
+
+\end{document}

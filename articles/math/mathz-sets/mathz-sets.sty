@@ -1,0 +1,35 @@
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{amsmath}
+\ProvidesPackage{mathz-sets}[2022/02/01 Z Notation for sets package]
+
+% sets
+
+% families of sets
+%%pregen \Fam
+\DeclareMathOperator{\Fam}{\mathcal{F}}
+
+% the induced family infix operator
+%%inop \inducedFam 6
+\newcommand{\inducedFam}{\mathbin{|_{\Fam}}}
+
+% the product family infix operator
+%%inop \prodFam 5
+\newcommand{\prodFam}{\mathbin{\cross_{\Fam}}}
+
+% the constant function
+\DeclareMathOperator{\const}{const}
+
+% the function restriction infix operator
+%%inop \restrictU 6
+\newcommand{\restrictU}{\mathbin{|}}
+
+% the set of binary digits
+\newcommand{\B}{\mathbb{B}}
+
+% the indicator function of a set
+%%pregen \indF
+\DeclareMathOperator{\indF}{\mathbf{1}}
+
+% the delta function of a set
+%%pregen \deltaF
+\DeclareMathOperator{\deltaF}{\delta}
