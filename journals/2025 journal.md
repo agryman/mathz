@@ -212,13 +212,26 @@ but now no longer think that is a good idea.
 
 * [x] eliminate the `mzRing` prefixes from `mathz-rings.sty`
   * I replaced `mzRing` with `ring`
-* [x] try using globally defined binary operators, e.g. (\_ + \_) as schema components
-  * no problem for binary operators, it typechecks correctly
+* [x] try using globally defined binary operators, e.g. `(\_ + \_)` as schema components
+  * no problem for binary operators, it type checks correctly
   * problem for unary minus (negation), so use a LaTeX command
   * note that I had to define LaTeX commands for 0, 1, and unary -
   * clean up the sty file
 * [x] format all articles to get the PDF versions
-* [ ] simplify the groups article
-* [ ] reuse the commands defined in the groups package instead of defining more in the rings package
 
 I renamed the `master` branch to `main`.
+
+## 2025-01-19
+
+Continue simplifying the `groups` article.
+
+* [x] the `Carrier` schema does not simplify the notation so eliminate it
+* [x] defining a structure to be a tuple doesn't simplify much so eliminate explicit structures
+and just use tuples
+
+# 2025-01-20
+
+Continue simplifying the `groups` article.
+
+* [ ] simplify the `groups` article
+* [ ] reuse the commands defined in the groups package instead of defining more in the rings package

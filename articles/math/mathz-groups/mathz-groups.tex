@@ -17,8 +17,8 @@
 \date{\today}
 
 \begin{abstract}
-This article contains Z Notation definitions for groups and some related objects, namely magmas, semigroups, and monoids.
-It has been type checked with \fuzz.
+	This article formalizes groups and related group-like algebraic structures using 
+	\ZN\ and has been type checked by \fuzz.
 \end{abstract}
 
 \maketitle
@@ -27,256 +27,240 @@ It has been type checked with \fuzz.
 
 \section{Introduction}
 
-Groups are ubiquitous throughout mathematics and physics.
-This article defines groups, and their homomorphisms,
-gradually building up the definitions in terms of some simpler, related mathematical objects,
-namely magmas, semigroups, and monoids.
+Groups are ubiquitous in mathematics and physics.
+This article formalizes groups and related group-like algebraic structures using 
+\ZN\cite{spivey-zrm}.
+It has been type checked by \fuzz\cite{spivey-fm}.
 
-These objects are \textit{mathematical structures}, namely sets of elements equipped with additional features.
-The set of elements of a structure is often referred to as its \textit{carrier}.
-In particular, magmas, semigroups, monoids, and groups are \textit{algebraic structures}. 
+\section{Group-Like Algebraic Structures}
 
-\section{Structures}
+A general \textit{algebraic structure} consists of a set equipped with one or more operations.
+A group is an algebraic structure equipped with one binary operation, typically referred to
+as its \textit{product} or \textit{group law}.
 
-In normal mathematical writing, authors do not need to distinguish between a structure and it carrier
-because the structure is usually clear from context.
-For example, one typically see statements such as:  
+Magmas, semigroups, monoids, and abelian groups are 
+algebraic structures that are like groups but differ from them 
+in the properties imposed on their product operations.
+
+The underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
+It is unnecessary to distinguish between a structure and its carrier
+when the intended meaning is clear from context.
+For example, in the statement:  
 ``Let $G$ be a group and let $g$ be an element of $G$.''
-Here the first instance of the variable $G$ stands for the structure while the second stands for its carrier.
+the first instance of $G$ stands for the structure while the second stands for its carrier.
 
 However, a set of elements may have more than one structure in a given context.
-For example, the set of integers has the distinct binary operations of addition and multiplication.
+For example, the set of integers has both addition and multiplication.
 In such cases it may be ambiguous if only the carrier is specified.
-Furthermore, if the mathematics is expressed using a formal language, distinct mathematical objects
+Furthermore, if the mathematics is expressed using a formal language such as \ZN, 
+distinct mathematical objects
 must be referred to using distinct names or expressions.
 
 In order to distinguish between structures and their carriers, 
 this article adopts the common practice of defining structures as \textit{tuples}
 consisting of a carrier together with one or more additional features.
-This article also adopts the notational convention of using bold font variables, e.g. $\strucA, \strucB, \strucC$,
-to denote structures, and the corresponding Roman font variables, e.g. $A, B, C$, to denote their carriers.
 
-TO DO: update the article to define structures as tuples of a carrier and a binary operation.
-Also better integrate the informal text notation with the formal text by using the variable names in the schema.
+When introducing variables to refer to structures and their carriers,
+we'll use some typographical convention such as bold font to relate the two.
+For example, the structure $\strucA$ has carrier $A$.
 
-\section{Carriers}
+Let $\genT$ be a set and let $A$ be a subset of it.
+We say that a structure with carrier $A$ is a \textit{structure in} $\genT$.
+If $A = \genT$ we say that the structure is a \textit{structure on} $\genT$
+or a \textit{structure over} $\genT$.
+Note that a structure on or over $\genT$ is also a structure in $\genT$.
 
-Let $\genT$ be a set and let $elements$ be a nonempty subset of $\genT$.
-The set $\genT$ can be thought of as the \textit{universe of discourse} from which the elements are drawn.
-The set $elements$ in the context of some mathematical structure is said to be the \textit{carrier} of that structure.
-Such a structure is said to be \textit{on} or \textit{over} its set of elements
-and \textit{in} the universe from which its elements are drawn.
-\begin{schema}{Carrier}[\genT]
-	elements: \power_1 \genT
-\end{schema}
+\section{Binary Operations}
 
-Let $\strucA$ and $\strucB$ be structures with carriers $A$ and $B$.
-A \textit{carrier map} from $\strucA$ to $\strucB$ is a triple $(f, A, B)$ where $f$ is a function from $A$ to $B$.
-In this situation, the carrier $A$ of the source structure $\strucA$ is called the \textit{domain} of the map 
-and the carrier $B$ of the target structure $\strucB$ is called its \textit{codomain}.
-
-TO DO: The following schemas do not mention the variables introduced above. 
-Fix this by introducing schemas that incorporate the variables.
-Also note that the text mentions structures but does not formally define them.
-Perhaps eliminate the Carrier schema and start with the Magma schema.
+A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
 
 \begin{zed}
-	Carrier\_Domain[\genT] \defs Carrier[\genT][domain / elements]
+	PBinOp[\genT] == \genT \cross \genT \pfun \genT
+\end{zed}
+
+\begin{example} Integer division and modulus are partial binary operations on $\num$ since division by $0$ is
+undefined.
+
+\begin{zed}
+	(\_ \div \_) \in PBinOp[\num]
 \also
-	Carrier\_Codomain[\genT] \defs Carrier[\genT][codomain / elements]
+	(\_ \mod \_) \in PBinOp[\num]
 \end{zed}
 
-\begin{schema}{Carrier\_Map}[\genT, \genU]
-	Carrier\_Domain[\genT] \\
-	Carrier\_Codomain[\genU] \\
-	function: \genT \pfun \genU
-\where
-	function \in domain \fun codomain
-\end{schema}
+\end{example}
 
-\begin{remark}
-The domain of a carrier map is uniquely determined by its function.
+A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
+every pair of elements.
+
 \begin{zed}
-	\forall Carrier\_Map[\setT, \setU] @ \dom function = domain
+	BinOp[\genT] == \genT \cross \genT \fun \genT
 \end{zed}
+
+\begin{remark} Every binary operation is a partial binary operation.
+
+\begin{zed}
+	BinOp[\setT] \subseteq PBinOp[\setT]
+\end{zed}
+
 \end{remark}
 
-\begin{remark}
-The codomain of a carrier map is a superset of the range of its function.
-This means that carrier maps that have the same function but distinct codomains are distinct carrier maps.
-\begin{zed}
-	\forall Carrier\_Map[\setT, \setU] @ \ran function \subseteq codomain
-\end{zed}
-\end{remark}
+\begin{example} Integer addition, subtraction, and multiplication are binary operations on $\num$.
 
-Let $carrier\_maps[\genT]$ denote the set of all carrier maps of structures in $\genT$.
 \begin{zed}
-	carrier\_maps[\genT] == \{~ Carrier\_Map[\genT, \genT] @ (function, domain, codomain) ~\}
-\end{zed}
-
-Let $A, B, C$ be carriers of some structures.
-Consider functions $f: A \fun B$, $g: B \fun C$, and $h: A \fun C$.
-\begin{zed}
-	Carrier\_Map\_fAB[\genT, \genU] \defs Carrier\_Map[\genT, \genU][f / function, A / domain, B / codomain]
+	(\_ + \_) \in BinOp[\num]
 \also
-	Carrier\_Map\_gBC[\genT, \genU] \defs Carrier\_Map[\genT, \genU][g / function, B / domain, C / codomain]
+	(\_ - \_) \in BinOp[\num]
 \also
-	Carrier\_Map\_hAC[\genT, \genU] \defs Carrier\_Map[\genT, \genU][h / function, A / domain, C / codomain]
+	(\_ * \_) \in BinOp[\num]
 \end{zed}
 
-The carrier map $(g, B, C)$ is said to be \textit{composable} with the carrier map $(f, A, B)$.
-\begin{schema}{Carrier\_Composable\_gf[\genT, \genU, \genV]}
-	Carrier\_Map\_fAB[\genT, \genU] \\
-	Carrier\_Map\_gBC[\genU, \genV]
-\end{schema}
-
-Let $carrier\_composable[\genT]$ denote the set of composable pairs of carrier maps in $\genT$.
-\begin{zed}
-	carrier\_composable[\genT] == \\
-	\t1	\{~ Carrier\_Composable\_gf[\genT, \genT, \genT] @ (g, B, C) \mapsto (f, A, B) ~\}
-\end{zed}
-
-The carrier map $(h, A, C)$ is said to be the \textit{composition} of $(g, B, C)$ with $(f, A, B)$ when
-$h$ is the function composition $g \circ f$.
-\begin{schema}{Carrier\_Composition\_hgf}[\genT, \genU, \genV]
-	Carrier\_Map\_fAB[\genT, \genU] \\
-	Carrier\_Map\_gBC[\genU, \genV] \\
-	Carrier\_Map\_hAC[\genT, \genV]
-\where
-	h = g \circ f
-\end{schema}
-
-Let $carrier\_composition[\genT]$ denote the composition operation on composable carrier maps
-for structures in $\genT$.
-\begin{zed}
-	carrier\_composition[\genT] == \\
-	\t1	\{~ Carrier\_Composition\_hgf[\genT, \genT, \genT] @ ((g, B, C), (f, A, B)) \mapsto (h, A, C) ~\}
-\end{zed}
+\end{example}
 
 \section{Magmas}
 
-Let $\genT$ be a set.
-A \textit{binary operator} in $\genT$ is a partial function from pairs of elements of $\genT$ to elements of $\genT$.
-\begin{zed}
-	BINOP[\genT] == \genT \cross \genT \pfun \genT
-\end{zed}
+A \textit{magma} is a set $A$ equipped with a total binary operation, generically referred to as a product.
+Let $x \circ y$ denote the product of $x$ and $y$.
 
-Let $elements$ be a subset of $\genT$ and
-let $op$ be binary operator defined on all pairs of elements.
-We call the structure $(elements, op)$ a \textit{magma on the set} $elements$.
-Furthermore, we say that it is a \textit{magma in} $\genT$.
 \begin{schema}{Magma}[\genT]
-	Carrier[\genT] \\
-	op: BINOP[\genT] \\
-	structure: \power \genT \cross BINOP[\genT]
+	A: \power \genT \\
+	\_ \circ \_: PBinOp[\genT]
 \where
-	op \in elements \cross elements \fun elements
-\also
-	structure = (elements, op)
+	(\_ \circ \_) \in BinOp[A]
 \end{schema}
 
-Let $magma[\genT]$ denote the set of all magmas in $\genT$.
+\begin{itemize}
+	\item The product is a binary operation on $A$.
+\end{itemize}
+
+Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \circ \_))$.
+
+\begin{schema}{Magma\_Struc}[\genT]
+	Magma[\genT] \\
+	\strucA: \power \genT \cross PBinOp[\genT]
+\where
+	\strucA = (A, (\_ \circ \_))
+\end{schema}
+
+\begin{itemize}
+	\item the structure $\strucA$ is the pair consisting of the carrier $A$ and the product $(\_ \circ \_)$
+\end{itemize}
+
+
+Let $magma[\genT]$ denote the set of all magma structures in $\genT$.
 \begin{zed}
-	magma[\genT] == \{~ Magma[\genT] @ structure ~\}
+	magma[\genT] == \{~ Magma\_Struc[\genT] @ \strucA ~\}
 \end{zed}
 
-Let the notation $\magma \genT$ denote the set of all magmas in $\genT$.
-\begin{zed}
-	\magma \genT == magma[\genT]
-\end{zed}
+\subsection{Integer Addition}
 
-Let $integer\_addition$ denote the binary operation of integer addition.
+Let $int\_add$ denote the set of integers equipped with addition.
 \begin{zed}
-	integer\_addition == (\num, (\_ + \_))
+	int\_add == (\num, (\_ + \_))
 \end{zed}
 
 \begin{example}
 Integer addition is a magma on $\num$.
 \begin{zed}
-	integer\_addition \in \magma \num
+	int\_add \in magma[\num]
 \end{zed}
 \end{example}
 
-Let $integer\_multiplication$ denote the magma of integer multiplication.
+\subsection{Integer Multiplication}
+
+Let $int\_mul$ denote the set of integers equipped with multiplication.
 \begin{zed}
-	integer\_multiplication == (\num, (\_ * \_))
+	int\_mul == (\num, (\_ * \_))
 \end{zed}
 
 \begin{example}
 Integer multiplication is a magma on $\num$.
 \begin{zed}
-	integer\_multiplication \in \magma \num
+	int\_mul \in magma[\num]
 \end{zed}
 \end{example}
 
-The result of applying a binary operator to a pair of elements $(x, y)$ 
-is normally denoted by an expression formed using an infix operator such as $x + y$ or $x * y$.
+\subsection{Magma Homomorphisms}
 
-Let $\genT$ and $\genU$ be sets, 
-let $A \subseteq \genT$ and $B \subseteq \genU$ be subsets of elements,
-and let the infix expression $x * y$ denote binary operators on both $A$ and $B$.
-Here we follow the standard practice of using visually indistinguishable symbols to denote distinct mathematical
-objects when no confusion can occur.
-Although the symbols look the same, they are encoded distinctly at the source level,
-in this case using the operator names \verb|\mulA| and \verb|\mulB|.
-This practice makes the typeset expressions look as close as possible to informal mathematical notation
-while at the same time satisfying the strict requirements of the type checker.
+Let $A$ and $A'$ be a magmas and let $f$ be a map from $A$ to $A'$.
 
-Let $Magma\_A$ denote the magma $\strucA$ where $A$ is the set of elements and 
-$\_  \mulA \_$ is the infix operator named \verb|\mulA|.
-\begin{zed}
-	Magma\_A[\genT] \defs \\
-	\t1	Magma[\genT][A / elements, \_ \mulA \_ / op, \strucA / structure]
-\end{zed}
-
-Similarly, let $Magma\_B$ denote the magma $\strucB$ where $B$ is the set of elements and 
-$\_ \mulB \_$ is the infix operator named \verb|\mulB|.
-\begin{zed}
-	Magma\_B[\genT] \defs \\
-	\t1	Magma[\genT][B / elements, \_ \mulB \_ / op, \strucB / structure]
-\end{zed}
-
-Let $\strucA$ and $\strucB$ be magmas and let $f$ map $A$ to $B$.
-\begin{schema}{Magma\_Map\_AB}[\genT, \genU]
-	Magma\_A[\genT] \\
-	Magma\_B[\genU] \\
+\begin{schema}{Magma\_Map}[\genT, \genU]
+	Magma[\genT] \\
+	Magma'[\genU] \\
 	f: \genT \pfun \genU
 \where
-	f \in A \fun B
+	f \in A \fun A'
 \end{schema}
 
-The map $f$ is said to {\em preserve the operations} if it maps the product of elements of $A$ to 
-the product of the mapped elements of $B$.
-\begin{schema}{Magma\_MapPreservesOperations\_AB}[\genT, \genU]
-	Magma\_Map\_AB[\genT, \genU]
+\begin{itemize}
+	\item $f$ maps $A$ to $A'$
+\end{itemize}
+
+The map $f$ is a \textit{magma homomorphism} if it preserves products.
+
+\begin{schema}{Magma\_Hom}[\genT, \genU]
+	Magma\_Map[\genT, \genU]
 \where
-	\forall x, y: A @ \\
-	\t1	f(x \mulA y) = (f~x) \mulB (f~y)
+	\forall x, y: A @ f(x \circ y) = f(x) \circ' f(y)
 \end{schema}
+
+\begin{itemize}
+	\item $f$ preserves the product operation
+\end{itemize}
 
 \begin{example}
 Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
+
+\begin{schema}{MulConst}
+	Magma\_Map[\num, \num] \\
+	c: \num
+\where
+	(A,  (\_ \circ \_)) = (A', (\_ \circ' \_)) = int\_add
+\also
+	f = (\lambda x: \num @ c * x)
+\end{schema}
+
+Therefore
+\begin{zed}
+	\forall MulConst @ Magma\_Hom[\num, \num]
+\end{zed}
+
+\begin{proof}
 \begin{zed}
 	\forall c, x, y: \num @ \\
 	\t1	c * (x + y) = c * x + c * y
 \end{zed}
+\end{proof}
 
-Therefore
-\begin{zed}
-	\forall Magma\_Map\_AB[\num, \num]; c: \num | \\
-	\t1	\strucA = \strucB = (\num, (\_ +  \_)) \land \\
-	\t1	f = (\lambda x: \num @ c * x) @ \\
-	\t2		Magma\_MapPreservesOperations\_AB[\num, \num]
-\end{zed}
 \end{example}
 
 \begin{example}
 Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves multiplication.
+
+\begin{schema}{ExpConst}
+	Magma\_Map[\num, \num] \\
+	n: \nat
+\where
+	(A,  (\_ \circ \_)) = (A', (\_ \circ' \_)) = int\_mul
+\also
+	f = (\lambda x: \num @ x \expN n)
+\end{schema}
+
+Therefore
+\begin{zed}
+	\forall MulConst @ Magma\_Hom[\num, \num]
+\end{zed}
+
+\begin{proof}
 \begin{zed}
 	\forall n: \nat; x, y: \num @ \\
 	\t1	(x * y) \expN n = x \expN n * y \expN n
 \end{zed}
+\end{proof}
+
 \end{example}
+
+STOPPED HERE. Define the set of homorphisms between to magmas.
+Show that the composition of two homomorphisms is a homomorphism.
 
 A map that preserves operations is said to be a \textit{magma homomorphism}.
 
