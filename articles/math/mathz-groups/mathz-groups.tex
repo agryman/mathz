@@ -118,31 +118,32 @@ every pair of elements.
 
 \section{Magmas}
 
-A \textit{magma} is a set $A$ equipped with a total binary operation, generically referred to as a product.
-Let $x \circ y$ denote the product of $x$ and $y$.
+A \textit{magma} is a set $A$ equipped with a total binary operation, 
+generically referred to as a \textit{product}.
+Let $x \opG y$ denote the product of $x$ and $y$.
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \circ \_: PBinOp[\genT]
+	\_ \opG \_: PBinOp[\genT]
 \where
-	(\_ \circ \_) \in BinOp[A]
+	(\_ \opG \_) \in BinOp[A]
 \end{schema}
 
 \begin{itemize}
 	\item The product is a binary operation on $A$.
 \end{itemize}
 
-Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \circ \_))$.
+Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
 \begin{schema}{Magma\_Struc}[\genT]
 	Magma[\genT] \\
 	\strucA: \power \genT \cross PBinOp[\genT]
 \where
-	\strucA = (A, (\_ \circ \_))
+	\strucA = (A, (\_ \opG \_))
 \end{schema}
 
 \begin{itemize}
-	\item the structure $\strucA$ is the pair consisting of the carrier $A$ and the product $(\_ \circ \_)$
+	\item the structure $\strucA$ is the pair consisting of the carrier $A$ and the product $(\_ \opG \_)$
 \end{itemize}
 
 
@@ -184,8 +185,8 @@ Integer multiplication is a magma on $\num$.
 Let $A$ and $A'$ be a magmas and let $f$ be a map from $A$ to $A'$.
 
 \begin{schema}{Magma\_Map}[\genT, \genU]
-	Magma[\genT] \\
-	Magma'[\genU] \\
+	Magma\_Struc[\genT] \\
+	Magma\_Struc'[\genU] \\
 	f: \genT \pfun \genU
 \where
 	f \in A \fun A'
@@ -200,12 +201,56 @@ The map $f$ is a \textit{magma homomorphism} if it preserves products.
 \begin{schema}{Magma\_Hom}[\genT, \genU]
 	Magma\_Map[\genT, \genU]
 \where
-	\forall x, y: A @ f(x \circ y) = f(x) \circ' f(y)
+	\forall x, y: A @ f(x \opG y) = f(x) \opG' f(y)
 \end{schema}
 
 \begin{itemize}
 	\item $f$ preserves the product operation
 \end{itemize}
+
+Let $magma\_Hom[\genT, \genU]$ be the set of all homomorphisms
+from magmas in $\genT$ to magmas in $\genU$.
+
+\begin{zed}
+	magma\_Hom[\genT, \genU] == \{~Magma\_Hom[\genT, \genU] @ (\strucA, \strucA') \mapsto f~\}
+\end{zed}
+
+Let $magma\_hom(\strucA, \strucA')$ be the subset of all homomorphisms from 
+$\strucA$ to $\strucA'$.
+
+\begin{zed}
+	magma\_hom[\genT, \genU] == \\
+	\t1	(\lambda \strucA: magma[\genT]; \strucA': magma[\genU] @ \\
+	\t2		\{(\strucA, \strucA') \} \dres magma\_Hom[\genT, \genU])
+\end{zed}
+
+\begin{remark} $magma\_hom(\strucA, \strucA')$ is a subset of $magma\_Hom$.
+
+\begin{zed}
+	\forall Magma\_Hom[\setT, \setU] @ magma\_hom(\strucA, \strucA') \subseteq magma\_Hom[\setT, \setU]
+\end{zed}
+
+\end{remark}
+
+\subsubsection{The Identity Map}
+
+\begin{example} The identity map is a homomorphism.
+
+\begin{schema}{Magma\_Id}[\genT]
+	Magma\_Map[\genT, \genT]
+\where
+	\strucA' = \strucA
+\also
+	f = \id A
+\end{schema}
+
+\begin{zed}
+	\forall Magma\_Id[\setT] @ Magma\_Hom[\setT, \setT]
+\end{zed}
+
+\end{example}
+
+\subsubsection{Multiplication by a Fixed Integer}
 
 \begin{example}
 Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
@@ -214,7 +259,7 @@ Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves additi
 	Magma\_Map[\num, \num] \\
 	c: \num
 \where
-	(A,  (\_ \circ \_)) = (A', (\_ \circ' \_)) = int\_add
+	\strucA = \strucA' = int\_add
 \also
 	f = (\lambda x: \num @ c * x)
 \end{schema}
@@ -233,6 +278,8 @@ Therefore
 
 \end{example}
 
+\subsubsection{Exponentiation by a Fixed Natural Number}
+
 \begin{example}
 Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves multiplication.
 
@@ -240,14 +287,14 @@ Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves
 	Magma\_Map[\num, \num] \\
 	n: \nat
 \where
-	(A,  (\_ \circ \_)) = (A', (\_ \circ' \_)) = int\_mul
+	\strucA = \strucA' = int\_mul
 \also
 	f = (\lambda x: \num @ x \expN n)
 \end{schema}
 
 Therefore
 \begin{zed}
-	\forall MulConst @ Magma\_Hom[\num, \num]
+	\forall ExpConst @ Magma\_Hom[\num, \num]
 \end{zed}
 
 \begin{proof}
@@ -259,41 +306,20 @@ Therefore
 
 \end{example}
 
-STOPPED HERE. Define the set of homorphisms between to magmas.
-Show that the composition of two homomorphisms is a homomorphism.
+\subsection{Composition}
 
-A map that preserves operations is said to be a \textit{magma homomorphism}.
+TODO: Define composition.
 
-Let $\strucA, \strucB$ be magmas in $\genT$ and $\genU$. 
-Let $hom\_magma[\genT, \genU](\strucA, \strucB)$ denote the set of all magma homomorphisms from $\strucA$ to $\strucB$.
+Let $f$ be a homomorphism from $A$ to $A'$ and let $f'$ be a homomorphism from $A'$ to $A''$.
+The function composition $g = f' \circ f$ is a map from $A$ to $A''$.
 
-\begin{zed}
-	hom\_magma[\genT, \genU] == \\
-	\t1	(\lambda \alpha: \magma \genT; \beta: \magma \genU @ \\
-	\t2		\{~ Magma\_MapPreservesOperations\_AB[\genT, \genU] | \\
-	\t3			\alpha = \strucA \land \beta = \strucB @ f ~\})
-\end{zed}
-
-\begin{remark}
-\begin{zed}
-	hom\_magma[\setT, \setU] \in \magma \setT \cross \magma \setU \fun \power (\setT \pfun \setU)
-\end{zed}
-\end{remark}
-
-Let the notation $\homMagma(\alpha, \beta)$,  typeset using the command \verb|\homBinOp|, 
-denote the set of magma homomorphisms from $\alpha$ to $\beta$.
-
-\begin{zed}
-	\homMagma[\genT, \genU] == hom\_magma[\genT, \genU]
-\end{zed}
-
-\begin{remark}
-The identity map preserves all operations.
-\begin{zed}
-	\forall \strucA: \magma \setX @ \\
-	\t1	\id \setX \in \homMagma(\strucA, \strucA)
-\end{zed}
-\end{remark}
+\begin{schema}{Magma\_Composition}[\genT, \genU, \genV]
+	Magma\_Map[\genT, \genU] \\
+	Magma\_Map'[\genU, \genV] \\
+	g: \genT \pfun \genV
+\where
+	g = f' \circ f
+\end{schema}
 
 \begin{remark}
 The composition of two magma homomorphisms is a magma homomorphism.
