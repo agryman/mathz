@@ -121,35 +121,26 @@ every pair of elements.
 A \textit{magma} is a set $A$ equipped with a total binary operation, 
 generically referred to as a \textit{product}.
 Let $x \opG y$ denote the product of $x$ and $y$.
+Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \opG \_: PBinOp[\genT]
-\where
-	(\_ \opG \_) \in BinOp[A]
-\end{schema}
-
-\begin{itemize}
-	\item The product is a binary operation on $A$.
-\end{itemize}
-
-Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
-
-\begin{schema}{Magma\_Struc}[\genT]
-	Magma[\genT] \\
+	\_ \opG \_: PBinOp[\genT] \\
 	\strucA: \power \genT \cross PBinOp[\genT]
 \where
+	(\_ \opG \_) \in BinOp[A]
+\also
 	\strucA = (A, (\_ \opG \_))
 \end{schema}
 
 \begin{itemize}
-	\item the structure $\strucA$ is the pair consisting of the carrier $A$ and the product $(\_ \opG \_)$
+	\item The product is a binary operation on $A$.
+	\item The structure is the pair consisting of the carrier and the binary operation.
 \end{itemize}
-
 
 Let $magma[\genT]$ be the set of all magmas in $\genT$.
 \begin{zed}
-	magma[\genT] == \{~ Magma\_Struc[\genT] @ \strucA ~\}
+	magma[\genT] == \{~ Magma[\genT] @ \strucA ~\}
 \end{zed}
 
 \subsection{Integer Addition}
@@ -197,18 +188,8 @@ Integer multiplication is a magma on $\num$.
 \subsection{Magma Homomorphisms}
 
 Let $A$ and $A'$ be a magmas and let $f$ be a map from $A$ to $A'$.
-
-\begin{schema}{Magma\_Map}[\genT, \genU]
-	Magma\_Struc[\genT] \\
-	Magma\_Struc'[\genU] \\
-	f: \genT \pfun \genU
-\where
-	f \in A \fun A'
-\end{schema}
-
-\begin{itemize}
-	\item $f$ maps $A$ to $A'$
-\end{itemize}
+We refer to $A$ as the \textit{domain} and $A'$ as the \textit{codomain} of the map.
+Alternatively, we refer to $A$ as the \textit{source} and $A'$ as the \textit{target} of the map.
 
 Just as magmas are structures, so also are magma maps.
 A \textit{magma map} is a pair of magmas $(\strucA, \strucA')$
@@ -222,29 +203,33 @@ we'll use some typographic convention to relate the two.
 For example, we may use $F$ for the structure and $f$ for its underlying map.
 In any case, the formal text must always use distinct names in any given context.
 
-\begin{schema}{Magma\_MapStruc}[\genT, \genU]
-	Magma\_Map[\genT, \genU] \\
+\begin{schema}{Magma\_Map}[\genT, \genU]
+	Magma[\genT] \\
+	Magma'[\genU] \\
+	f: \genT \pfun \genU \\
 	F: (magma[\genT] \cross magma[\genU]) \cross (\genT \pfun \genU)
 \where
+	f \in A \fun A'
+\also
 	F = (\strucA, \strucA') \mapsto f
 \end{schema}
 
 \begin{itemize}
-	\item A magma map structure is a pair of magmas and a map between their carriers.
+	\item $f$ maps $A$ to $A'$
+	\item A magma map structure consists of a pair of magmas and a map between their carriers.
 \end{itemize}
-
 
 Let $magma\_map[\genT, \genU]$ be the set of all magma maps
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
-	magma\_Map[\genT, \genU] == \{~ Magma\_MapStruc[\genT, \genU] @ F ~\}
+	magma\_Map[\genT, \genU] == \{~ Magma\_Map[\genT, \genU] @ F ~\}
 \end{zed}
 
 A magma map $f$ is a \textit{magma homomorphism} if it preserves products.
 
 \begin{schema}{Magma\_Hom}[\genT, \genU]
-	Magma\_MapStruc[\genT, \genU]
+	Magma\_Map[\genT, \genU]
 \where
 	\forall x, y: A @ f(x \opG y) = f(x) \opG' f(y)
 \end{schema}
@@ -283,7 +268,7 @@ that consists of all homomorphisms from $\strucA$ to $\strucA'$.
 \begin{example} The identity map is a homomorphism.
 
 \begin{schema}{Magma\_Id}[\genT]
-	Magma\_MapStruc[\genT, \genT]
+	Magma\_Map[\genT, \genT]
 \where
 	\strucA' = \strucA
 \also
@@ -303,7 +288,7 @@ that consists of all homomorphisms from $\strucA$ to $\strucA'$.
 Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
 
 \begin{schema}{MulConst}
-	Magma\_MapStruc[\num, \num] \\
+	Magma\_Map[\num, \num] \\
 	c: \num
 \where
 	\strucA = \strucA' = int\_add
@@ -332,7 +317,7 @@ Therefore
 Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves multiplication.
 
 \begin{schema}{ExpConst}
-	Magma\_MapStruc[\num, \num] \\
+	Magma\_Map[\num, \num] \\
 	n: \nat
 \where
 	\strucA = \strucA' = int\_mul
@@ -354,6 +339,59 @@ Therefore
 \end{proof}
 
 \end{example}
+
+\subsection{Subset}
+
+Given a subset $S$ of the elements of a magma $A$ we can
+restrict the product $x \opG y$ to pairs in $S$.
+Let $x \opS y$ denote the restriction of the product to $S$.
+We get a new structure $\strucS = (S, (\_ \opS \_))$ which may or may not
+itself be a magma.
+
+\begin{schema}{Magma\_Subset}[\genT]
+	Magma[\genT] \\
+	S: \power \genT \\
+	\_ \opS \_: PBinOp[\genT] \\
+	\strucS: \power \genT \cross PBinOp[\genT]
+\where
+	S \subseteq A
+\also
+	(\_ \opS \_) = (S \cross S) \dres (\_ \opG \_)
+\also
+	\strucS = (S, (\_ \opS \_))
+\end{schema}
+
+\subsection{Submagma}
+
+A subset $S$ of a magma is a \textit{submagma} if the product of any pair of elements of $S$ 
+is an element of $S$.
+
+\begin{schema}{Submagma}[\genT]
+	Magma\_Subset[\genT]
+\where
+	\forall x, y: S @ x \opS y \in S
+\end{schema}
+
+\subsection{Image}
+
+The \textit{image} of a magma homomorphism consists of the image of the map
+and the product restricted to those elements.
+
+\begin{schema}{Magma\_Image}[\genT, \genU]
+	Magma\_Hom[\genT, \genU] \\
+	Magma\_Subset'[\genU]
+\where
+	S' = f \limg A \rimg
+\end{schema}
+
+\begin{remark}
+The image of a magma homomorphism is a submagma of its codomain.
+
+\begin{zed}
+	\forall Magma\_Image[\setT, \setU] @ Submagma'[\setU]
+\end{zed}
+
+\end{remark}
 
 \subsection{Composition}
 
@@ -389,21 +427,13 @@ Let $G = F' \circG F$ denote the composition of magma homomorphisms.
 
 A magma is said to be \textit{associative} if the result of applying its operation to any three elements
 is independent of the order in which it is applied pairwise.
+An associative magma is called a \textit{semigroup}.
 
-\begin{schema}{Magma\_Associative}[\genT]
+\begin{schema}{Semigroup}[\genT]
 	Magma[\genT]
 \where
 	\forall x, y, z: A @ \\
 	\t1	x \opG y \opG z = x \opG (y \opG z)
-\end{schema}
-
-An associative magma is called a \textit{semigroup}.
-
-TODO: it might be simpler if we always included the structure in the defining schema for magmas and maps
-
-\begin{schema}{Semigroup}[\genT]
-	Magma\_Associative[\genT] \\
-	Magma\_Struc[\genT]
 \end{schema}
 
 Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
@@ -433,27 +463,68 @@ A \textit{semigroup homomorphism} is a homomorphism of the underlying magmas.
 	\item $\strucA'$ is a semigroup in $\genU$
 \end{itemize}
 
+Let $semigroup\_Hom[\genT, \genU]$ be the set of all homomorphisms from semigroups in $\genT$ to
+semigroups in $\genU$.
 
-Let $\strucA, \strucA'$ be semigroups in $\genT, \genU$.
-Let $semigroup\_hom(\strucA, \strucA')$ denote the set of semigroup homomorphisms from $\strucA$ to $\strucA'$.
+\begin{zed}
+	semigroup\_Hom[\genT, \genU] == \{~ Semigroup\_Hom[\genT, \genU] @ F ~\}
+\end{zed}
+
+Let $semigroup\_hom(\strucA, \strucA')$ be the subset of semigroup homomorphisms from $\strucA$ to $\strucA'$.
 
 \begin{zed}
 	semigroup\_hom[\genT, \genU] == \\
-	\t1	(\lambda \strucA: semigroup[\genT]; \strucA': semigroup[\genU] @ magma\_hom(\strucA, \strucA'))
+	\t1	(\lambda \strucA: semigroup[\genT]; \strucA': semigroup[\genU] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres semigroup\_Hom[\genT, \genU])
 \end{zed}
 
-Note that as structures, semigroups are a subset of magmas.
-Every magma homomorphism of a semigroup is a semigroup homomorphism.
-
-If $\strucA$ is a semigroup, $\strucB$ is a magma, and $f$ is magma homomorphism from 
-$\strucA$ to $\strucB$ then the image of $f$ is a semigroup.
-
 \begin{remark}
-The identity mapping is a semigroup homomorphism.
+Every magma homomorphism of semigroups is a semigroup homomorphism.
+
+\begin{zed}
+	\forall Magma\_Hom[\setT, \setU] @ \\
+	\t1 \strucA \in semigroup[\setT] \land \strucA' \in semigroup[\setU] \implies \\
+	\t2		F \in semigroup\_hom(\strucA, \strucA')
+\end{zed}
+
 \end{remark}
 
 \begin{remark}
-The composition of two semigroup homomorphisms is another semigroup homomorphism.
+If $\strucA$ is a semigroup, $\strucA'$ is a magma, and $f$ is magma homomorphism from 
+$\strucA$ to $\strucA'$ then the image of $f$ is a semigroup.
+
+TODO: Define the image of a magma homomorphism.
+
+\end{remark}
+
+\begin{remark}
+The identity mapping of a semigroup to itself is a semigroup homomorphism.
+
+\begin{zed}
+	\forall Magma\_Id[\setT] @ \\
+	\t1	\strucA \in semigroup[\setT] \implies \\
+	\t2		Semigroup\_Hom[\setT, \setT]
+\end{zed}
+
+\end{remark}
+
+Consider the composition of semigroup homomorphisms.
+
+\begin{schema}{Semigroup\_Composition}[\genT, \genU, \genV]
+	Magma\_Composition[\genT, \genU, \genV] \\
+	Semigroup[\genT] \\
+	Semigroup'[\genU] \\
+	Semigroup''[\genV]
+\end{schema}
+
+\begin{remark}
+The composition of semigroup homomorphisms is a semigroup homomorphism.
+
+\begin{zed}
+	\forall Semigroup\_Composition[\setT, \setU, \setV] @ \\
+	\t1	G \in semigroup\_hom(\strucA, \strucA'')
+\end{zed}
+
 \end{remark}
 
 \section{Monoids}
@@ -463,7 +534,7 @@ The element $e$ is said to be an \textit{identity element} of $\strucA$ if left 
 products with it leave all elements unchanged.
 
 \begin{schema}{IdentityElement}[\genT]
-	Magma\_Struc[\genT] \\
+	Magma[\genT] \\
 	e: \genT
 \where
 	e \in A
@@ -490,7 +561,7 @@ Let $identity\_element$ denote the relation between magmas and identity elements
 
 Consider the case of a magma $\strucA$ that has, possibly distinct, identity elements $e, e'$.
 \begin{schema}{IdentityElements}[\genT]
-	Magma\_Struc[\genT] \\
+	Magma[\genT] \\
 	e, e': \genT
 \where
 	\strucA \mapsto e \in identity\_element[\genT]
@@ -556,7 +627,7 @@ to the identity element of $B$.
 \begin{schema}{MapPreservesIdentity}[\genT, \genU]
 	Monoid[\genT] \\
 	Monoid'[\genU] \\
-	Magma\_MapStruc[\genT, \genU]
+	Magma\_Map[\genT, \genU]
 \where
 	f(e) = e'
 \end{schema}
@@ -660,7 +731,7 @@ to the inverses of the corresponding elements of $A'$.
 \begin{schema}{MapPreservesInverse}[\genT, \genU]
 	Group[\genT] \\
 	Group'[\genU] \\
-	Magma\_MapStruc[\genT, \genU]
+	Magma\_Map[\genT, \genU]
 \where
 	\forall x: A @ f(inv~x) = inv'(f~x)
 \end{schema}
@@ -763,7 +834,7 @@ The composition of bijections of $\setT$ is a group.
 
 A magma $\strucA$ in $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
 their order.
-\begin{schema}{OperationIsCommutative}[\genT]
+\begin{schema}{Commutative}[\genT]
 	Magma[\genT]
 \where
 	\forall x, y: A @ x \opG y = y \opG x
@@ -773,7 +844,7 @@ An \textit{abelian group} is a group in which the product is commutative.
 
 \begin{schema}{AbelianGroup}[\genT]
 	Group[\genT] \\
-	OperationIsCommutative[\genT]
+	Commutative[\genT]
 \end{schema}
 
 Let $abelian\_group[\genT]$ denote the set of all abelian groups in $\genT$.

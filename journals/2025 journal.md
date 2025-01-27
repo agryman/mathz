@@ -237,5 +237,14 @@ Continue simplifying the `groups` article.
 
 Continue simplifying the `groups` article.
 
+# 2025-01-25
+
+Continue simplifying the `groups` article.
+
+# 2025-01-26
+
+Continue simplifying the `groups` article.
+
+
 * [ ] simplify the `groups` article
 * [ ] reuse the commands defined in the groups package instead of defining more in the rings package
