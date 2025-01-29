@@ -1,79 +1,33 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{mathz-groups}[2022/02/01 Z Notation for groups package]
+\ProvidesPackage{mathz-groups}[2025/01/28 Z Notation for groups package]
 
 \RequirePackage{amsmath}
 
-% groups
-
-% binary operations
-%%pregen \magma
-\DeclareMathOperator{\magma}{magma}
-
-% magma homomorphisms
-\DeclareMathOperator{\homMagma}{hom_{mgm}}
-
-% semigroups
-
-% the set of all semigroups
-%%pregen \semigroup
-\DeclareMathOperator{\semigroup}{semigroup}
-
-\DeclareMathOperator{\homSemigroup}{hom_{sg}}
-
-% monoids
-
-% the set of all monoids
-%%pregen \monoid
-\DeclareMathOperator{\monoid}{monoid}
-
-\DeclareMathOperator{\homMonoid}{hom_{mnd}}
-
-% groups
-
-%%pregen \group
-\DeclareMathOperator{\group}{group}
-
-\DeclareMathOperator{\homGroup}{hom_{grp}}
-
-% group identity element
+% group identity elements
 \newcommand{\oneG}{1}
+\newcommand{\zeroG}{0}
 
 % generic group-like product operator
 %%inop \opG \opS 4
 \newcommand{\opG}{\mathbin{\cdot}}
 \newcommand{\opS}{\mathbin{\centerdot}}
 
-% composition of magma maps, not necessarily homomorphisms
-%%inop \circG 4
-\newcommand{\circG}{\mathbin{\circ}}
-
-%%inop \mulA \mulB 4
-\newcommand{\mulA}{\mathbin{*}}
-\newcommand{\mulB}{\mathbin{*}}
-
 % variables used for mathematical structures
+% maybe complete this list and move to the core
 \newcommand{\strucA}{\mathbf{A}}
 \newcommand{\strucB}{\mathbf{B}}
 \newcommand{\strucC}{\mathbf{C}}
 \newcommand{\strucS}{\mathbf{S}}
 
-%%inop \mulG \timesG 4
+% multaplicative group product operators
+%%inop \mulG \timesG \circG 4
 \newcommand{\mulG}{\mathbin{*}}
 \newcommand{\timesG}{\mathbin{\times}}
+\newcommand{\circG}{\mathbin{\circ}}
 
-%%postop \invG \daggerG
-\newcommand{\invG}{\dagger}
-%\newcommand{\invG}{\dagger}
-\newcommand{\daggerG}{^{\dagger}}
-
-% Abelian groups
-
-%%pregen \abgroup
-\DeclareMathOperator{\abgroup}{abgroup}
-
+% additive group product operator
 %%inop \addG 3
 \newcommand{\addG}{\mathbin{+}}
 
-\newcommand{\zeroG}{0}
-
+% additive group inverse operator
 \DeclareMathOperator{\negG}{-}

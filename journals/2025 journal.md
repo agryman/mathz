@@ -245,6 +245,12 @@ Continue simplifying the `groups` article.
 
 Continue simplifying the `groups` article.
 
+# 2025-01-28
 
-* [ ] simplify the `groups` article
+Continue simplifying the `groups` article.
+
+* [x] simplify the `groups` article
+
+# To Do
+
 * [ ] reuse the commands defined in the groups package instead of defining more in the rings package

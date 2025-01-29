@@ -34,43 +34,60 @@ It has been type checked by \fuzz\cite{spivey-fm}.
 
 \section{Group-Like Algebraic Structures}
 
-A general \textit{algebraic structure} consists of a set equipped with one or more operations.
+In general, an \textit{algebraic structure} consists of a set of elements 
+equipped with one or more operations defined on them.
 A group is an algebraic structure equipped with one binary operation, typically referred to
 as its \textit{product} or \textit{group law}.
 
 Magmas, semigroups, monoids, and abelian groups are 
 algebraic structures that are like groups but differ from them 
-in the properties imposed on their product operations.
+in terms of the properties imposed on their product operation.
+
+\subsection{Carrier}
 
 The underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
-It is unnecessary to distinguish between a structure and its carrier
-when the intended meaning is clear from context.
-For example, in the statement:  
-``Let $G$ be a group and let $g$ be an element of $G$.''
-the first instance of $G$ stands for the structure while the second stands for its carrier.
+When writing informal mathematics, 
+it is normally unnecessary to distinguish between a structure and its carrier
+since the intended meaning is usually clear from context.
+For example, consider the following statement:
+\begin{quote}
+	Let $G$ be a group and let $g$ be an element of $G$.
+\end{quote}
+Here the first instance of $G$ stands for the structure while the second stands for its carrier.
 
 However, a set of elements may have more than one structure in a given context.
-For example, the set of integers has both addition and multiplication.
+For example, the set of integers has both additive and multiplicative structures.
 In such cases it may be ambiguous if only the carrier is specified.
 Furthermore, if the mathematics is expressed using a formal language such as \ZN, 
 distinct mathematical objects
 must be referred to using distinct names or expressions.
 
 In order to distinguish between structures and their carriers, 
-this article adopts the common practice of defining structures as \textit{tuples}
-consisting of a carrier together with one or more additional features.
+this article adopts the common mathematical practice of defining structures as \textit{tuples}
+consisting of a carrier together with one or more additional objects such as operations or
+distinguished elements.
 
 When introducing variables to refer to structures and their carriers,
 we'll use some typographical convention such as bold font to relate the two.
 For example, the structure $\strucA$ has carrier $A$.
 
+\subsection{Genericity}
+
+In general, the definition of a structure does not depend on the concrete type
+of its carrier.
+Instead, the definition of a structure is usually given in terms of one or more \textit{generic} parameter
+that stand for arbitrary sets.
+We symbols like $\genT, \genU,$  and $\genV$ to stand for arbitrary sets. 
+
 Let $\genT$ be a set and let $A$ be a subset of it.
-We say that a structure with carrier $A$ is a \textit{structure in} $\genT$.
-If $A = \genT$ we say that the structure is a \textit{structure on} $\genT$
+We say that a structure $\strucA$ with carrier $A$ is a \textit{structure in} $\genT$.
+If $A$ coincides with $\genT$ we say that $\strucA$ is a \textit{structure on} $\genT$
 or a \textit{structure over} $\genT$.
 Note that a structure on or over $\genT$ is also a structure in $\genT$.
 
 \section{Binary Operations}
+
+\subsection{Partial Binary Operations}
 
 A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
 
@@ -78,7 +95,9 @@ A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs o
 	PBinOp[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
 
-\begin{example} Integer division and modulus are partial binary operations on $\num$ since division by $0$ is
+\begin{example}[Integer Division and Modulus]
+
+Integer division and modulus are partial binary operations on $\num$ since division or modulus by $0$ is
 undefined.
 
 \begin{zed}
@@ -88,6 +107,8 @@ undefined.
 \end{zed}
 
 \end{example}
+
+\subsection{Total Binary Operations}
 
 A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
 every pair of elements.
@@ -104,7 +125,9 @@ every pair of elements.
 
 \end{remark}
 
-\begin{example} Integer addition, subtraction, and multiplication are binary operations on $\num$.
+\begin{example}[Integer Addition, Subtraction, and Multiplication]
+
+Integer addition, subtraction, and multiplication are binary operations on $\num$.
 
 \begin{zed}
 	(\_ + \_) \in BinOp[\num]
@@ -117,6 +140,8 @@ every pair of elements.
 \end{example}
 
 \section{Magmas}
+
+\subsection{Magmas}
 
 A \textit{magma} is a set $A$ equipped with a total binary operation, 
 generically referred to as a \textit{product}.
@@ -143,65 +168,77 @@ Let $magma[\genT]$ be the set of all magmas in $\genT$.
 	magma[\genT] == \{~ Magma[\genT] @ \strucA ~\}
 \end{zed}
 
-\subsection{Integer Addition}
+\begin{remark}
+Every magma is a magma on its carrier.
+
+\begin{zed}
+	\forall Magma[\setT] @ \strucA \in magma[A]
+\end{zed}
+
+\end{remark}
+
+\begin{example}[Integer Addition]
 
 Let $int\_add$ be the set of integers equipped with addition.
 \begin{zed}
 	int\_add == (\num, (\_ + \_))
 \end{zed}
 
-\begin{example}
 Integer addition is a magma on $\num$.
 \begin{zed}
 	int\_add \in magma[\num]
 \end{zed}
 \end{example}
 
-\subsection{Integer Subtraction}
+\begin{example}[Integer Subtraction]
 
 Let $int\_sub$ be the set of integers equipped with subtraction.
+
 \begin{zed}
 	int\_sub == (\num, (\_ - \_))
 \end{zed}
 
-\begin{example}
 Integer subtraction is a magma on $\num$.
+
 \begin{zed}
 	int\_sub \in magma[\num]
 \end{zed}
+
 \end{example}
 
-\subsection{Integer Multiplication}
+\begin{example}[Integer Multiplication]
 
 Let $int\_mul$ be the set of integers equipped with multiplication.
+
 \begin{zed}
 	int\_mul == (\num, (\_ * \_))
 \end{zed}
 
-\begin{example}
 Integer multiplication is a magma on $\num$.
+
 \begin{zed}
 	int\_mul \in magma[\num]
 \end{zed}
+
 \end{example}
 
 \subsection{Magma Homomorphisms}
 
 Let $A$ and $A'$ be a magmas and let $f$ be a map from $A$ to $A'$.
-We refer to $A$ as the \textit{domain} and $A'$ as the \textit{codomain} of the map.
-Alternatively, we refer to $A$ as the \textit{source} and $A'$ as the \textit{target} of the map.
+We refer to $A$ as the \textit{domain} of the map and $A'$ as its \textit{codomain}.
+Alternatively, we refer to $A$ as the \textit{source} of the map and $A'$ its \textit{target}.
 
 Just as magmas are structures, so also are magma maps.
 A \textit{magma map} is a pair of magmas $(\strucA, \strucA')$
 and a map $f$ between their carriers.
 
 Recall that we may informally use the same name, say $A$, to refer to both a magma and its carrier.
-Similarly, we may use the same name, say $f$, to refer to both a magma map structure and its
+Similarly, we may informally use the same name, say $f$, to refer to both a magma map structure and its
 underlying map of the carriers.
 When we need to distinguish between the map structure and its underlying map,
 we'll use some typographic convention to relate the two.
 For example, we may use $F$ for the structure and $f$ for its underlying map.
-In any case, the formal text must always use distinct names in any given context.
+In any case, the formal text will always use distinct names in any given context.
 
 \begin{schema}{Magma\_Map}[\genT, \genU]
 	Magma[\genT] \\
@@ -263,9 +300,9 @@ that consists of all homomorphisms from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
-\subsubsection{The Identity Map}
+\begin{example}[The Identity Map]
 
-\begin{example} The identity map is a homomorphism.
+The identity map is a homomorphism.
 
 \begin{schema}{Magma\_Id}[\genT]
 	Magma\_Map[\genT, \genT]
@@ -282,9 +319,8 @@ that consists of all homomorphisms from $\strucA$ to $\strucA'$.
 
 \end{example}
 
-\subsubsection{Multiplication by a Fixed Integer}
+\begin{example}[Multiplication by a Fixed Integer]
 
-\begin{example}
 Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
 
 \begin{schema}{MulConst}
@@ -296,7 +332,8 @@ Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves additi
 	f = (\lambda x: \num @ c * x)
 \end{schema}
 
-Therefore
+Therefore this map is a homomorphism.
+
 \begin{zed}
 	\forall MulConst @ \\
 	\t1	Magma\_Hom[\num, \num]
@@ -311,9 +348,8 @@ Therefore
 
 \end{example}
 
-\subsubsection{Exponentiation by a Fixed Natural Number}
+\begin{example}[Exponentiation by a Fixed Natural Number]
 
-\begin{example}
 Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves multiplication.
 
 \begin{schema}{ExpConst}
@@ -325,7 +361,8 @@ Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves
 	f = (\lambda x: \num @ x \expN n)
 \end{schema}
 
-Therefore
+Therefore this map is a homomorphism.
+
 \begin{zed}
 	\forall ExpConst @ \\
 	\t1	Magma\_Hom[\num, \num]
@@ -340,13 +377,13 @@ Therefore
 
 \end{example}
 
-\subsection{Subset}
+\subsection{Subsets}
 
 Given a subset $S$ of the elements of a magma $A$ we can
 restrict the product $x \opG y$ to pairs in $S$.
 Let $x \opS y$ denote the restriction of the product to $S$.
 We get a new structure $\strucS = (S, (\_ \opS \_))$ which may or may not
-itself be a magma.
+itself be a magma depending on whether or not $S$ is closed under the product.
 
 \begin{schema}{Magma\_Subset}[\genT]
 	Magma[\genT] \\
@@ -361,7 +398,7 @@ itself be a magma.
 	\strucS = (S, (\_ \opS \_))
 \end{schema}
 
-\subsection{Submagma}
+\subsection{Submagmas}
 
 A subset $S$ of a magma is a \textit{submagma} if the product of any pair of elements of $S$ 
 is an element of $S$.
@@ -372,7 +409,7 @@ is an element of $S$.
 	\forall x, y: S @ x \opS y \in S
 \end{schema}
 
-\subsection{Image}
+\subsection{Images}
 
 The \textit{image} of a magma homomorphism consists of the image of the map
 and the product restricted to those elements.
@@ -385,13 +422,26 @@ and the product restricted to those elements.
 \end{schema}
 
 \begin{remark}
-The image of a magma homomorphism is a submagma of its codomain.
+The image of a magma homomorphism is a submagma of its target.
 
 \begin{zed}
 	\forall Magma\_Image[\setT, \setU] @ Submagma'[\setU]
 \end{zed}
 
+\begin{proof}
+It suffices to show that the product of any two elements $x', y'$ in the image $S'$ is 
+also in $S'$. By definition of the image, there exists elements $x$ and $y$ in $A$
+such that $x' = f(x)$ and $y' = f(y)$.
+Therefore $x' \opS' y' = f(x) \opS' f(y) = f(x \opG y)$ which is clearly in the image of $f$. 
+\end{proof}
+
 \end{remark}
+
+Let $magma\_im$ be the function that maps a magma homomorphism to its image.
+
+\begin{zed}
+	magma\_im[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
+\end{zed}
 
 \subsection{Composition}
 
@@ -411,10 +461,12 @@ The function composition $g = f' \circ f$ is a map from $A$ to $A''$.
 
 \begin{remark}
 The composition of two magma homomorphisms is a magma homomorphism.
+
 \begin{zed}
 	\forall Magma\_Composition[\setT, \setU, \setV] @ \\
 	\t1	G \in magma\_hom(\strucA, \strucA'')
 \end{zed}
+
 \end{remark}
 
 Let $G = F' \circG F$ denote the composition of magma homomorphisms.
@@ -425,15 +477,24 @@ Let $G = F' \circG F$ denote the composition of magma homomorphisms.
 
 \section{Semigroups}
 
+\subsection{Associativity}
+
 A magma is said to be \textit{associative} if the result of applying its operation to any three elements
 is independent of the order in which it is applied pairwise.
-An associative magma is called a \textit{semigroup}.
 
-\begin{schema}{Semigroup}[\genT]
+\begin{schema}{Associative}[\genT]
 	Magma[\genT]
 \where
 	\forall x, y, z: A @ \\
 	\t1	x \opG y \opG z = x \opG (y \opG z)
+\end{schema}
+
+\subsection{Semigroups}
+
+An associative magma is called a \textit{semigroup}.
+
+\begin{schema}{Semigroup}[\genT]
+	Associative[\genT]
 \end{schema}
 
 Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
@@ -443,10 +504,32 @@ Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
 \end{zed}
 
 \begin{remark} Every semigroup is a magma.
+
 \begin{zed}
 	semigroup[\setT] \subseteq magma[\setT]
 \end{zed}
+
 \end{remark}
+
+\begin{example}[Sequence Concatenation]
+Finite sequences in $\genT$ with the operation of concatenation form a semigroup
+since concatenation is associative.
+
+\begin{schema}{SequenceConcat}[\genT]
+	Magma[\seq \genT]
+\where
+	A = \seq \genT
+\also
+	\forall x, y: A @ x \opG y = x \cat y
+\end{schema}
+
+\begin{zed}
+	\forall SequenceConcat[\setT] @ \strucA \in semigroup[\seq \setT]
+\end{zed}
+
+\end{example}
+
+\subsection{Homomorphisms}
 
 A \textit{semigroup homomorphism} is a homomorphism of the underlying magmas.
 
@@ -479,6 +562,17 @@ Let $semigroup\_hom(\strucA, \strucA')$ be the subset of semigroup homomorphisms
 \end{zed}
 
 \begin{remark}
+The identity mapping of a semigroup to itself is a semigroup homomorphism.
+
+\begin{zed}
+	\forall Magma\_Id[\setT] @ \\
+	\t1	\strucA \in semigroup[\setT] \implies \\
+	\t2		Semigroup\_Hom[\setT, \setT]
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
 Every magma homomorphism of semigroups is a semigroup homomorphism.
 
 \begin{zed}
@@ -490,31 +584,24 @@ Every magma homomorphism of semigroups is a semigroup homomorphism.
 \end{remark}
 
 \begin{remark}
-If $\strucA$ is a semigroup, $\strucA'$ is a magma, and $f$ is magma homomorphism from 
-$\strucA$ to $\strucA'$ then the image of $f$ is a semigroup.
-
-TODO: Define the image of a magma homomorphism.
-
-\end{remark}
-
-\begin{remark}
-The identity mapping of a semigroup to itself is a semigroup homomorphism.
+If $F$ is magma homomorphism from $\strucA$ to $\strucA'$ and $\strucA$ is a semigroup
+then the image of $F$ is a semigroup.
 
 \begin{zed}
-	\forall Magma\_Id[\setT] @ \\
-	\t1	\strucA \in semigroup[\setT] \implies \\
-	\t2		Semigroup\_Hom[\setT, \setT]
+	\forall Magma\_Hom[\setT, \setU] @ \\
+	\t1	\strucA \in semigroup[\setT] \implies magma\_im(F) \in semigroup[\setU]
 \end{zed}
 
 \end{remark}
+
+\subsection{Composition}
 
 Consider the composition of semigroup homomorphisms.
 
 \begin{schema}{Semigroup\_Composition}[\genT, \genU, \genV]
 	Magma\_Composition[\genT, \genU, \genV] \\
 	Semigroup[\genT] \\
-	Semigroup'[\genU] \\
-	Semigroup''[\genV]
+	Semigroup'[\genU]
 \end{schema}
 
 \begin{remark}
@@ -528,6 +615,8 @@ The composition of semigroup homomorphisms is a semigroup homomorphism.
 \end{remark}
 
 \section{Monoids}
+
+\subsection{Identity Elements}
 
 Let $\strucA$ be a magma and let $e$ be an element of $A$.
 The element $e$ is said to be an \textit{identity element} of $\strucA$ if left and right 
@@ -547,19 +636,23 @@ For example, consider the set of even integers under multiplication.
 However, if a magma has an identity element, then it is unique.
 This will be proved next.
 
-Let $identity\_element$ denote the relation between magmas and identity elements.
+Let $identity\_element$ denote the relation between magmas and their identity elements.
+
 \begin{zed}
 	identity\_element[\genT] == \\
 	\t1	\{~ IdentityElement[\genT] @ \strucA \mapsto e ~\}
 \end{zed}
 
 \begin{remark}
+
 \begin{zed}
 	identity\_element[\setT] \in magma[\setT] \rel \setT
 \end{zed}
+
 \end{remark}
 
 Consider the case of a magma $\strucA$ that has, possibly distinct, identity elements $e, e'$.
+
 \begin{schema}{IdentityElements}[\genT]
 	Magma[\genT] \\
 	e, e': \genT
@@ -588,8 +681,8 @@ e \\
 \end{remark}
 
 \begin{remark}
-If an identity element exists then it is unique.
-Therefore the relation from magmas to identity elements is a partial function.
+The preceding remark shows that if an identity element exists then it is unique.
+This means that the relation from magmas to identity elements is a partial function.
 
 \begin{zed}
 identity\_element[\setT] \in magma[\setT] \pfun \setT
@@ -597,8 +690,10 @@ identity\_element[\setT] \in magma[\setT] \pfun \setT
 
 \end{remark}
 
-Identity elements are typically denoted by the symbols  $\zeroG$ when the operation is thought of as an addition
-or $\oneG$ when the operation is thought of as a multiplication.
+Identity elements are typically denoted by the symbol  $\zeroG$ when the operation is thought of as an addition
+or the symbol $\oneG$ when the operation is thought of as a multiplication.
+
+\subsection{Monoids}
 
 A \textit{monoid} in $\genT$ is a semigroup in $\genT$ that has an identity element.
 \begin{schema}{Monoid}[\genT]
@@ -621,18 +716,21 @@ function to it.
 
 \end{remark}
 
+\subsection{Homomorphisms}
+
 Let $\strucA$ and $\strucA'$ be monoids and let $f$ map the elements of $A$ to the elements of $A'$.
-The map $f$ is said to {\em preserve the identity element} if it maps the identity element of $A$
-to the identity element of $B$.
+The map $f$ is said to \textit{preserve identity elements} if it maps the identity element of $\strucA$
+to the identity element of $\strucA'$.
+
 \begin{schema}{MapPreservesIdentity}[\genT, \genU]
+	Magma\_Map[\genT, \genU] \\
 	Monoid[\genT] \\
-	Monoid'[\genU] \\
-	Magma\_Map[\genT, \genU]
+	Monoid'[\genU]
 \where
 	f(e) = e'
 \end{schema}
 
-A {\em monoid homomorphism} from $\strucA$ to $\strucA'$ is a homomorphism $f$ of the underlying semigroups
+A {\em monoid homomorphism} is a homomorphism of the underlying semigroups
 that preserves identity.
 
 \begin{schema}{Monoid\_Hom}[\genT, \genU]
@@ -665,7 +763,9 @@ The composition of two monoid homomorphisms is another monoid homomorphism.
 
 \section{Groups}
 
-Let $\strucA$ be a magma in $\genT$ that has an identity element.
+\subsection{Inverse Operations}
+
+Let $\strucA$ be a magma that has an identity element.
 A unary operation $inv$ on $A$ is said to be an \textit{inverse operation} if it maps each element
 to an element whose product with it is the identity element.
 
@@ -678,7 +778,7 @@ to an element whose product with it is the identity element.
 	\forall x: A @ x \opG (inv~x) = e = (inv~x)  \opG x
 \end{schema}
 
-Let $inverse\_operation$ denote the relation between monoids and their inverse operations.
+Let $inverse\_operation$ denote the relation between magmas and their inverse operations.
 \begin{zed}
 	inverse\_operation[\genT] == \\
 	\t1	\{~ InverseOperation[\genT] @ \strucA \mapsto inv ~\}
@@ -687,6 +787,19 @@ Let $inverse\_operation$ denote the relation between monoids and their inverse o
 \begin{remark}
 If a monoid has an inverse operation then it is unique.
 \end{remark}
+
+\begin{schema}{InverseOperations}[\genT]
+	Monoid[\genT] \\
+	inv, inv': \genT \pfun \genT
+\where
+	(\strucA, inv) \in inverse\_operation[\genT]
+\also
+	(\strucA, inv') \in inverse\_operation[\genT]
+\end{schema}
+
+\begin{zed}
+	\forall InverseOperations[\setT] @ inv = inv'
+\end{zed}
 
 \begin{proof}
 Suppose $inv$ and $inv'$ are inverse operations.
@@ -711,38 +824,31 @@ is a partial function.
 
 \end{remark}
 
-A {\em group} is a monoid that has an inverse operation.
+\subsection{Groups}
+
+A \textit{group} is a monoid that has an inverse operation.
 \begin{schema}{Group}[\genT]
 	Monoid[\genT] \\
 	InverseOperation[\genT]
 \end{schema}
 
-Let $\genT$ be a set of elements.
 Let $group[\genT]$ be the set of all groups in $\genT$.
 \begin{zed}
 	group[\genT] == \{~ Group[\genT] @ \strucA ~\}
 \end{zed}
 
-Let $\genT$ and $\genU$ be sets of elements,
-let $\strucA$ and $\strucA'$ be groups in $\genT$ and $\genU$, 
-and let $f$ map $\genT$ to $\genU$.
-The map $f$ is said to {\em preserve the inverses} if it maps the inverses of elements of $A$
-to the inverses of the corresponding elements of $A'$.
-\begin{schema}{MapPreservesInverse}[\genT, \genU]
-	Group[\genT] \\
-	Group'[\genU] \\
-	Magma\_Map[\genT, \genU]
-\where
-	\forall x: A @ f(inv~x) = inv'(f~x)
-\end{schema}
+\subsection{Homomorphisms}
 
-Let $\strucA$ and $\strucA'$ be groups.
-A \textit{group homomorphism} from $\strucA$ to $\strucA'$ is a monoid homomorphism
-from $\strucA$ to $\strucA'$ that preserves inverses.
+Let $\strucA$ and $\strucA'$ be groups and let $F$ be a monoid homomorphism. 
+The map $f$ is said to \textit{preserve inverses} if it maps the inverses to the inverses.
+A \textit{group homomorphism} is a monoid homomorphism that preserves inverses.
 
 \begin{schema}{Group\_Hom}[\genT, \genU]
 	Monoid\_Hom[\genT, \genU] \\
-	MapPreservesInverse[\genT, \genU]
+	Group[\genT] \\
+	Group'[\genU]
+\where
+	\forall x: A @ f(inv~x) = inv'(f~x)
 \end{schema}
 
 Let $group\_Hom[\genT, \genU]$ be the set of all group homomorphisms.
@@ -759,19 +865,48 @@ Let $group\_hom(\strucA, \strucA')$ denote the set of all group homomorphisms fr
 	\t2		\{~ (\strucA, \strucA') ~\} \dres group\_Hom[\genT, \genU])
 \end{zed}
 
-\begin{remark}
+\begin{example}[Identity]
+
 The identity mapping is a group homomorphism.
-\end{remark}
+
+\begin{zed}
+	\forall Magma\_Id[\setT] @ F \in group\_hom(\strucA, \strucA)
+\end{zed}
+
+\end{example}
+
+\subsection{Composition}
+
+Consider the composition of two group homomorphisms.
+
+\begin{schema}{Group\_Composition}[\genT, \genU, \genV]
+	Magma\_Composition[\genT, \genU, \genV] \\
+	Group\_Hom[\genT, \genU] \\
+	Group\_Hom'[\genU, \genV]
+\end{schema}
 
 \begin{remark}
 The composition of two group homomorphisms is another group homomorphism.
+
+\begin{zed}
+	\forall Group\_Composition[\setT, \setU, \setV] @ G \in group\_Hom[\setT, \setV]
+\end{zed}
+
 \end{remark}
 
 \subsection{Bijections}
 
-Let $\genT$ be a set and let $bij[\genT]$ denote the set of all bijections $\genT \bij \genT$ from $\genT$ to itself.
+Let $bij[\genT]$ denote the set of all bijections from $\genT$ to itself.
+
 \begin{zed}
 	bij[\genT] == \genT \bij \genT
+\end{zed}
+
+Let $Bij[\genT]$ be the structure whose carrier is $bij[\genT]$ and
+whose product is composition.
+
+\begin{zed}
+	Bij[\genT] == (bij[\genT], (\lambda f, g: bij[\genT] @ g \circ f))
 \end{zed}
 
 \begin{remark}
@@ -782,6 +917,12 @@ The composition of bijections is a bijection.
 	\t1	f \circ g \in bij[\setT]
 \end{zed}
 
+Since bijections are closed under composition, $Bij[\genT]$ is a magma.
+
+\begin{zed}
+	Bij[\setT] \in magma[bij[\setT]]
+\end{zed}
+	
 \end{remark}
 
 \begin{remark}
@@ -792,45 +933,49 @@ Composition is associative.
 	\t1	f \circ (g \circ h) = (f \circ g) \circ h
 \end{zed}
 
+Since composition is associative, $Bij[\genT]$ is a semigroup.
+
+\begin{zed}
+	Bij[\setT] \in semigroup[bij[\setT]]
+\end{zed}
+
 \end{remark}
 
 \begin{remark}
-The identity function $\id \setT$ acts as a left and right identity element under composition.
+The identity function $\id \genT$ is an identity element for $Bij[\genT]$.
 
 \begin{zed}
 	\forall f: bij[\setT] @ \\
 	\t1	 \id \setT \circ f = f = f \circ \id \setT
 \end{zed}
 
+Since $Bij[\genT]$ has an identity element, it is a monoid.
+
+\begin{zed}
+	Bij[\setT] \in monoid[bij[\setT]]
+\end{zed}
+
 \end{remark}
 
 \begin{remark}
-The inverse $f \inv$ of a bijection $f$ is its left and right inverse under composition.
+The relational inverse $f \inv$ of a bijection $f$ is its inverse under composition.
 
 \begin{zed}
 	\forall f: bij[\setT] @ \\
 	\t1	f \circ f \inv = \id \setT = f \inv \circ f
 \end{zed}
 
+Since $Bij[\genT]$ has an inverse operation, it is a group.
+
+\begin{zed}
+	Bij[\setT] \in group[bij[\setT]]
+\end{zed}
+
 \end{remark}
 
-The preceding remarks show that set $bij[\genT]$ under the operation of composition has the structure of a group.
-Let $Bij[\genT]$ denote the composition of bijections.
-\begin{zed}
-	Bij[\genT] == (\lambda f, g: bij[\genT] @ f \circ g)
-\end{zed}
-
-\begin{example}
-Let $\setT$ be any set.
-The composition of bijections of $\setT$ is a group.
-
-\begin{zed}
-(bij[\setT], Bij[\setT]) \in group[bij[\setT]]
-\end{zed}
-
-\end{example}
-
 \section{Abelian Groups}
+
+\subsection{Commutativity}
 
 A magma $\strucA$ in $\genT$ is said to be {\em commutative} when the product of two elements doesn't depend on 
 their order.
@@ -840,6 +985,8 @@ their order.
 	\forall x, y: A @ x \opG y = y \opG x
 \end{schema}
 
+\subsection{Abelian Groups}
+
 An \textit{abelian group} is a group in which the product is commutative.
 
 \begin{schema}{AbelianGroup}[\genT]
@@ -847,22 +994,48 @@ An \textit{abelian group} is a group in which the product is commutative.
 	Commutative[\genT]
 \end{schema}
 
-Let $abelian\_group[\genT]$ denote the set of all abelian groups in $\genT$.
+Let $abgroup[\genT]$ denote the set of all abelian groups in $\genT$.
 \begin{zed}
-	abelian\_group[\genT] == \{~ AbelianGroup[\genT] @ \strucA ~\}
+	abgroup[\genT] == \{~ AbelianGroup[\genT] @ \strucA ~\}
 \end{zed}
 
 Often in an abelian group the binary operation is denoted as addition $x \addG y$,
 the identity element as a zero $\zeroG$, and the inverse operation as negation $\negG x$.
 
-\begin{example}
+\begin{example}[Integer Addition]
 Addition over the integers is an abelian group.
 
 \begin{zed}
-	(\num, (\_ + \_)) \in abelian\_group[\num]
+	(\num, (\_ + \_)) \in abgroup[\num]
 \end{zed}
 
 \end{example}
+
+\subsection{Homomorphisms}
+
+A homomorphism of abelian groups is a homomorphism of the underlying groups.
+
+\begin{schema}{AbelianGroup\_Hom}[\genT, \genU]
+	Group\_Hom[\genT, \genU] \\
+	Group[\genT] \\
+	Group'[\genU]
+\end{schema}
+
+Let $abgroup\_Hom[\genT, \genU]$ be the set of all abelian group homomorphisms
+from abelian groups in $\genT$ to abelian groups in $\genU$.
+
+\begin{zed}
+	abgroup\_Hom[\genT, \genU] == \{~ AbelianGroup\_Hom[\genT, \genU] @ F ~\}
+\end{zed}
+
+Let $abgroup\_hom(\strucA, \strucA')$ be the subset of abelian group homomorphisms
+from $\strucA$ to $\strucA'$.
+
+\begin{zed}
+	abgroup\_hom[\genT, \genU] == \\
+	\t1	(\lambda \strucA: abgroup[\genT]; \strucA': abgroup[\genU] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres abgroup\_Hom[\genT, \genU])
+\end{zed}
 
 \printbibliography
 
