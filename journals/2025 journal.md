@@ -251,6 +251,13 @@ Continue simplifying the `groups` article.
 
 * [x] simplify the `groups` article
 
+# 2025-01-31
+
+* use the group definitions in the ring definitions
+* [x] reuse the commands defined in the groups package instead of defining more in the rings package
+
 # To Do
 
-* [ ] reuse the commands defined in the groups package instead of defining more in the rings package
+* [ ] define the sets of rings structures: rng, ring, commrng, commring
+* [ ] define homomorphism for each of the four sets of ring structures: rng_hom, ring_hom, etc
+* [ ] formalize the remaining definitions in Chapter 1 of Atiyah-McDonald

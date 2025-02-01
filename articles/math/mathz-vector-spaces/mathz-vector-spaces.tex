@@ -56,7 +56,7 @@ and multiplication distributes over both real and group addition.
 Let $RealScalarMultiplication$ denote this situation.
 
 \begin{schema}{RealScalarMultiplication}[\genT]
-A: \abgroup \genT \\
+A: abgroup[\genT] \\
 smul: \R \cross \genT \fun \genT
 \where
 \LET (\_ \addV \_) == second~A; \\
@@ -109,7 +109,7 @@ V_2: \vecR \genU
 \where
 \LET A_1 == first~V_1; (\_ \mulS \_) == second~V_1; \\
 \t1	A_2 == first~V_2; (\_ \timesS \_) == second~V_2 @ \\
-\t2		f \in \homGroup(A_1, A_2) \land \\
+\t2		(A_1, A_2) \mapsto f \in group\_hom(A_1, A_2) \land \\
 \t2		(\forall x: \R; v: \genT @ \\
 \t3			f(x \mulS v) = x \timesS(f~v))
 \end{schema}
@@ -321,7 +321,7 @@ The binary operation $addRtup(n)$ defines an Abelian group over $\Rtup(n)$.
 
 \begin{zed}
 \forall n: \nat @ \\
-\t1	(\Rtup(n), addRtup(n)) \in \abgroup(\Rtup(n))
+\t1	(\Rtup(n), addRtup(n)) \in abgroup[\Rtup(n)]
 \end{zed}
 
 \end{example}

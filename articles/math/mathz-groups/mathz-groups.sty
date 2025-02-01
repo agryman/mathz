@@ -3,31 +3,35 @@
 
 \RequirePackage{amsmath}
 
-% group identity elements
-\newcommand{\oneG}{1}
-\newcommand{\zeroG}{0}
-
-% generic group-like product operator
-%%inop \opG \opS 4
-\newcommand{\opG}{\mathbin{\cdot}}
-\newcommand{\opS}{\mathbin{\centerdot}}
-
-% variables used for mathematical structures
-% maybe complete this list and move to the core
+% variables used for mathematical structures - maybe complete this list and move to the core
 \newcommand{\strucA}{\mathbf{A}}
 \newcommand{\strucB}{\mathbf{B}}
 \newcommand{\strucC}{\mathbf{C}}
 \newcommand{\strucS}{\mathbf{S}}
 
-% multaplicative group product operators
+
+% group identity elements
+\newcommand{\oneG}{1}
+\newcommand{\zeroG}{0}
+
+% infix generic group-like product operator
+%%inop \opG \opS 4
+\newcommand{\opG}{\mathbin{\cdot}}
+\newcommand{\opS}{\mathbin{\centerdot}}
+
+% infix multiplicative group product operators
 %%inop \mulG \timesG \circG 4
 \newcommand{\mulG}{\mathbin{*}}
 \newcommand{\timesG}{\mathbin{\times}}
 \newcommand{\circG}{\mathbin{\circ}}
 
-% additive group product operator
+% infix additive group product operator
 %%inop \addG 3
 \newcommand{\addG}{\mathbin{+}}
 
-% additive group inverse operator
+% prefix additive group inverse operator
 \DeclareMathOperator{\negG}{-}
+
+% infix additive group subtraction operator
+%%inop \subG 3
+\newcommand{\subG}{\mathbin{-}}

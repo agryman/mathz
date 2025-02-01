@@ -3,6 +3,7 @@
 % include mathz package dependencies here
 \usepackage{mathz-core}
 \usepackage{mathz-real-numbers}
+\usepackage{mathz-groups}
 \usepackage{mathz-rings}
 
 \usepackage{mathz-preamble}
@@ -91,175 +92,65 @@ The zero element is denoted by $0$ and the additive inverse of $x \in A$ is deno
 identity 
 \end{enumerate}
 
-\subsubsection{Elements}
+\subsubsection{Rings}
 
-A ring has a set of elements.
+The first two axioms define a general ring.
+As a structure, we define a ring $\strucA$ to be a triple $(A, (\_ \addG, \_), (\_ \mulG \_))$ 
+consisting of a set, an addition operation, and a multiplication operation.
 
-\begin{schema}{Ring\_Elements}[\genT]
-	A: \power \genT
-\end{schema}
-
-\subsubsection{Addition}
-
-A ring has a binary operation of addition on its element.
-
-\begin{schema}{Ring\_Add}[\genT]
-	Ring\_Elements[\genT] \\
-	\_ + \_: \genT \cross \genT \pfun \genT
+\begin{schema}{Ring\_Core}[\genT]
+	A: \power \genT \\
+	\_ + \_, \_ * \_: PBinOp[\genT] \\
+	\strucA: \power \genT \cross PBinOp[\genT] \cross PBinOp[\genT]
 \where
-	(\_ + \_) \in A \cross A \fun A
-\end{schema}
-
-\begin{itemize}
-	\item addition is a binary operation on $A$
-\end{itemize}
-
-Addition is associative.
-
-\begin{schema}{Ring\_Add\_Associative}[\genT]
-	Ring\_Add[\genT]
-\where
-	\forall x, y, z: A @ (x + y) + z = x + (y + z)
-\end{schema}
-
-\begin{itemize}
-	\item addition is associative
-\end{itemize}
-
-A ring has a zero element that is the identity element under addition.
-
-\begin{schema}{Ring\_Zero}[\genT]
-	Ring\_Add[\genT] \\
-	\ringZero: \genT
-\where
-	\ringZero \in A
+	(A, (\_ + \_)) \in abgroup[A]
 \also
-	\forall x: A @ \ringZero + x = x = x + \ringZero
-\end{schema}
-
-\begin{itemize}
-	\item $A$ has an element $\ringZero$
-	\item $\ringZero$ is an additive identity element
-\end{itemize}
-
-A ring has a unary operation of negation that that maps each element to its additive inverse.
-
-\begin{schema}{Ring\_Neg}[\genT]
-	Ring\_Zero[\genT] \\
-	\ringNeg: \genT \pfun \genT
-\where
-	\ringNeg \in A \fun A
+	(A, (\_ * \_)) \in semigroup[A]
 \also
-	\forall x: A @ x + (\ringNeg x) = \ringZero = (\ringNeg x) + x
-\end{schema}
-
-\begin{itemize}
-	\item negation is a unary operation on $A$
-	\item $- x$ is the additive inverse of $x$
-\end{itemize}
-
-It is convenient to define the binary operation of subtraction in terms of addition and negation.
-
-\begin{schema}{Ring\_Sub}[\genT]
-	Ring\_Neg[\genT] \\
-	\_ - \_: \genT \cross \genT \pfun \genT
-\where
-	(\_ - \_) \in A \cross A \fun A
-\also
-	\forall x, y: A @ x - y = x + (\ringNeg y)
-\end{schema}
-
-\begin{itemize}
-	\item subtraction is a binary operation on $A$
-	\item subtraction is defined in terms of addition and negation
-\end{itemize}
-
-A ring is a group under addition.
-
-\begin{schema}{Ring\_Add\_Group}[\genT]
-	Ring\_Add\_Associative[\genT] \\
-	Ring\_Zero[\genT] \\
-	Ring\_Neg[\genT]
-\end{schema}
-
-Addition is commutative.
-
-\begin{schema}{Ring\_Add\_Commutative}[\genT]
-	Ring\_Add[\genT]
-\where
-	\forall x, y: A @ x + y = y + x
-\end{schema}
-
-\begin{itemize}
-	\item addition is commutative
-\end{itemize}
-
-A ring is an abelian group under addition.
-
-\begin{schema}{Ring\_Add\_AbelianGroup}[\genT]
-	Ring\_Add\_Group[\genT] \\
-	Ring\_Add\_Commutative[\genT]
-\end{schema}
-
-\subsubsection{Multiplication}
-
-A ring has a binary operation of multiplication on its elements.
-
-\begin{schema}{Ring\_Mul}[\genT]
-	Ring\_Elements[\genT] \\
-	\_ * \_: \genT \cross \genT \pfun \genT
-\where
-	(\_ * \_) \in A \cross A \fun A
-\end{schema}
-
-\begin{itemize}
-	\item multiplication is a binary operation on $A$
-\end{itemize}
-
-Multiplication is associative.
-
-\begin{schema}{Ring\_Mul\_Associative}[\genT]
-	Ring\_Mul[\genT]
-\where
-	\forall x, y, z: A @ (x * y) * z = x * (y * z)
-\end{schema}
-
-\begin{itemize}
-	\item multiplication is associative
-\end{itemize}
-
-Multiplication distributes over addition.
-
-\begin{schema}{Ring\_Mul\_Distributive}[\genT]
-	Ring\_Add[\genT] \\
-	Ring\_Mul[\genT]
-\where
 	\forall x, y, z: A @ x * (y + z) = (x * y) + (x * z)
 \also
 	\forall x, y, z: A @ (y + z) * x  = (y * x) + (z * x)
+\also
+	\strucA = (A, (\_ + \_), (\_ * \_))
 \end{schema}
 
 \begin{itemize}
+	\item addition is an abelian group
+	\item multiplication is a semigroup
 	\item left multiplication distributes over addition
 	\item right multiplication distributes over addition
+	\item the structure is a triple consisting of the carrier and two operations
 \end{itemize}
 
-\subsubsection{Ring}
-
-A ring is a set of elements with associative binary operations of addition and multiplication such that
-the elements are an abelian group under addition and multiplication distributes over addition.
+The additive identity element is denoted $\zeroG$, 
+the additive inverse of $x$ is denoted $\negG x$, and
+the sum of $x$ and $\negG y$ is denoted $x \subG y$.
 
 \begin{schema}{Ring}[\genT]
-	Ring\_Add\_AbelianGroup[\genT] \\
-	Ring\_Mul\_Distributive[\genT]
+	Ring\_Core[\genT] \\
+	\zeroG: \genT \\
+	\negG: \genT \pfun \genT \\
+	\_ - \_: PBinOp[\genT]
+\where
+	\zeroG = identity\_element (A, (\_ + \_))
+\also
+	(\lambda x: A @ \negG x) = inverse\_operation (A, (\_ + \_))
+\also
+	(\_ - \_) = (\lambda x, y: A @ x + (\negG y))
 \end{schema}
 
-\subsubsection{Commutative Ring}
+\begin{itemize}
+	\item $\zeroG$ is the additive identity element
+	\item $\negG x$ is the additive inverse of $x$
+	\item subtraction is defined in terms of addition and negation
+\end{itemize}
 
-The multiplication operation may be commutative.
+\subsubsection{Commutative Rings}
 
-\begin{schema}{Ring\_Mul\_Commutative}[\genT]
-	Ring\_Mul[\genT]
+A ring is said to be \textit{commutative} if its multiplication is commutative.
+
+\begin{schema}{CommutativeRing}[\genT]
+	Ring[\genT]
 \where
 	\forall x, y: A @ x * y = y * x
 \end{schema}
@@ -268,70 +159,28 @@ The multiplication operation may be commutative.
 	\item multiplication is commutative
 \end{itemize}
 
-A ring is said to be \textit{commutative} if its multiplication is commutative.
-
-\begin{schema}{CommutativeRing}[\genT]
-	Ring[\genT] \\
-	Ring\_Mul\_Commutative[\genT]
-\end{schema}
-
-\subsection{Unital Ring}
+\subsubsection{Unital Rings}
 
 A ring is said to have an \textit{identity element} if it has a left and right multiplicative identity element.
-
-\begin{schema}{Ring\_One}[\genT]
-	Ring\_Mul[\genT] \\
-	\ringOne: \genT
-\where
-	\ringOne \in A
-\also
-	\forall x: A @ \ringOne * x = x = x * \ringOne
-\end{schema}
-
-\begin{itemize}
-	\item the ring contains an element $\ringOne$
-	\item $\ringOne$ is a left and right multiplicative identity element
-\end{itemize}
-
-Suppose a ring has a second identity element, say $\ringOne'$.
-
-\begin{schema}{Ring\_Ones}[\genT]
-	Ring\_One[\genT] \\
-	\ringOne': \genT
-\where
-	\ringOne' \in A
-\also
-	\forall x: A @ \ringOne' * x = x = x * \ringOne'
-\end{schema}
-
-\begin{itemize}
-	\item the ring contains an element $\ringOne'$
-	\item $\ringOne'$ is a left and right multiplicative identity element
-\end{itemize}
-
-\begin{remark} If a ring has an identity element then it is uniquely determined.
-\begin{zed}
-	\forall Ring\_Ones[\setT] @ \ringOne' = \ringOne
-\end{zed}
-
-\begin{proof}
-\begin{argue}
-\ringOne' \\
-\t1	= \ringOne' * \ringOne	& $\ringOne$ is an identity element \\
-\t1	= \ringOne						& $\ringOne'$ is an identity element
-\end{argue}
-\end{proof}
-
-\end{remark}
-
+In other words, the multiplication operation is a monoid.
 A ring with an identity element is also said to be a \textit{unital} ring.
+The multiplicative identity element of a unital ring is denoted $\oneG$.
 
 \begin{schema}{UnitalRing}[\genT]
-	Ring[\genT] \\
-	Ring\_One[\genT]
+	Ring[\genT]\\
+	\oneG: \genT
+\where
+	(A, (\_ * \_)) \in monoid[A]
+\also
+	\oneG = identity\_element(A, (\_ * \_))
 \end{schema}
 
-\subsection{Commutative Algebra}
+\begin{itemize}
+	\item the multiplication operation is a monoid
+	\item the multiplicative identity element is denoted $\oneG$
+\end{itemize}
+
+\subsubsection{Commutative Unital Rings}
 
 Commutative algebra is primarily concerned with commutative, unital rings.
 
@@ -343,41 +192,41 @@ Commutative algebra is primarily concerned with commutative, unital rings.
 For the remainder of this article the term \textit{ring} will denote a commutative ring with an identity element.
 However, the formal notation will always be explicit.
 
-\subsubsection{Zero Ring}
+\subsubsection{Zero Rings}
 
-If the zero element and the one element are the same then the ring is said to be a \textit{zero} ring.
+If the additive and multiplicative identity elements are the same then the ring is said to be a \textit{zero ring}.
 
 \begin{schema}{ZeroRing}[\genT]
 	CURing[\genT]
 \where
-	\ringOne = \ringZero
+	\oneG = \zeroG
 \end{schema}
 
 \begin{itemize}
-	\item the zero and one elements are the same
+	\item the additive and multiplicative identity elements are the same
 \end{itemize}
 
 \begin{remark}
 A zero ring contains exactly one element, namely the zero element.
 \begin{zed}
-	\forall ZeroRing[\setT] @ A = \{ \ringZero \}
+	\forall ZeroRing[\setT] @ A = \{ \zeroG \}
 \end{zed}
 
 \begin{proof}
 \begin{argue}
-x: A 							& assumption-intro\\
+x: A 					& assumption-intro\\
 x \\
-\t1	= x * \ringOne	& $\ringOne$ is the identity element \\
-\t1	= x * \ringZero	& $\ringOne = \ringZero$ by $ZeroRing$ \\
-\t1	= \ringZero				& $\ringZero$ is the zero element \\
-x: A \implies x = \ringZero		& assumption-elim \\
-A = \{ \ringZero \}				& set extensionality
+\t1	= x * \oneG		& $\oneG$ is the identity element \\
+\t1	= x * \zeroG		& $\oneG = \zeroG$ by $ZeroRing$ \\
+\t1	= \zeroG			& $\zeroG$ is the zero element \\
+x: A \implies x = \zeroG	& assumption-elim \\
+A = \{ \zeroG \}			& set extensionality
 \end{argue}
 \end{proof}
 
 \end{remark}
 
-\subsubsection{Ring Homomorphism}
+\subsubsection{Ring Homomorphisms}
 
 A ring homomorphism is a mapping $f$ from ring $A$ into ring $A'$ that
 preserves addition, multiplication, and identity elements.
@@ -393,10 +242,10 @@ preserves addition, multiplication, and identity elements.
 \also
 	\forall x, y: A @ f(x * y) = f(x) *' f(y)
 \also
-	f(\ringOne) = \ringOne'
+	f(\oneG) = \oneG'
 \end{schema}
 
-\subsubsection{Subring}
+\subsubsection{Subrings}
 
 A subring $A$ of $A'$ is a subset of elements that contains the identity element and is closed under
 addition and multiplication.
@@ -407,7 +256,7 @@ addition and multiplication.
 \where
 	A \subseteq A'
 \also
-	\ringOne' \in A
+	\oneG' \in A
 \also
 	\forall x, y: A @ x +' y \in A
 \also
