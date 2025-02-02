@@ -1444,7 +1444,7 @@ Magmas, semigroups, monoids, and abelian groups are
 algebraic structures that are like groups but differ from them 
 in terms of the properties imposed on their product operation.
 
-\subsection{Carrier}
+\subsection{Carriers}
 
 The underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
 When writing informal mathematics, 
@@ -2370,6 +2370,95 @@ Since $Bij[\genT]$ has an inverse operation, it is a group.
 
 \begin{zed}
 	Bij[\setT] \in group[bij[\setT]]
+\end{zed}
+
+\end{remark}
+
+\subsection{Subgroups}
+
+A \textit{subgroup} $A$ of a group $A'$ is a nonempty subset that is closed under the group product and inverse operation.
+
+\begin{schema}{Subgroup}[\genT]
+	A: \power_1 \genT \\
+	Group'[\genT]
+\where
+	A \subseteq A'
+\also
+	\forall x, y: A @ x \opG' y \in A
+\also
+	\forall x: A @ inv'(x) \in A
+\end{schema}
+
+\begin{itemize}
+	\item the subgroup is a subset of the group
+	\item the subgroup is closed under products
+	\item the subgroup is closed under inverses
+\end{itemize}
+
+\begin{remark}
+A subgroup contains the group identity element.
+
+\begin{zed}
+	\forall Subgroup[\setT] @ identity\_element(\strucA') \in A
+\end{zed}
+
+\begin{proof}
+By definition, the subgroup $A$ is nonempty. Let $x \in A$.
+Therefore $inv'(x) \in A$ since the subgroup is closed under inverses.
+Therefore $x \opG' inv'(x) \in A$ since the subgroup is closed under product.
+But $x \opG' inv'(x) = e$ the identity element of $A'$. Therefore $e \in A$.
+\end{proof}
+
+\end{remark}
+
+A subgroup inherits a group structure from its enclosing group.
+
+\begin{schema}{Subgroup\_Group}[\genT]
+	Subgroup[\genT] \\
+	Magma[\genT] \\
+	e: \genT \\
+	inv: \genT \pfun \genT
+\where
+	(\_ \opG \_) = (\lambda x, y: A @ x \opG' y)
+\also
+	e = e'
+\also
+	inv = (\lambda x: A @ inv'(x))
+\end{schema}
+
+\begin{itemize}
+	\item the subgroup product is the restriction of the group product
+	\item the subgroup identity element is the group identity element
+	\item the subgroup inverse operation is the restriction of the group inverse operation
+\end{itemize}
+
+\begin{remark}
+A subgroup is a group.
+
+\begin{zed}
+	\forall Subgroup\_Group[\setT] @ Group[\setT]
+\end{zed}
+
+\end{remark}
+
+There is a natural inclusion map from the subgroup to the group.
+
+\begin{schema}{Subgroup\_Inclusion}[\genT]
+	Subgroup\_Group[\genT] \\
+	Magma\_Map[\genT, \genT]
+\where
+	f = \id A
+\end{schema}
+
+\begin{itemize}
+	\item the map is the inclusion of the subgroup into the group
+\end{itemize}
+
+\begin{remark}
+The subgroup inclusion map is a group homomorphism.
+
+\begin{zed}
+	\forall Subgroup\_Inclusion[\setT] @ Group\_Hom[\setT, \setT]
 \end{zed}
 
 \end{remark}
@@ -3862,3 +3951,16 @@ We introduce the usual notation $\sphereOne = unit\_circle$.
 % ring unary operators
 
 \DeclareMathOperator{\ringNeg}{-}
+
+% composition of ring homomorphisms
+%%inop \circRng 4
+\newcommand{\circRng}{\mathbin{\circ}}
+
+% Fraktur font for ideals
+\newcommand{\fraka}{\mathfrak{a}}
+\newcommand{\frakb}{\mathfrak{b}}
+\newcommand{\frakc}{\mathfrak{c}}
+
+\newcommand{\frakA}{\mathfrak{A}}
+\newcommand{\frakB}{\mathfrak{B}}
+\newcommand{\frakC}{\mathfrak{C}}

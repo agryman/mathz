@@ -27,7 +27,7 @@
 
 \tableofcontents
 
-\section{Introduction}
+\section*{Introduction}
 
 This article contains notes from the course \textit{Computational Commutative Algebra and Algebraic Geometry}
 taught by Professor Michael Stillman in Winter 2025 as part of the Fields Academy Shared Graduate Courses
@@ -145,11 +145,119 @@ the sum of $x$ and $\negG y$ is denoted $x \subG y$.
 	\item subtraction is defined in terms of addition and negation
 \end{itemize}
 
+Define $rng[\genT]$ to be the set of all rings in $\genT$.
+Here we omit the letter \textit{i} from the word \textit{ring} to remind us that
+a ring might not have a multiplicative identity element.
+\begin{zed}
+	rng[\genT] == \{~ Ring[\genT] @ \strucA ~\}
+\end{zed}
+
+\begin{example}
+The integers with addition and multiplication is a ring.
+\begin{zed}
+	(\num, (\_ + \_), (\_ * \_)) \in rng[\num]
+\end{zed}
+\end{example}
+
+\subsubsection{Ring Homomorphisms}
+
+Let $\strucA$ and $\strucA'$ be rings.
+A \textit{ring homomorphism} from $\strucA$ to $\strucA'$ is a function $f$ from $A$ to $A'$ 
+that preserves the addition and multiplication operations.
+As a structure, we represent a ring homomorphism $F$ as the pair $(\strucA, \strucA') \mapsto f$.
+
+\begin{schema}{Ring\_Hom}[\genT, \genU]
+	Ring[\genT] \\
+	Ring'[\genU] \\
+	f: \genT \pfun \genU \\
+	F: (rng[\genT] \cross rng[\genU]) \cross (\genT \pfun \genU)
+\where
+	f \in A \fun A'
+\also
+	\forall x, y: A @ f(x + y) = f(x) +' f(y)
+\also
+	\forall x, y:	 A @ f(x * y) = f(x) *' f(y)
+\also
+	F = (\strucA, \strucA') \mapsto f
+\end{schema}
+
+\begin{itemize}
+	\item $f$ maps $A$ to $A'$
+	\item $f$ preserves addition
+	\item $f$ preserves multiplication
+	\item the homomorphism as a structure consists of the pair of rings and the map between them
+\end{itemize}
+
+Define $rng\_Hom[\genT, \genU]$ to be the set of all ring homomorphisms from rings in $\genT$
+to rings in $\genU$.
+
+\begin{zed}
+	rng\_Hom[\genT, \genU] == \{~ Ring\_Hom[\genT, \genU] @ F ~\}
+\end{zed}
+
+Define $rng\_hom(\strucA, \strucA')$ to be the set of all ring homomorphism from $\strucA$ to $\strucA'$.
+
+\begin{zed}
+	rng\_hom[\genT, \genU] == \\
+	\t1	(\lambda \strucA: rng[\genT]; \strucA': rng[\genU] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres rng\_Hom[\genT, \genU])
+\end{zed}
+
+\subsubsection{Identity Maps}
+
+Define $rng\_id[\genT]$ to be the set of all identity maps from rings in $\genT$ to themselves.
+
+\begin{zed}
+	rng\_id[\genT] == \{~ Ring[\genT] @ (\strucA, \strucA) \mapsto \id A ~\}
+\end{zed}
+
+\begin{remark}
+	The identity map on any ring is a homomorphism.
+	
+\begin{zed}
+	rng\_id[\setT] \subseteq rng\_Hom[\setT, \setT]
+\end{zed}
+
+\end{remark}
+
+\subsubsection{Composition}
+
+Given ring homomorphisms $f$ from $A$ to $A'$ and $f'$ from $A'$ to $A''$,
+we can define their \textit{composition} $g = f' \circ f$ from $A$ to $A''$.
+
+\begin{schema}{Ring\_Composition}[\genT, \genU, \genV]
+	Ring\_Hom[\genT, \genU] \\
+	Ring\_Hom'[\genU, \genV] \\
+	g: \genT \pfun \genV \\
+	G: (rng[\genT] \cross rng[\genV]) \cross (\genT \pfun \genV)
+\where
+	g = f' \circ f
+\also
+	G = (\strucA, \strucA'') \mapsto g
+\end{schema}
+
+\begin{remark}
+The composition of ring homomorphisms is a ring homomorphism.
+
+\begin{zed}
+	\forall Ring\_Composition[\setT, \setU, \setV] @ G \in rng\_hom(\strucA, \strucA'')
+\end{zed}
+
+\end{remark}
+
+Let $G = F' \circRng F$ denote the composition of ring homomorphisms.
+
+\begin{zed}
+	(\_ \circRng \_)[\genT, \genU, \genV] == \{~ Ring\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
+\end{zed}
+
+TODO: remark that the identity map is a left and right identity element under composition
+
 \subsubsection{Commutative Rings}
 
 A ring is said to be \textit{commutative} if its multiplication is commutative.
 
-\begin{schema}{CommutativeRing}[\genT]
+\begin{schema}{CommRing}[\genT]
 	Ring[\genT]
 \where
 	\forall x, y: A @ x * y = y * x
@@ -158,6 +266,14 @@ A ring is said to be \textit{commutative} if its multiplication is commutative.
 \begin{itemize}
 	\item multiplication is commutative
 \end{itemize}
+
+Define $commrng[\genT]$ to be the set of all commutative rings in $\genT$.
+
+\begin{zed}
+	commrng[\genT] == \{~ CommRing[\genT] @ A ~\}
+\end{zed}
+
+TODO: define homomorphisms, identity maps, composition, and composition with identity maps
 
 \subsubsection{Unital Rings}
 
@@ -180,14 +296,30 @@ The multiplicative identity element of a unital ring is denoted $\oneG$.
 	\item the multiplicative identity element is denoted $\oneG$
 \end{itemize}
 
+Define $ring[\genT]$ to be the set of all unital rings in $\genT$.
+
+\begin{zed}
+	ring[\genT] == \{~ UnitalRing[\genT] @ \strucA ~\}
+\end{zed}
+
+TODO: define homomorphisms, identity maps, composition, and composition with identity maps
+
 \subsubsection{Commutative Unital Rings}
 
 Commutative algebra is primarily concerned with commutative, unital rings.
 
 \begin{schema}{CURing}[\genT]
-	CommutativeRing[\genT] \\
+	CommRing[\genT] \\
 	UnitalRing[\genT]
 \end{schema}
+
+Define $commring[\genT]$ to be the set of commutative unital rings in $\genT$.
+
+\begin{zed}
+	commring[\genT] == \{~ CURing[\genT] @ \strucA ~\}
+\end{zed}
+
+TODO: define homomorphisms, identity maps, composition, and composition with identity maps
 
 For the remainder of this article the term \textit{ring} will denote a commutative ring with an identity element.
 However, the formal notation will always be explicit.
@@ -226,12 +358,15 @@ A = \{ \zeroG \}			& set extensionality
 
 \end{remark}
 
+TODO: remark on the universal properties of the zero ring in each of the four categories of rings
+
 \subsubsection{Ring Homomorphisms}
 
 A ring homomorphism is a mapping $f$ from ring $A$ into ring $A'$ that
 preserves addition, multiplication, and identity elements.
 
 \begin{schema}{CURing\_Hom}[\genT, \genU]
+	Ring\_Hom[\genT, \genU] \\
 	CURing[\genT] \\
 	CURing'[\genU] \\
 	f: \genT \pfun \genU
@@ -245,10 +380,14 @@ preserves addition, multiplication, and identity elements.
 	f(\oneG) = \oneG'
 \end{schema}
 
+TODO: merge this in with the general discussion of homomorphisms
+
 \subsubsection{Subrings}
 
 A subring $A$ of $A'$ is a subset of elements that contains the identity element and is closed under
 addition and multiplication.
+
+TODO: use $S$ and $A$ to match textbook
 
 \begin{schema}{CURing\_Subring}[\genT]
 	CURing'[\genT] \\
@@ -278,9 +417,12 @@ Set inclusion defines a map $f$ from the subring to the ring.
 
 \begin{schema}{CURing\_Inclusion}[\genT]
 	CURing\_Restriction[\genT] \\
-	f: \genT \pfun \genT
+	f: \genT \pfun \genT \\
+	F: (commring[\genT] \cross commring[\genT]) \cross (\genT \pfun \genT)
 \where
 	f = (\lambda x: A @ x)
+\also
+	F = (\strucA, \strucA') \mapsto f
 \end{schema}
 
 \begin{remark}
@@ -308,6 +450,63 @@ $f' \circ f$ is a mapping $g: A \fun A''$.
 \begin{remark}
 The composition of homomorphisms is a homomorphism.
 \end{remark}
+
+TODO: merge with general discussion
+
+NOTE: the preceding sections should be completed and made consistent with eachother,
+however, I will continue on with formalizing the content of Atiyah-MacDonald so I can determine
+if anything is actually hard to formalize, and also so that I can be more effective with Macaulay 2.
+
+\subsection{Ideals. Quotient rings}
+
+An \textit{ideal} $\fraka$ of a ring $A$ is a subset of $A$ that is an additive subgroup
+and is such that $A\fraka \subseteq \fraka$.
+
+\begin{schema}{Ideal}[\genT]
+	CURing[\genT] \\
+	\fraka: \power \genT
+\where
+	\fraka \subseteq A
+\also
+	\forall x, y: \fraka @ x + y \in \fraka \land x - y \in \fraka
+\also
+	\forall x: A; y: \fraka @ x * y \in \fraka
+\end{schema}
+
+\begin{itemize}
+	\item the ideal is a subset of the ring
+	\item the ideal is closed under addition and subtraction, making it a subgroup
+	\item the ideal is closed under multiplication by elements of the ring
+\end{itemize}
+
+The quotient group $A/\fraka$ inherits a well-defined multiplication from $A$
+making a a ring called the \textit{quotient ring} (or \textit{residue class ring} $A/\fraka$.
+
+\begin{schema}{QuotientRing}[\genT]
+	CURing\_Hom[\genT, \power \genT] \\
+	Ideal[\genT]
+\where
+	f = (\lambda x: A @ \{~ y: \fraka @ x + y ~\})
+\also
+	A' = \ran f
+\end{schema}
+
+TODO: first define the quotient group and the projection and cosets, showing that the projection
+is a homomorphism. we need to show that the cosets from an additive group.
+Then show that the cosets form a monoid.
+The moral of the story is that I can't skip any steps. Otherwise the definitions get big and repetitive.
+
+\subsection{Zero-divisors. Nilpotent elements. Units}
+
+\subsection{Prime ideals and maximal ideals}
+
+\subsection{Nilradical and Jacobson radical}
+
+\subsection{Operations on ideals}
+
+\subsection{Extension and contraction}
+
+\subsection{Exercises}
 
 \printbibliography
 

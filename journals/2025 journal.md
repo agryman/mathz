@@ -229,35 +229,42 @@ Continue simplifying the `groups` article.
 * [x] defining a structure to be a tuple doesn't simplify much so eliminate explicit structures
 and just use tuples
 
-# 2025-01-20
+## 2025-01-20
 
 Continue simplifying the `groups` article.
 
-# 2025-01-21
+## 2025-01-21
 
 Continue simplifying the `groups` article.
 
-# 2025-01-25
+## 2025-01-25
 
 Continue simplifying the `groups` article.
 
-# 2025-01-26
+## 2025-01-26
 
 Continue simplifying the `groups` article.
 
-# 2025-01-28
+## 2025-01-28
 
 Continue simplifying the `groups` article.
 
 * [x] simplify the `groups` article
 
-# 2025-01-31
+## 2025-01-31
 
 * use the group definitions in the ring definitions
 * [x] reuse the commands defined in the groups package instead of defining more in the rings package
 
+## 2025-02-01
+
+* [x] define the sets of rings structures: rng, ring, commrng, commring
+
+## 2025-02-02
+
+Added subgroups to groups article.
+
 # To Do
 
-* [ ] define the sets of rings structures: rng, ring, commrng, commring
-* [ ] define homomorphism for each of the four sets of ring structures: rng_hom, ring_hom, etc
+* [ ] define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc
 * [ ] formalize the remaining definitions in Chapter 1 of Atiyah-McDonald
