@@ -20,14 +20,16 @@
 \begin{abstract}
 The notion of {\it type} was introduced into set theory by Russel in an effort to establish a firm foundation for mathematics.
 Types are now a standard feature of many computer programming languages.
-\ZN\  is a formal language based on typed set theory for specifying computer programs.
-Since \ZN\  is a formal language, a Z specification can itself be automatically checked for type errors.
+\ZN\  is a formal language, based on \textit{typed set theory}, for specifying computer programs.
+Since \ZN\  is a formal language, a Z specification can itself be programmatically checked for 
+\textit{type errors}.
+
 Writing valid Z specifications requires that the author explicitly define all terms.
 This encourages a style in which complex terms are gradually built up from simpler, previously defined terms.
 This article proposes to use \ZN\  to formally specify mathematical structures, even if there is no intention of using
 them in computer programs.
-The hoped for benefits of doing so are that the exercise of formalization will lead the author to a better understanding of the subject
-matter, resulting in a clearer, higher quality, result.
+The hoped-for benefits of doing so are that the exercise of formalization will lead the author to a better understanding of the subject
+matter and result in a clearer, higher quality, specification.
 \end{abstract}
 
 \maketitle
@@ -36,31 +38,57 @@ matter, resulting in a clearer, higher quality, result.
 
 \section{Types}
 
-Computer languages can be divided into two major groups, namely those that are strongly typed and those that are weakly typed.
-Strongly-typed languages, such as Java, have complex type systems and require that all expressions and variable declarations 
-have well-defined types.
-Weakly-typed languages, such as Javascript, have simpler type systems and allow greater flexibility in expressions and the use of variables.
-Although no compiler can possibly tell you if your program is correct, a compiler for a strongly-typed language can at least detect type errors.
-Correcting these errors at compile-time is often quicker than doing so at execution-time.
+Computer languages that support the notion of data types
+can be divided into two major groups, namely those that are 
+\textit{statically typed} and those that are \textit{dynamically typed}.
+
+Statically-typed languages, such as Java, C++, and C\#, have rich type systems and require that all 
+variable declarations and expressions have well-defined types which can be determined by statically analyzing
+the source code. In a statically-typed language, the type of a variable cannot change during program execution.
+
+Dynamically-typed languages, such as Python and Javascript, also have rich type systems but allow greater flexibility in the use of variables and expressions.
+In these languages, a variable may be assigned an expression of any type.
+Furthermore, the same variable may be reassigned an expression of a different type elsewhere
+in the program.
+In general, the type of an expression depends on the types of its input variables.
+The type of a variable may therefore change during the course of program execution.
+
+Although no program can tell you if an arbitrary program is correct, 
+a compiler for a statically-typed language can at least detect type errors.
+Correcting errors at compile-time is often much easier than doing so at execution-time.
+\ZN\ can be thought of as a high-level, nonexecutable, statically-typed, functional programming language.
 
 There are many similarities between mathematics and programming. 
 Both require the definition and use of named objects that are built up from simpler objects.
 The concept of type applies to both.
-Bertrand Russell discovered typed set theory in his efforts to solve some problems in the foundations of mathematics 
+Bertrand Russell discovered typed set theory in his efforts to resolve some paradoxes
+in the foundations of mathematics 
 long before computers were a reality.
 Theoretical computer science now makes extensive use of types.
-Mathematics can be used to specify the requirements for programs.
-Specifications act as a bridge between mathematics and programs.
-\ZN\  is a strongly-typed formal specification language.
+
+Specifications act as a bridge between requirements and programs.
+Mathematics can be used to precisely specify the requirements for programs.
+\ZN\ is a formal specification language based on solid mathematical foundations.
 However, \ZN\  can be used to formalize mathematics even if the goal is not to program a computer.
 
 \section{Formalization}
 
-\ZN\  can be used to precisely define mathematical objects and a Z specification can be type checked by a program.
-I have found that the exercise of expressing mathematics using \ZN\  is a great way make sure that concepts are well-defined.
-This is especially helpful, although somewhat labour-intensive, when dealing with complex mathematical structures.
-I propose to formalize all definitions using \ZN\  and to validate
-the document using the \fuzz\ type checker.
+\ZN\ has the following desirable characteristics that make it useful for formalizing mathematics:
+\begin{itemize}
+	\item It is based on solid mathematical foundations, namely typed set theory.
+	\item It is expressive enough to describe common mathematical structures.
+	\item It is a formal language and has an efficient type-checker, namely \fuzz.
+	\item It has a syntax that allows it to be embedded in \LaTeX\ documents so authors can use their
+	normal authoring tools.
+\end{itemize}
+
+I have used \ZN\ to write formal specifications for several computer applications.
+One of the largest was the W3C WSDL 2.0 specification.
+Using \ZN\ was an effective way to expose missing definitions and inconsistent usages in the specification.
+
+I have also used \ZN\ to formalize mathematics and have found that this exercise is a great way to make sure 
+that all concepts are well-defined.
+This is especially helpful, although very labour-intensive, when dealing with complex mathematical structures.
 
 I believe that the effort of precisely defining every needed concept pays off. 
 Consider how C\'{e}dric Villani \cite{villani-hbm} described the mathematical writing style of Alexander Grothendieck:
@@ -94,6 +122,33 @@ The ideal is to be able to paint a landscape in which the proof is obvious.
 I admire how often he succeeded in reaching this ideal.
 \end{displayquote}
 The message is clear: a slow, methodical build-up of concepts is a good thing in mathematics.
+
+I am therefore going to systematically evaluate \ZN\ as a mathematical specification language, 
+primarily as a way to take notes.
+Mathematical definitions build on one another so it's important to carefully structure a set of specifications
+as a unified library that avoids unnecessary duplication.
+I am calling this library \mathz. 
+
+\section{The Zen of Z}
+
+Based on my efforts to date, I have had several epiphanies about how to use \ZN\ for mathematics.
+Here is a list, which I expect to grow over time as I get more experience.
+
+\begin{itemize}
+	\item Use schemas for \textit{situations}. These arise as the contexts for definitions or theorems.
+	For example, ``Let $x$ and $y$ be positive integers such that $x < y$.''
+	\item Use tuples for \textit{structures}. For example, ``A \textit{group} is a pair $(G, *)$ 
+	consisting of a set of elements $G$
+	and a binary operation $*$ on them that satisfies certain axioms.''
+	\item Use systematic schema decoration to get copies of situations rather than schema renaming.
+	Decoration is effortless. Renaming requires work.
+	\item Use prime decorations when composing situations.
+	\item Reuse globally-defined symbols in schemas when they have the required class, arity, and precedence.
+	Except when you actually need to refer to the globally-defined symbol within the schema.
+	\item Never define a new symbol that uses superscripts since that conflicts with decoration.
+\end{itemize}
+
+TODO: expand on these rules
 
 \section{Given Sets and Signatures}
 
