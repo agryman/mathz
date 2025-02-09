@@ -222,7 +222,7 @@
 %%tame \inv \limg\rimg \oplus \comp \circ
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{amsmath}
-\ProvidesPackage{mathz-core}[2025/02/08 mathz Library Core Definitions]
+\ProvidesPackage{mathz-core}[2022/11/29 mathz Library Core Definitions]
 
 % formal parameters for generic constructions
 \newcommand{\genA}{\mathsf{a}}
@@ -279,118 +279,6 @@
 \newcommand{\setX}{\mathsf{X}}
 \newcommand{\setY}{\mathsf{Y}}
 \newcommand{\setZ}{\mathsf{Z}}
-
-% Fraktur font for ideals
-\newcommand{\fraka}{\mathfrak{a}}
-\newcommand{\frakb}{\mathfrak{b}}
-\newcommand{\frakc}{\mathfrak{c}}
-\newcommand{\frakd}{\mathfrak{d}}
-\newcommand{\frake}{\mathfrak{e}}
-\newcommand{\frakf}{\mathfrak{f}}
-\newcommand{\frakg}{\mathfrak{g}}
-\newcommand{\frakh}{\mathfrak{h}}
-\newcommand{\fraki}{\mathfrak{i}}
-\newcommand{\frakj}{\mathfrak{j}}
-\newcommand{\frakk}{\mathfrak{k}}
-\newcommand{\frakl}{\mathfrak{l}}
-\newcommand{\frakm}{\mathfrak{m}}
-\newcommand{\frakn}{\mathfrak{n}}
-\newcommand{\frako}{\mathfrak{o}}
-\newcommand{\frakp}{\mathfrak{p}}
-\newcommand{\frakq}{\mathfrak{q}}
-\newcommand{\frakr}{\mathfrak{r}}
-\newcommand{\fraks}{\mathfrak{s}}
-\newcommand{\frakt}{\mathfrak{t}}
-\newcommand{\fraku}{\mathfrak{u}}
-\newcommand{\frakv}{\mathfrak{v}}
-\newcommand{\frakw}{\mathfrak{w}}
-\newcommand{\frakx}{\mathfrak{x}}
-\newcommand{\fraky}{\mathfrak{y}}
-\newcommand{\frakz}{\mathfrak{z}}
-
-\newcommand{\frakA}{\mathfrak{A}}
-\newcommand{\frakB}{\mathfrak{B}}
-\newcommand{\frakC}{\mathfrak{C}}
-\newcommand{\frakD}{\mathfrak{D}}
-\newcommand{\frakE}{\mathfrak{E}}
-\newcommand{\frakF}{\mathfrak{F}}
-\newcommand{\frakG}{\mathfrak{G}}
-\newcommand{\frakH}{\mathfrak{H}}
-\newcommand{\frakI}{\mathfrak{I}}
-\newcommand{\frakJ}{\mathfrak{J}}
-\newcommand{\frakK}{\mathfrak{K}}
-\newcommand{\frakL}{\mathfrak{L}}
-\newcommand{\frakM}{\mathfrak{M}}
-\newcommand{\frakN}{\mathfrak{N}}
-\newcommand{\frakO}{\mathfrak{O}}
-\newcommand{\frakP}{\mathfrak{P}}
-\newcommand{\frakQ}{\mathfrak{Q}}
-\newcommand{\frakR}{\mathfrak{R}}
-\newcommand{\frakS}{\mathfrak{S}}
-\newcommand{\frakT}{\mathfrak{T}}
-\newcommand{\frakU}{\mathfrak{U}}
-\newcommand{\frakV}{\mathfrak{V}}
-\newcommand{\frakW}{\mathfrak{W}}
-\newcommand{\frakX}{\mathfrak{X}}
-\newcommand{\frakY}{\mathfrak{Y}}
-\newcommand{\frakZ}{\mathfrak{Z}}
-
-% blackboard font to match textbooks
-\newcommand{\bbA}{\mathbb{A}}
-\newcommand{\bbB}{\mathbb{B}}
-\newcommand{\bbC}{\mathbb{C}}
-\newcommand{\bbD}{\mathbb{D}}
-\newcommand{\bbE}{\mathbb{E}}
-\newcommand{\bbF}{\mathbb{F}}
-\newcommand{\bbG}{\mathbb{G}}
-\newcommand{\bbH}{\mathbb{H}}
-\newcommand{\bbI}{\mathbb{I}}
-\newcommand{\bbJ}{\mathbb{J}}
-\newcommand{\bbK}{\mathbb{K}}
-\newcommand{\bbL}{\mathbb{L}}
-\newcommand{\bbM}{\mathbb{M}}
-\newcommand{\bbN}{\mathbb{N}}
-\newcommand{\bbO}{\mathbb{O}}
-\newcommand{\bbP}{\mathbb{P}}
-\newcommand{\bbQ}{\mathbb{Q}}
-\newcommand{\bbR}{\mathbb{R}}
-\newcommand{\bbS}{\mathbb{S}}
-\newcommand{\bbT}{\mathbb{T}}
-\newcommand{\bbU}{\mathbb{U}}
-\newcommand{\bbV}{\mathbb{V}}
-\newcommand{\bbW}{\mathbb{W}}
-\newcommand{\bbX}{\mathbb{X}}
-\newcommand{\bbY}{\mathbb{Y}}
-\newcommand{\bbZ}{\mathbb{Z}}
-
-% caligraphic font to match textbooks
-\newcommand{\calA}{\mathcal{A}}
-\newcommand{\calB}{\mathcal{B}}
-\newcommand{\calC}{\mathcal{C}}
-\newcommand{\calD}{\mathcal{D}}
-\newcommand{\calE}{\mathcal{E}}
-\newcommand{\calF}{\mathcal{F}}
-\newcommand{\calG}{\mathcal{G}}
-\newcommand{\calH}{\mathcal{H}}
-\newcommand{\calI}{\mathcal{I}}
-\newcommand{\calJ}{\mathcal{J}}
-\newcommand{\calK}{\mathcal{K}}
-\newcommand{\calL}{\mathcal{L}}
-\newcommand{\calM}{\mathcal{M}}
-\newcommand{\calN}{\mathcal{N}}
-\newcommand{\calO}{\mathcal{O}}
-\newcommand{\calP}{\mathcal{P}}
-\newcommand{\calQ}{\mathcal{Q}}
-\newcommand{\calR}{\mathcal{R}}
-\newcommand{\calS}{\mathcal{S}}
-\newcommand{\calT}{\mathcal{T}}
-\newcommand{\calU}{\mathcal{U}}
-\newcommand{\calV}{\mathcal{V}}
-\newcommand{\calW}{\mathcal{W}}
-\newcommand{\calX}{\mathcal{X}}
-\newcommand{\calY}{\mathcal{Y}}
-\newcommand{\calZ}{\mathcal{Z}}
-
 \documentclass{amsart}
 
 \usepackage{mathz-project}
@@ -837,9 +725,6 @@ Let $finite\_support[\genT]$ denote the set of all integer-valued functions on $
 % the exponentiation infix operator x ** n
 %%inop \expN 5
 \newcommand{\expN}{\mathbin{**}}
-%%inop \powN 5
-\newcommand{\powN}{\mathbin{\char`\^}}
-
 
 %%inop \foo 3
 \newcommand{\foo}{\mathbin{+}}
@@ -1608,7 +1493,7 @@ Note that a structure on or over $\genT$ is also a structure in $\genT$.
 A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
 
 \begin{zed}
-	pbin\_op[\genT] == \genT \cross \genT \pfun \genT
+	PBinOp[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
 
 \begin{example}[Integer Division and Modulus]
@@ -1617,9 +1502,9 @@ Integer division and modulus are partial binary operations on $\num$ since divis
 undefined.
 
 \begin{zed}
-	(\_ \div \_) \in pbin\_op[\num]
+	(\_ \div \_) \in PBinOp[\num]
 \also
-	(\_ \mod \_) \in pbin\_op[\num]
+	(\_ \mod \_) \in PBinOp[\num]
 \end{zed}
 
 \end{example}
@@ -1630,13 +1515,13 @@ A \textit{total binary operation}, or simply a \textit{binary operation}, is a p
 every pair of elements.
 
 \begin{zed}
-	bin\_op[\genT] == \genT \cross \genT \fun \genT
+	BinOp[\genT] == \genT \cross \genT \fun \genT
 \end{zed}
 
 \begin{remark} Every binary operation is a partial binary operation.
 
 \begin{zed}
-	bin\_op[\setT] \subseteq pbin\_op[\setT]
+	BinOp[\setT] \subseteq PBinOp[\setT]
 \end{zed}
 
 \end{remark}
@@ -1646,11 +1531,11 @@ every pair of elements.
 Integer addition, subtraction, and multiplication are binary operations on $\num$.
 
 \begin{zed}
-	(\_ + \_) \in bin\_op[\num]
+	(\_ + \_) \in BinOp[\num]
 \also
-	(\_ - \_) \in bin\_op[\num]
+	(\_ - \_) \in BinOp[\num]
 \also
-	(\_ * \_) \in bin\_op[\num]
+	(\_ * \_) \in BinOp[\num]
 \end{zed}
 
 \end{example}
@@ -1666,10 +1551,10 @@ Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \opG \_: pbin\_op[\genT] \\
-	\strucA: \power \genT \cross pbin\_op[\genT]
+	\_ \opG \_: PBinOp[\genT] \\
+	\strucA: \power \genT \cross PBinOp[\genT]
 \where
-	(\_ \opG \_) \in bin\_op[A]
+	(\_ \opG \_) \in BinOp[A]
 \also
 	\strucA = (A, (\_ \opG \_))
 \end{schema}
@@ -1904,8 +1789,8 @@ itself be a magma depending on whether or not $S$ is closed under the product.
 \begin{schema}{Magma\_Subset}[\genT]
 	Magma[\genT] \\
 	S: \power \genT \\
-	\_ \opS \_: pbin\_op[\genT] \\
-	\strucS: \power \genT \cross pbin\_op[\genT]
+	\_ \opS \_: PBinOp[\genT] \\
+	\strucS: \power \genT \cross PBinOp[\genT]
 \where
 	S \subseteq A
 \also
@@ -4050,28 +3935,22 @@ We introduce the usual notation $\sphereOne = unit\_circle$.
 \printbibliography
 
 \end{document}\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{mathz-rings}[2025/01/14 Z Notation for rings package]
+\ProvidesPackage{mathz-formal-specifications}[2022/02/01 Z Notation for formal specifications package]
 
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
+% interval notation (a,b)
+\newcommand{\lowerBound}{\boldsymbol{(}}
+\newcommand{\upperBound}{\boldsymbol{)}}
+\newcommand{\intersect}{\mathbin{\boldsymbol{,}}}
 
-% the Macaulay 2 system
-\newcommand{\mzMtwo}{\texttt{Macaulay2}}
+%%postop \upperBound
+%%inop \intersect 4
 
-% ring elements
+% typed intervals
+\newcommand{\openLowerBound}{\boldsymbol{(}}
+\newcommand{\closedLowerBound}{\boldsymbol{[}}
+\newcommand{\openUpperBound}{\boldsymbol{)}}
+\newcommand{\closedUpperBound}{\boldsymbol{]}}
+\newcommand{\intersectRightLeft}{\mathbin{\boldsymbol{,}}}
 
-\newcommand{\ringZero}{0}
-\newcommand{\ringOne}{1}
-\newcommand{\zeroRng}{0}
-\newcommand{\oneRing}{1}
-
-% ring unary operators
-
-\DeclareMathOperator{\ringNeg}{-}
-
-% composition of ring homomorphisms
-%%inop \circRng \circRing \circCommrng \circCommring4
-\newcommand{\circRng}{\mathbin{\circ}}
-\newcommand{\circCommrng}{\mathbin{\circ}}
-\newcommand{\circRing}{\mathbin{\circ}}
-\newcommand{\circCommring}{\mathbin{\circ}}
+%%postop \openUpperBound \closedUpperBound
+%%inop \intersectRightLeft 4

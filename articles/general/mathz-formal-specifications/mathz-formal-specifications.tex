@@ -145,10 +145,20 @@ Here is a list, which I expect to grow over time as I get more experience.
 	\item Use prime decorations when composing situations.
 	\item Reuse globally-defined symbols in schemas when they have the required class, arity, and precedence.
 	Except when you actually need to refer to the globally-defined symbol within the schema.
-	\item Never define a new symbol that uses superscripts since that conflicts with decoration.
+	\item Never define a new symbol that uses superscripts since that conflicts with decoration and will cause
+	a \LaTeX\ error.
 \end{itemize}
 
 TODO: expand on these rules
+
+\section{Definitions and Notations}
+
+Use descriptive names when defining objects and use consistent wording.
+For example, ``Define $group[\genT]$ to be the set of all groups in $\genT$.''
+
+Reserve the term $denote$ for defining notation and always define the notation
+as syntactic sugar for a previously defined and well-named object.
+For example, ``Let $x * y$ denote the group operation $op(x,y)$.''
 
 \section{Given Sets and Signatures}
 
@@ -176,15 +186,15 @@ It is enough that these things, though differing in matter, should be similar in
 
 How then can we make a Z specification valid while still honouring normal mathematical practice?
 The way out of this difficulty is that if a mathematician would normally regard two distinct objects as the same
-then we give then distinct \ZN\  names, but display them using the same typographic symbol.
+then we will display them using the same symbol but give them distinct Z  names.
 To paraphrase Poincar\'{e}:
 \begin{quote}
-Formalizing mathematics is the art of giving different names, but the same symbol, to different things. 
+Formalizing mathematics is the art of using the same symbol, but giving different names to different things. 
 It is enough that these things, though differing in type, should be similar in typography, 
 to permit of their being, so to speak, run in the same mould.
 \end{quote}
 
-For example, Mike Spivey \cite{spivey-fm} describes three typographic symbols defined in the \fuzz\ package 
+For example, Mike Spivey \cite{spivey-fm} describes three symbols defined in the \fuzz\ package 
 that are each used to display two distinct objects:
 \begin{displayquote}
 A few symbols have two names, reflecting two different uses for the
@@ -208,10 +218,10 @@ recognizes each member of the pair only in the appropriate
 This approach keeps both the Z type checker and the mathematician reader happy.
 For example, in my formalization of the reals:
 \begin{itemize} 
-\item The symbol $0$ is called 
+\item The symbol $0$ is named 
 \texttt{0} when it is used as an integer, and 
 \cmd{zeroR} as a real number.
-\item The symbol $+$ is called 
+\item The symbol $+$ is named 
 \texttt{+} as the addition operator on the integers, and
 \cmd{addR} as the addition operator on the reals.
 \end{itemize}
@@ -226,7 +236,8 @@ Similarly, when the author makes a remark or states a theorem, there is also a p
 In each of these cases, the author makes a statement and asserts it to be true, but may not offer any proof.
 
 \ZN\ allows the author to add constraints to a specification.
-However, if the constraint is a logical consequence of the preceding definitions then it adds nothing to the specification.
+However, if the constraint is a logical consequence of the preceding definitions and constraints
+then it adds nothing to the specification.
 Therefore, we can freely add examples, remarks, and theorems to a specification without changing its meaning.
 These statements should be placed in a \cmd{zed} box that is enclosed in an appropriate \LaTeX\ theorem-like environment.
 
@@ -250,29 +261,8 @@ Although \ZN\ provides a mechanism for introducing formal generic parameters int
 generic constants and schemas, it does not provide such a mechanism for constraints.
 We can work around this limitation by declaring a set of global given sets which are understood to be used in theorem-like
 statements where they are taken to represent arbitrary sets.
-The article on \href{topological-spaces.pdf}{topological spaces} 
+The article on \href{../../math/mathz-topological-spaces/mathz-topological-spaces.pdf}{topological spaces} 
 introduces the global given sets $\setX$, $\setY$, and $\setZ$ for this purpose.
-
-Testing hyperlinks to another PDF document:
-
-\begin{verbatim}
-\url{https://agryman.github.io/mathz/complex-numbers.pdf}
-\end{verbatim}
-
-\url{https://agryman.github.io/mathz/complex-numbers.pdf}
-
-\begin{verbatim}
-\url{complex-numbers.pdf}
-\end{verbatim}
-
-\url{complex-numbers.pdf}
-
-\begin{verbatim}
-\url{./complex-numbers.pdf}
-\end{verbatim}
-
-\url{./complex-numbers.pdf}
-
 
 For example, we can remark that every element $x$ of an arbitrary set $\setX$ is a member of that set.
 
@@ -283,6 +273,47 @@ For example, we can remark that every element $x$ of an arbitrary set $\setX$ is
 \end{zed}
 
 \end{remark}
+
+\subsection{Hyperlinks}
+
+Specifications refer to other specifications.
+There two ways to create hyperlinks, namely \verb|\href| and \verb|\url|.
+The behaviour of these links differs by viewing application.
+I use three PDF viewers, namely Preview, TeXShop, and Acrobat Reader.
+IntelliJ also has a PDF viewer but I rarely use it.
+
+The \verb|\href| links generally work within the same document, although the Preview app has 
+file permission issues when linking between documents.
+
+The free Adobe Acrobat Reader app works better than Preview. 
+It can open \verb|\href|-linked local documents.
+It launches a brower for \verb|\url|-linked documents.
+
+Testing hyperlinks to another PDF document:
+
+\begin{verbatim}
+\url{https://agryman.github.io/mathz/complex-numbers.pdf}
+\end{verbatim}
+
+\url{https://agryman.github.io/mathz/complex-numbers.pdf}
+
+\begin{verbatim}
+\url{mathz-formal-specifications.pdf}
+\end{verbatim}
+
+\url{mathz-formal-specifications.pdf}
+
+\begin{verbatim}
+\url{complex-numbers.pdf}
+\end{verbatim}
+
+\url{complex-numbers.pdf}
+
+\begin{verbatim}
+\url{./complex-numbers.pdf}
+\end{verbatim}
+
+\url{./complex-numbers.pdf}
 
 \section{Simulating Standard Mathematical Notation}
 

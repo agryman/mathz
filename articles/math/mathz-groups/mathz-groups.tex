@@ -92,7 +92,7 @@ Note that a structure on or over $\genT$ is also a structure in $\genT$.
 A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
 
 \begin{zed}
-	PBinOp[\genT] == \genT \cross \genT \pfun \genT
+	pbin\_op[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
 
 \begin{example}[Integer Division and Modulus]
@@ -101,9 +101,9 @@ Integer division and modulus are partial binary operations on $\num$ since divis
 undefined.
 
 \begin{zed}
-	(\_ \div \_) \in PBinOp[\num]
+	(\_ \div \_) \in pbin\_op[\num]
 \also
-	(\_ \mod \_) \in PBinOp[\num]
+	(\_ \mod \_) \in pbin\_op[\num]
 \end{zed}
 
 \end{example}
@@ -114,13 +114,13 @@ A \textit{total binary operation}, or simply a \textit{binary operation}, is a p
 every pair of elements.
 
 \begin{zed}
-	BinOp[\genT] == \genT \cross \genT \fun \genT
+	bin\_op[\genT] == \genT \cross \genT \fun \genT
 \end{zed}
 
 \begin{remark} Every binary operation is a partial binary operation.
 
 \begin{zed}
-	BinOp[\setT] \subseteq PBinOp[\setT]
+	bin\_op[\setT] \subseteq pbin\_op[\setT]
 \end{zed}
 
 \end{remark}
@@ -130,11 +130,11 @@ every pair of elements.
 Integer addition, subtraction, and multiplication are binary operations on $\num$.
 
 \begin{zed}
-	(\_ + \_) \in BinOp[\num]
+	(\_ + \_) \in bin\_op[\num]
 \also
-	(\_ - \_) \in BinOp[\num]
+	(\_ - \_) \in bin\_op[\num]
 \also
-	(\_ * \_) \in BinOp[\num]
+	(\_ * \_) \in bin\_op[\num]
 \end{zed}
 
 \end{example}
@@ -150,10 +150,10 @@ Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \opG \_: PBinOp[\genT] \\
-	\strucA: \power \genT \cross PBinOp[\genT]
+	\_ \opG \_: pbin\_op[\genT] \\
+	\strucA: \power \genT \cross pbin\_op[\genT]
 \where
-	(\_ \opG \_) \in BinOp[A]
+	(\_ \opG \_) \in bin\_op[A]
 \also
 	\strucA = (A, (\_ \opG \_))
 \end{schema}
@@ -388,8 +388,8 @@ itself be a magma depending on whether or not $S$ is closed under the product.
 \begin{schema}{Magma\_Subset}[\genT]
 	Magma[\genT] \\
 	S: \power \genT \\
-	\_ \opS \_: PBinOp[\genT] \\
-	\strucS: \power \genT \cross PBinOp[\genT]
+	\_ \opS \_: pbin\_op[\genT] \\
+	\strucS: \power \genT \cross pbin\_op[\genT]
 \where
 	S \subseteq A
 \also

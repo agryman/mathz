@@ -268,6 +268,10 @@ Added subgroups to groups article.
 
 Write the *Zen of Z*
 
+## 2025-02-08
+
+continue to define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc
+
 # To Do
 
 * [ ] define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc

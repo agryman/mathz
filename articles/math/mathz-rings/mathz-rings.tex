@@ -8,6 +8,7 @@
 
 \usepackage{mathz-preamble}
 \usepackage{babel}
+\usepackage{tikz-cd}
 
 \addbibresource{mathz-references.bib}
 
@@ -95,13 +96,13 @@ identity
 \subsubsection{Rings}
 
 The first two axioms define a general ring.
-As a structure, we define a ring $\strucA$ to be a triple $(A, (\_ \addG, \_), (\_ \mulG \_))$ 
+Regarded as a structure, define a ring $\strucA$ to be a triple $(A, (\_ \addG, \_), (\_ \mulG \_))$ 
 consisting of a set, an addition operation, and a multiplication operation.
 
-\begin{schema}{Ring\_Core}[\genT]
+\begin{schema}{Rng\_Core}[\genT]
 	A: \power \genT \\
-	\_ + \_, \_ * \_: PBinOp[\genT] \\
-	\strucA: \power \genT \cross PBinOp[\genT] \cross PBinOp[\genT]
+	\_ + \_, \_ * \_: pbin\_op[\genT] \\
+	\strucA: \power \genT \cross pbin\_op[\genT] \cross pbin\_op[\genT]
 \where
 	(A, (\_ + \_)) \in abgroup[A]
 \also
@@ -122,17 +123,20 @@ consisting of a set, an addition operation, and a multiplication operation.
 	\item the structure is a triple consisting of the carrier and two operations
 \end{itemize}
 
-The additive identity element is denoted $\zeroG$, 
+Here I have omitted the letter \textit{i} in the name $Rng$ to remind us that
+a general ring is not required to have a multiplicative identity element.
+
+The additive identity element is denoted $\zeroRng$, 
 the additive inverse of $x$ is denoted $\negG x$, and
 the sum of $x$ and $\negG y$ is denoted $x \subG y$.
 
-\begin{schema}{Ring}[\genT]
-	Ring\_Core[\genT] \\
-	\zeroG: \genT \\
+\begin{schema}{Rng}[\genT]
+	Rng\_Core[\genT] \\
+	\zeroRng: \genT \\
 	\negG: \genT \pfun \genT \\
-	\_ - \_: PBinOp[\genT]
+	\_ - \_: pbin\_op[\genT]
 \where
-	\zeroG = identity\_element (A, (\_ + \_))
+	\zeroRng = identity\_element (A, (\_ + \_))
 \also
 	(\lambda x: A @ \negG x) = inverse\_operation (A, (\_ + \_))
 \also
@@ -140,16 +144,15 @@ the sum of $x$ and $\negG y$ is denoted $x \subG y$.
 \end{schema}
 
 \begin{itemize}
-	\item $\zeroG$ is the additive identity element
+	\item $\zeroRng$ is the additive identity element
 	\item $\negG x$ is the additive inverse of $x$
 	\item subtraction is defined in terms of addition and negation
 \end{itemize}
 
 Define $rng[\genT]$ to be the set of all rings in $\genT$.
-Here we omit the letter \textit{i} from the word \textit{ring} to remind us that
-a ring might not have a multiplicative identity element.
+
 \begin{zed}
-	rng[\genT] == \{~ Ring[\genT] @ \strucA ~\}
+	rng[\genT] == \{~ Rng[\genT] @ \strucA ~\}
 \end{zed}
 
 \begin{example}
@@ -166,9 +169,9 @@ A \textit{ring homomorphism} from $\strucA$ to $\strucA'$ is a function $f$ from
 that preserves the addition and multiplication operations.
 As a structure, we represent a ring homomorphism $F$ as the pair $(\strucA, \strucA') \mapsto f$.
 
-\begin{schema}{Ring\_Hom}[\genT, \genU]
-	Ring[\genT] \\
-	Ring'[\genU] \\
+\begin{schema}{Rng\_Hom}[\genT, \genU]
+	Rng[\genT] \\
+	Rng'[\genU] \\
 	f: \genT \pfun \genU \\
 	F: (rng[\genT] \cross rng[\genU]) \cross (\genT \pfun \genU)
 \where
@@ -192,7 +195,7 @@ Define $rng\_Hom[\genT, \genU]$ to be the set of all ring homomorphisms from rin
 to rings in $\genU$.
 
 \begin{zed}
-	rng\_Hom[\genT, \genU] == \{~ Ring\_Hom[\genT, \genU] @ F ~\}
+	rng\_Hom[\genT, \genU] == \{~ Rng\_Hom[\genT, \genU] @ F ~\}
 \end{zed}
 
 Define $rng\_hom(\strucA, \strucA')$ to be the set of all ring homomorphism from $\strucA$ to $\strucA'$.
@@ -205,17 +208,17 @@ Define $rng\_hom(\strucA, \strucA')$ to be the set of all ring homomorphism from
 
 \subsubsection{Identity Maps}
 
-Define $rng\_id[\genT]$ to be the set of all identity maps from rings in $\genT$ to themselves.
+Define $rng\_id[\genT]$ to be the function that maps rings in $\genT$ to their identity maps.
 
 \begin{zed}
-	rng\_id[\genT] == \{~ Ring[\genT] @ (\strucA, \strucA) \mapsto \id A ~\}
+	rng\_id[\genT] == \{~ Rng[\genT] @ \strucA \mapsto ((\strucA, \strucA) \mapsto \id A) ~\}
 \end{zed}
 
 \begin{remark}
 	The identity map on any ring is a homomorphism.
 	
 \begin{zed}
-	rng\_id[\setT] \subseteq rng\_Hom[\setT, \setT]
+	rng\_id[\setT] \in rng[\setT] \fun  rng\_Hom[\setT, \setT]
 \end{zed}
 
 \end{remark}
@@ -225,9 +228,9 @@ Define $rng\_id[\genT]$ to be the set of all identity maps from rings in $\genT$
 Given ring homomorphisms $f$ from $A$ to $A'$ and $f'$ from $A'$ to $A''$,
 we can define their \textit{composition} $g = f' \circ f$ from $A$ to $A''$.
 
-\begin{schema}{Ring\_Composition}[\genT, \genU, \genV]
-	Ring\_Hom[\genT, \genU] \\
-	Ring\_Hom'[\genU, \genV] \\
+\begin{schema}{Rng\_Composition}[\genT, \genU, \genV]
+	Rng\_Hom[\genT, \genU] \\
+	Rng\_Hom'[\genU, \genV] \\
 	g: \genT \pfun \genV \\
 	G: (rng[\genT] \cross rng[\genV]) \cross (\genT \pfun \genV)
 \where
@@ -240,7 +243,7 @@ we can define their \textit{composition} $g = f' \circ f$ from $A$ to $A''$.
 The composition of ring homomorphisms is a ring homomorphism.
 
 \begin{zed}
-	\forall Ring\_Composition[\setT, \setU, \setV] @ G \in rng\_hom(\strucA, \strucA'')
+	\forall Rng\_Composition[\setT, \setU, \setV] @ G \in rng\_hom(\strucA, \strucA'')
 \end{zed}
 
 \end{remark}
@@ -248,17 +251,37 @@ The composition of ring homomorphisms is a ring homomorphism.
 Let $G = F' \circRng F$ denote the composition of ring homomorphisms.
 
 \begin{zed}
-	(\_ \circRng \_)[\genT, \genU, \genV] == \{~ Ring\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
+	(\_ \circRng \_)[\genT, \genU, \genV] == \{~ Rng\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
 \end{zed}
 
-TODO: remark that the identity map is a left and right identity element under composition
+\begin{remark}
+The identity map is a left and right identity element under composition of ring homomorphisms.
+
+\begin{zed}
+	\forall Rng\_Hom[\setT, \setU] @ \\
+	\t1	F \circRng rng\_id(\strucA) = F = rng\_id(\strucA') \circRng F
+\end{zed}
+
+\end{remark}
+
+The preceding remark states that the diagram in Figure~\ref{fig:comp-id} commutes.
+
+\begin{figure}[h]
+\centering
+\begin{tikzcd}
+\strucA \arrow[d, "\id"] \arrow[rd, "F"] \arrow[r, "F"]	& \strucA' \arrow[d, "\id"] \\
+\strucA \arrow[r, "F"]	\arrow[r, "F"]				& \strucA'
+\end{tikzcd}
+\caption{Composition with the identity homomorphism}
+\label{fig:comp-id}
+\end{figure}
 
 \subsubsection{Commutative Rings}
 
 A ring is said to be \textit{commutative} if its multiplication is commutative.
 
-\begin{schema}{CommRing}[\genT]
-	Ring[\genT]
+\begin{schema}{CommRng}[\genT]
+	Rng[\genT]
 \where
 	\forall x, y: A @ x * y = y * x
 \end{schema}
@@ -270,8 +293,96 @@ A ring is said to be \textit{commutative} if its multiplication is commutative.
 Define $commrng[\genT]$ to be the set of all commutative rings in $\genT$.
 
 \begin{zed}
-	commrng[\genT] == \{~ CommRing[\genT] @ A ~\}
+	commrng[\genT] == \{~ CommRng[\genT] @ \strucA ~\}
 \end{zed}
+
+\begin{remark}
+A commutative ring in $\genT$ is a ring in $\genT$.
+
+\begin{zed}
+	commrng[\setT] \subseteq rng[\setT]
+\end{zed}
+
+\end{remark}
+
+A homomorphism of commutative rings is simply a homomorphism of the underlying rings.
+
+\begin{schema}{CommRng\_Hom}[\genT, \genU]
+	CommRng[\genT] \\
+	CommRng'[\genU] \\
+	Rng\_Hom[\genT, \genU]
+\end{schema}
+
+Define $commrng\_Hom[\genT, \genU]$ to be the set all homomorphisms of commutative rings
+in $\genT$ to commutative rings in $\genU$.
+
+\begin{zed}
+	commrng\_Hom[\genT, \genU] == \{~ CommRng\_Hom[\genT, \genU] @ F ~\}
+\end{zed}
+
+\begin{remark}
+A homomorphism of commutative rings is a homomorphism of rings.
+
+\begin{zed}
+	commrng\_Hom[\setT, \setU] \subseteq rng\_Hom[\setT, \setU]
+\end{zed}
+
+\end{remark}
+
+Define $commrng\_hom(\strucA, \strucA')$ to be the set all homomorphisms from the commutative ring
+$\strucA$ to the commutative ring $\strucA'$.
+
+\begin{zed}
+	commrng\_hom[\genT, \genU] == \\
+	\t1	(\lambda \strucA: commrng[\genT]; \strucA': commrng[\genU] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres commrng\_Hom[\genT, \genU])
+\end{zed}
+
+Define $commrng\_id[\genT]$ to be the function that maps commutative rings in $\genT$ to their identity maps.
+
+\begin{zed}
+	commrng\_id[\genT] == \{~ CommRng[\genT] @ \strucA \mapsto ((\strucA, \strucA) \mapsto \id A) ~\}
+\end{zed}
+
+\begin{remark}
+The identity map of a commutative ring is a commutative ring homomorphism from the ring to itself.
+
+\begin{zed}
+	\forall \strucA: commrng[\setT] @ commrng\_id(\strucA) \in commrng\_hom(\strucA, \strucA)
+\end{zed}
+
+\end{remark}
+
+Given commutative ring homomorphisms $f$ from $A$ to $A'$ and $f'$ from $A'$ to $A''$,
+we can define their \textit{composition} $g = f' \circ f$ from $A$ to $A''$.
+
+\begin{schema}{CommRng\_Composition}[\genT, \genU, \genV]
+	CommRng\_Hom[\genT, \genU] \\
+	CommRng\_Hom'[\genU, \genV] \\
+	g: \genT \pfun \genV \\
+	G: (commrng[\genT] \cross commrng[\genV]) \cross (\genT \pfun \genV)
+\where
+	g = f' \circ f
+\also
+	G = (\strucA, \strucA'') \mapsto g
+\end{schema}
+
+\begin{remark}
+The composition of commutative ring homomorphisms is a commutative ring homomorphism.
+
+\begin{zed}
+	\forall CommRng\_Composition[\setT, \setU, \setV] @ G \in commrng\_hom(\strucA, \strucA'')
+\end{zed}
+
+\end{remark}
+
+Let $G = F' \circCommrng F$ denote the composition of commutative ring homomorphisms.
+
+\begin{zed}
+	(\_ \circCommrng \_)[\genT, \genU, \genV] == 
+	\{~ CommRng\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
+\end{zed}
+
 
 TODO: define homomorphisms, identity maps, composition, and composition with identity maps
 
@@ -280,26 +391,26 @@ TODO: define homomorphisms, identity maps, composition, and composition with ide
 A ring is said to have an \textit{identity element} if it has a left and right multiplicative identity element.
 In other words, the multiplication operation is a monoid.
 A ring with an identity element is also said to be a \textit{unital} ring.
-The multiplicative identity element of a unital ring is denoted $\oneG$.
+The multiplicative identity element of a unital ring is denoted $\oneRing$.
 
-\begin{schema}{UnitalRing}[\genT]
-	Ring[\genT]\\
-	\oneG: \genT
+\begin{schema}{Ring}[\genT]
+	Rng[\genT] \\
+	\oneRing: \genT
 \where
 	(A, (\_ * \_)) \in monoid[A]
 \also
-	\oneG = identity\_element(A, (\_ * \_))
+	\oneRing = identity\_element(A, (\_ * \_))
 \end{schema}
 
 \begin{itemize}
 	\item the multiplication operation is a monoid
-	\item the multiplicative identity element is denoted $\oneG$
+	\item the multiplicative identity element is denoted $\oneRing$
 \end{itemize}
 
 Define $ring[\genT]$ to be the set of all unital rings in $\genT$.
 
 \begin{zed}
-	ring[\genT] == \{~ UnitalRing[\genT] @ \strucA ~\}
+	ring[\genT] == \{~ Ring[\genT] @ \strucA ~\}
 \end{zed}
 
 TODO: define homomorphisms, identity maps, composition, and composition with identity maps
@@ -308,20 +419,20 @@ TODO: define homomorphisms, identity maps, composition, and composition with ide
 
 Commutative algebra is primarily concerned with commutative, unital rings.
 
-\begin{schema}{CURing}[\genT]
-	CommRing[\genT] \\
-	UnitalRing[\genT]
+\begin{schema}{CommRing}[\genT]
+	Ring[\genT] \\
+	CommRng[\genT]
 \end{schema}
 
 Define $commring[\genT]$ to be the set of commutative unital rings in $\genT$.
 
 \begin{zed}
-	commring[\genT] == \{~ CURing[\genT] @ \strucA ~\}
+	commring[\genT] == \{~ CommRing[\genT] @ \strucA ~\}
 \end{zed}
 
 TODO: define homomorphisms, identity maps, composition, and composition with identity maps
 
-For the remainder of this article the term \textit{ring} will denote a commutative ring with an identity element.
+For the remainder of this article the term \textit{ring} will mean a commutative unital ring.
 However, the formal notation will always be explicit.
 
 \subsubsection{Zero Rings}
@@ -329,9 +440,9 @@ However, the formal notation will always be explicit.
 If the additive and multiplicative identity elements are the same then the ring is said to be a \textit{zero ring}.
 
 \begin{schema}{ZeroRing}[\genT]
-	CURing[\genT]
+	Ring[\genT]
 \where
-	\oneG = \zeroG
+	\oneRing = \zeroRng
 \end{schema}
 
 \begin{itemize}
@@ -341,18 +452,18 @@ If the additive and multiplicative identity elements are the same then the ring 
 \begin{remark}
 A zero ring contains exactly one element, namely the zero element.
 \begin{zed}
-	\forall ZeroRing[\setT] @ A = \{ \zeroG \}
+	\forall ZeroRing[\setT] @ A = \{ \zeroRng \}
 \end{zed}
 
 \begin{proof}
 \begin{argue}
 x: A 					& assumption-intro\\
 x \\
-\t1	= x * \oneG		& $\oneG$ is the identity element \\
-\t1	= x * \zeroG		& $\oneG = \zeroG$ by $ZeroRing$ \\
-\t1	= \zeroG			& $\zeroG$ is the zero element \\
-x: A \implies x = \zeroG	& assumption-elim \\
-A = \{ \zeroG \}			& set extensionality
+\t1	= x * \oneRing		& $\oneRing$ is the identity element \\
+\t1	= x * \zeroRng		& $\oneRing = \zeroRng$ by $ZeroRing$ \\
+\t1	= \zeroRng		& $\zeroRng$ is the zero element \\
+x: A \implies x = \zeroRng	& assumption-elim \\
+A = \{ \zeroRng \}		& set extensionality
 \end{argue}
 \end{proof}
 
@@ -362,13 +473,13 @@ TODO: remark on the universal properties of the zero ring in each of the four ca
 
 \subsubsection{Ring Homomorphisms}
 
-A ring homomorphism is a mapping $f$ from ring $A$ into ring $A'$ that
+A homomorphism of commutative unital rings is a mapping $f$ from ring $A$ into ring $A'$ that
 preserves addition, multiplication, and identity elements.
 
-\begin{schema}{CURing\_Hom}[\genT, \genU]
-	Ring\_Hom[\genT, \genU] \\
-	CURing[\genT] \\
-	CURing'[\genU] \\
+\begin{schema}{CommRing\_Hom}[\genT, \genU]
+	CommRing[\genT] \\
+	CommRing'[\genU] \\
+	Rng\_Hom[\genT, \genU] \\
 	f: \genT \pfun \genU
 \where
 	f \in A \fun A'
@@ -377,7 +488,7 @@ preserves addition, multiplication, and identity elements.
 \also
 	\forall x, y: A @ f(x * y) = f(x) *' f(y)
 \also
-	f(\oneG) = \oneG'
+	f(\oneRing) = \oneRing'
 \end{schema}
 
 TODO: merge this in with the general discussion of homomorphisms
@@ -389,13 +500,13 @@ addition and multiplication.
 
 TODO: use $S$ and $A$ to match textbook
 
-\begin{schema}{CURing\_Subring}[\genT]
-	CURing'[\genT] \\
+\begin{schema}{CommRing\_Subring}[\genT]
+	CommRing'[\genT] \\
 	A: \power \genT
 \where
 	A \subseteq A'
 \also
-	\oneG' \in A
+	\oneRing' \in A
 \also
 	\forall x, y: A @ x +' y \in A
 \also
@@ -404,9 +515,9 @@ TODO: use $S$ and $A$ to match textbook
 
 A subring itself becomes a ring by restriction of the enclosing ring operations.
 
-\begin{schema}{CURing\_Restriction}[\genT]
-	CURing\_Subring[\genT] \\
-	CURing[\genT]
+\begin{schema}{CommRing\_Restriction}[\genT]
+	CommRing\_Subring[\genT] \\
+	CommRing[\genT]
 \where
 	(\_ + \_) = (\lambda x, y: A @ x +' y)
 \also
@@ -415,12 +526,12 @@ A subring itself becomes a ring by restriction of the enclosing ring operations.
 
 Set inclusion defines a map $f$ from the subring to the ring.
 
-\begin{schema}{CURing\_Inclusion}[\genT]
-	CURing\_Restriction[\genT] \\
+\begin{schema}{CommRing\_Inclusion}[\genT]
+	CommRing\_Restriction[\genT] \\
 	f: \genT \pfun \genT \\
 	F: (commring[\genT] \cross commring[\genT]) \cross (\genT \pfun \genT)
 \where
-	f = (\lambda x: A @ x)
+	f = \id A
 \also
 	F = (\strucA, \strucA') \mapsto f
 \end{schema}
@@ -429,7 +540,7 @@ Set inclusion defines a map $f$ from the subring to the ring.
 Subring inclusion is a ring homomorphism.
 
 \begin{zed}
-\forall CURing\_Inclusion[\setT] @ CURing\_Hom[\setT, \setT]
+\forall CommRing\_Inclusion[\setT] @ CommRing\_Hom[\setT, \setT]
 \end{zed}
 
 \end{remark}
@@ -439,9 +550,9 @@ Subring inclusion is a ring homomorphism.
 Given homomorphisms $f : A \fun A'$ and $f': A' \fun A''$ their composition 
 $f' \circ f$ is a mapping $g: A \fun A''$.
 
-\begin{schema}{CURing\_Composition}[\genT, \genU, \genV]
-	CURing\_Hom[\genT, \genU] \\
-	CURing\_Hom'[\genU, \genV] \\
+\begin{schema}{CommRing\_Composition}[\genT, \genU, \genV]
+	CommRing\_Hom[\genT, \genU] \\
+	CommRing\_Hom'[\genU, \genV] \\
 	g: \genT \pfun \genV
 \where
 	g = f' \circ f
@@ -453,7 +564,7 @@ The composition of homomorphisms is a homomorphism.
 
 TODO: merge with general discussion
 
-NOTE: the preceding sections should be completed and made consistent with eachother,
+NOTE: the preceding sections should be completed and made consistent with each other,
 however, I will continue on with formalizing the content of Atiyah-MacDonald so I can determine
 if anything is actually hard to formalize, and also so that I can be more effective with Macaulay 2.
 
@@ -463,7 +574,7 @@ An \textit{ideal} $\fraka$ of a ring $A$ is a subset of $A$ that is an additive 
 and is such that $A\fraka \subseteq \fraka$.
 
 \begin{schema}{Ideal}[\genT]
-	CURing[\genT] \\
+	CommRing[\genT] \\
 	\fraka: \power \genT
 \where
 	\fraka \subseteq A
@@ -480,10 +591,10 @@ and is such that $A\fraka \subseteq \fraka$.
 \end{itemize}
 
 The quotient group $A/\fraka$ inherits a well-defined multiplication from $A$
-making a a ring called the \textit{quotient ring} (or \textit{residue class ring} $A/\fraka$.
+making it a ring called the \textit{quotient ring} (or \textit{residue class ring} $A/\fraka$.
 
 \begin{schema}{QuotientRing}[\genT]
-	CURing\_Hom[\genT, \power \genT] \\
+	CommRing\_Hom[\genT, \power \genT] \\
 	Ideal[\genT]
 \where
 	f = (\lambda x: A @ \{~ y: \fraka @ x + y ~\})
