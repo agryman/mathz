@@ -272,6 +272,10 @@ Write the *Zen of Z*
 
 continue to define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc
 
+## 2025-02-09
+
+added checklist to formal specifications article
+
 # To Do
 
 * [ ] define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc

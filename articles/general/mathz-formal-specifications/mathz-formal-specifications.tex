@@ -151,6 +151,65 @@ Here is a list, which I expect to grow over time as I get more experience.
 
 TODO: expand on these rules
 
+\section{Checklist for Formalizing Structures}
+
+Certain standard items should be defined when formalizing a structure such as a group, ring, or topological space.
+A central theme of modern mathematics is that structures are the objects of some category.
+This means that in addition to defining the structure, we also need to define the morphisms
+between them. 
+
+In fact, it is more proper in some sense to regard a category as being a category of morphisms
+rather than a category of objects since the objects can be recovered from the morphisms.
+Also, a given set of objects may have more than one interesting sets of morphisms.
+For example, consider the set of topological spaces. 
+In this case we can define the morphisms to be either the set of continuous maps or the set of homotopy classes
+of continuous maps.
+
+Here is a recommended checklist of items to define with a suggested order and naming scheme.
+This is illustrated using the example of groups.
+
+\begin{enumerate}
+	\item Define a schema for an object, e.g. $Group$. 
+	In general, the object may depend on one or more generic parameters. 
+	Note that we give names to schema components, but these names are in some sense arbitrary. 
+	We use names to simplify reference to the schema components.
+	\item Define the set of objects, e.g. $group$. 
+	The elements of this set are usually tuples. 
+	We have erased the component names and instead use the order of components in the tuple.
+	\item Define a schema for a morphism, e.g. $Group\_Hom$.
+	Morphisms must include their source and target objects.
+	\item Define the set of all morphisms, e.g. $group\_Hom$.
+	\item Define the function that maps a pair of objects to the set of morphisms between them,
+	e.g. $group\_hom$
+	\item Define a schema for the composition of two morphisms, e.g. $Group\_Composition$.
+	\item Remark that the composition of morphisms is a morphism.
+	\item Remark that composition is associative.
+	\item Define a schema for an identity morphism, e.g. $Group\_Id$.
+	\item Define the function that maps an object to its identity morphism, e.g. $group\_id$.
+	\item Remark that the identity morphism is a left and right identity element with respect to
+	composition.
+	\item Define a schema for what it means to be a subobject, e.g. $Group\_Subgroup$. 
+	This may not always make sense.
+	\item Define the set of subobjects of an object, e.g. $subgroup$.
+	\item Define the map from a subobject to its inclusion morphism, e.g. $Group\_Inclusion$.
+	\item Define a schema for the image of a morphism, e.g. $Group\_Image$.
+	\item Remark that the image of a morphism is a subobject.
+	\item Define a map from morphisms to their images, e.g. $group\_image$.
+	\item Define a schema for the kernel of a morphism, e.g. $Group\_Kernel$.
+	\item Remark that the image of a morphism is a subobject.
+	\item Define a schema for what it means for a subobject induce a quotient, e.g. $Group\_Normal$.
+	For groups, the subgroup must be normal. For rings, the subring must be an ideal.
+	\item Remark that the kernel of a morphism is normal for groups, an ideal for rings, as appropriate.
+	\item Define the set of all normal subobjects, e.g. $group\_normal$.
+	\item Define a schema for the quotient of an object by a normal subobject, e.g. $Group\_Quotient$.
+	\item Define a function that maps a normal subobject to the quotient, e.g. $group\_quotient$.
+	\item Define a schema for the projection morphism of a normal subobject onto its quotient, 
+	e.g. $Group\_Projection$.
+	\item Define a function that maps a normal subobject to its projection, e.g. $group\_projection$.
+	\item Carry on for cokernels and coimages as appropriate.
+\end{enumerate}
+
+
 \section{Definitions and Notations}
 
 Use descriptive names when defining objects and use consistent wording.
