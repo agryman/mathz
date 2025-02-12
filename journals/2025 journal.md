@@ -276,6 +276,10 @@ continue to define homomorphisms for each of the four sets of ring structures: r
 
 added checklist to formal specifications article
 
+## 2025-02-11
+
+work on completing the basic definitions in the rings article using the checklist
+
 # To Do
 
 * [ ] define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc

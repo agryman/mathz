@@ -169,13 +169,20 @@ Here is a recommended checklist of items to define with a suggested order and na
 This is illustrated using the example of groups.
 
 \begin{enumerate}
-	\item Define a schema for an object, e.g. $Group$. 
-	In general, the object may depend on one or more generic parameters. 
-	Note that we give names to schema components, but these names are in some sense arbitrary. 
-	We use names to simplify reference to the schema components.
-	\item Define the set of objects, e.g. $group$. 
-	The elements of this set are usually tuples. 
-	We have erased the component names and instead use the order of components in the tuple.
+	\item Define a schema for an object, e.g. $Group[\genT]$. 
+	Note that we give somewhat arbitrary names to schema components in order to
+	simplify reference to them and make constraints on them easy to express and understand.
+	In general, the defined object may depend on one or more generic parameters. 
+	For example, a structure may have one or more sets of elements so we need to provide
+	generic parameters from which to draw these sets.
+	These generic parameters can be thought of as defining a universe of discourse for the objects.
+	\item Define the set of objects corresponding to the generic parameters, e.g. $group[\genT]$
+	is the set of all groups in $\genT$.
+	The elements of this set are usually tuples, e.g. $(G, (\_ \cdot \_))$. 
+	By mapping the schema to a tuple we have erased the component names and 
+	instead now must refer to components by their position in the tuple.
+	\item Define a function that maps sets to objects on that set. For example, $groups\_on(G)$
+	is the set of all groups on $G$.
 	\item Define a schema for a morphism, e.g. $Group\_Hom$.
 	Morphisms must include their source and target objects.
 	\item Define the set of all morphisms, e.g. $group\_Hom$.
@@ -197,7 +204,7 @@ This is illustrated using the example of groups.
 	\item Define a map from morphisms to their images, e.g. $group\_image$.
 	\item Define a schema for the kernel of a morphism, e.g. $Group\_Kernel$.
 	\item Remark that the image of a morphism is a subobject.
-	\item Define a schema for what it means for a subobject induce a quotient, e.g. $Group\_Normal$.
+	\item Define a schema for what it means for a subobject to induce a quotient, e.g. $Group\_Normal$.
 	For groups, the subgroup must be normal. For rings, the subring must be an ideal.
 	\item Remark that the kernel of a morphism is normal for groups, an ideal for rings, as appropriate.
 	\item Define the set of all normal subobjects, e.g. $group\_normal$.

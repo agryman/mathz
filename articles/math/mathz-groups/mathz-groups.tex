@@ -91,6 +91,8 @@ Note that a structure on or over $\genT$ is also a structure in $\genT$.
 
 A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
 
+Define $pbin\_op[\genT]$ to be the set of all partial binary operations in $\genT$.
+
 \begin{zed}
 	pbin\_op[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
@@ -112,6 +114,8 @@ undefined.
 
 A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
 every pair of elements.
+
+Define $bin\_op[\genT]$ to be the set of all binary operations on $\genT$.
 
 \begin{zed}
 	bin\_op[\genT] == \genT \cross \genT \fun \genT
@@ -163,36 +167,51 @@ Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 	\item The structure is the pair consisting of the carrier and the binary operation.
 \end{itemize}
 
-Let $magma[\genT]$ be the set of all magmas in $\genT$.
+Define $magma[\genT]$ to be the set of all magmas in $\genT$.
+
 \begin{zed}
 	magma[\genT] == \{~ Magma[\genT] @ \strucA ~\}
 \end{zed}
+
+Define $magma\_on(A)$ to be the set of all magmas on $A$.
+
+\begin{zed}
+	magma\_on[\genT] == (\lambda A: \power \genT @ \{~ A ~\} \dres magma[\genT])
+\end{zed}
+
+\begin{remark}
+$magma\_on(A)$ is a subset of $magma[\genT]$.
+
+\begin{zed}
+	\forall A:  \power \setT @ magma\_on(A) \subseteq magma[\setT]
+\end{zed}
+\end{remark}
 
 \begin{remark}
 Every magma is a magma on its carrier.
 
 \begin{zed}
-	\forall Magma[\setT] @ \strucA \in magma[A]
+	\forall Magma[\setT] @ \strucA \in magma\_on(A)
 \end{zed}
 
 \end{remark}
 
 \begin{example}[Integer Addition]
 
-Let $int\_add$ be the set of integers equipped with addition.
+Define $int\_add$ to be the set of integers equipped with addition.
 \begin{zed}
 	int\_add == (\num, (\_ + \_))
 \end{zed}
 
 Integer addition is a magma on $\num$.
 \begin{zed}
-	int\_add \in magma[\num]
+	int\_add \in magma\_on(\num)
 \end{zed}
 \end{example}
 
 \begin{example}[Integer Subtraction]
 
-Let $int\_sub$ be the set of integers equipped with subtraction.
+Define $int\_sub$ to be the set of integers equipped with subtraction.
 
 \begin{zed}
 	int\_sub == (\num, (\_ - \_))
@@ -201,14 +220,14 @@ Let $int\_sub$ be the set of integers equipped with subtraction.
 Integer subtraction is a magma on $\num$.
 
 \begin{zed}
-	int\_sub \in magma[\num]
+	int\_sub \in magma\_on(\num)
 \end{zed}
 
 \end{example}
 
 \begin{example}[Integer Multiplication]
 
-Let $int\_mul$ be the set of integers equipped with multiplication.
+Define $int\_mul$ to be the set of integers equipped with multiplication.
 
 \begin{zed}
 	int\_mul == (\num, (\_ * \_))
@@ -217,7 +236,7 @@ Let $int\_mul$ be the set of integers equipped with multiplication.
 Integer multiplication is a magma on $\num$.
 
 \begin{zed}
-	int\_mul \in magma[\num]
+	int\_mul \in magma\_on(\num)
 \end{zed}
 
 \end{example}
@@ -238,7 +257,7 @@ underlying map of the carriers.
 When we need to distinguish between the map structure and its underlying map,
 we'll use some typographic convention to relate the two.
 For example, we may use $F$ for the structure and $f$ for its underlying map.
-In any case, the formal text will always use distinct names in any given context.
+That being said, the formal text will always use distinct names in any given context.
 
 \begin{schema}{Magma\_Map}[\genT, \genU]
 	Magma[\genT] \\
@@ -256,12 +275,29 @@ In any case, the formal text will always use distinct names in any given context
 	\item A magma map structure consists of a pair of magmas and a map between their carriers.
 \end{itemize}
 
-Let $magma\_map[\genT, \genU]$ be the set of all magma maps
+Define $magma\_Map[\genT, \genU]$ to be the set of all magma maps
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
 	magma\_Map[\genT, \genU] == \{~ Magma\_Map[\genT, \genU] @ F ~\}
 \end{zed}
+
+Define $magma\_map(\strucA, \strucA')$ to be the subset of all magma maps from $\strucA$ to $\strucA'$.
+
+\begin{zed}
+	magma\_map[\genT, \genU] == \\
+	\t1	(\lambda \strucA: magma[\genT]; \strucA': magma[\genU] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres magma\_Map[\genT, \genU])
+\end{zed}
+
+\begin{remark}
+$magma\_map(\strucA, \strucA')$ is a subset of $magma\_Map[\genT, \genU]$.
+
+\begin{zed}
+	\forall Magma[\setT]; Magma'[\setU] @ \\
+	\t1	magma\_map(\strucA, \strucA') \subseteq magma\_Map[\setT, \setU]
+\end{zed}
+\end{remark}
 
 A magma map $f$ is a \textit{magma homomorphism} if it preserves products.
 
@@ -275,15 +311,15 @@ A magma map $f$ is a \textit{magma homomorphism} if it preserves products.
 	\item $f$ preserves the product operation
 \end{itemize}
 
-Let $magma\_Hom[\genT, \genU]$ be the set of all homomorphisms
+Define $magma\_Hom[\genT, \genU]$ to be the set of all magma homomorphisms
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
 	magma\_Hom[\genT, \genU] == \{~Magma\_Hom[\genT, \genU] @ F ~\}
 \end{zed}
 
-Let $magma\_hom(\strucA, \strucA')$ be the subset of $magma\_Hom[\genT, \genU]$ 
-that consists of all homomorphisms from $\strucA$ to $\strucA'$.
+Define $magma\_hom(\strucA, \strucA')$ to be the subset of magma homomorphisms 
+from $\strucA$ to $\strucA'$.
 
 \begin{zed}
 	magma\_hom[\genT, \genU] == \\
@@ -291,18 +327,16 @@ that consists of all homomorphisms from $\strucA$ to $\strucA'$.
 	\t2		\{(\strucA, \strucA') \} \dres magma\_Hom[\genT, \genU])
 \end{zed}
 
-\begin{remark} $magma\_hom(\strucA, \strucA')$ is a subset of $magma\_Hom$.
+\begin{remark} $magma\_hom(\strucA, \strucA')$ is a subset of $magma\_Hom[\genT, \genU]$.
 
 \begin{zed}
-	\forall Magma\_Hom[\setT, \setU] @ \\
+	\forall \strucA: magma[\setT]; \strucA': magma[\setU] @ \\
 	\t1	magma\_hom(\strucA, \strucA') \subseteq magma\_Hom[\setT, \setU]
 \end{zed}
 
 \end{remark}
 
-\begin{example}[The Identity Map]
-
-The identity map is a homomorphism.
+Consider the identity map from the carrier of a magma to itself.
 
 \begin{schema}{Magma\_Id}[\genT]
 	Magma\_Map[\genT, \genT]
@@ -312,12 +346,23 @@ The identity map is a homomorphism.
 	f = \id A
 \end{schema}
 
+Define $magma\_id(\strucA)$ to be the magma identity map of $\strucA$.
+
 \begin{zed}
-	\forall Magma\_Id[\setT] @ \\
-	\t1	Magma\_Hom[\setT, \setT]
+	magma\_id[\genT] == \{~ Magma\_Id[\genT] @ \strucA \mapsto F ~\} 
 \end{zed}
 
-\end{example}
+
+\begin{remark}
+
+The identity map is a homomorphism.
+
+\begin{zed}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	magma\_id(\strucA) \in magma\_hom(\strucA, \strucA)
+\end{zed}
+
+\end{remark}
 
 \begin{example}[Multiplication by a Fixed Integer]
 
