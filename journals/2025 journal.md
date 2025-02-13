@@ -280,6 +280,10 @@ added checklist to formal specifications article
 
 work on completing the basic definitions in the rings article using the checklist
 
+## 2025-02-12
+
+clean up groups article
+
 # To Do
 
 * [ ] define homomorphisms for each of the four sets of ring structures: rng_hom, ring_hom, etc

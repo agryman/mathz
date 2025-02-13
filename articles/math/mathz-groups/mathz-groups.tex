@@ -34,8 +34,8 @@ It has been type checked by \fuzz\cite{spivey-fm}.
 
 \section{Group-Like Algebraic Structures}
 
-In general, an \textit{algebraic structure} consists of a set of elements 
-equipped with one or more operations defined on them.
+In general, an \textit{algebraic structure} consists of one or mores sets of elements 
+equipped with one or more objects, such as operations, defined on them.
 A group is an algebraic structure equipped with one binary operation, typically referred to
 as its \textit{product} or \textit{group law}.
 
@@ -43,9 +43,92 @@ Magmas, semigroups, monoids, and abelian groups are
 algebraic structures that are like groups but differ from them 
 in terms of the properties imposed on their product operation.
 
+\subsection{Genericity}
+
+In general, the definition of a structure does not depend on the concrete types
+of its underlying sets of elements.
+Instead, the definition of a structure is usually given in terms of one or more \textit{generic parameters}
+that represent arbitrary given sets.
+We use symbols like $\genT, \genU,$  and $\genV$ as generic parameters in definitions. 
+We use symbols like $\setT, \setU,$ and $\setV$ as arbitrary sets in propositions.
+
+\subsection{Partial Binary Operations}
+
+A \textit{partial binary operation} on a set of elements $\genT$ 
+is a partial function from pairs of elements to elements.
+
+Define $pbinop[\genT]$ to be the set of all partial binary operations on $\genT$.
+
+\begin{zed}
+	pbinop[\genT] == \genT \cross \genT \pfun \genT
+\end{zed}
+
+\begin{example}[Integer Division and Modulus]
+
+Integer division and modulus are partial binary operations on $\num$.
+
+\begin{zed}
+	(\_ \div \_) \in pbinop[\num]
+\also
+	(\_ \mod \_) \in pbinop[\num]
+\end{zed}
+
+\end{example}
+
+\subsection{Total Binary Operations}
+
+A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
+every pair of elements.
+
+Define $binop[\genT]$ to be the set of all binary operations on $\genT$.
+
+\begin{zed}
+	binop[\genT] == \genT \cross \genT \fun \genT
+\end{zed}
+
+\begin{remark} Every binary operation is a partial binary operation.
+
+\begin{zed}
+	binop[\setT] \subseteq pbinop[\setT]
+\end{zed}
+
+\end{remark}
+
+\begin{example}[Integer Addition, Subtraction, and Multiplication]
+
+Integer addition, subtraction, and multiplication are binary operations on $\num$.
+
+\begin{zed}
+	(\_ + \_) \in binop[\num]
+\also
+	(\_ - \_) \in binop[\num]
+\also
+	(\_ * \_) \in binop[\num]
+\end{zed}
+
+\end{example}
+
+\begin{example}[Integer Division and Modulus]
+
+Integer division and modulus by $0$ is undefined.
+
+\begin{zed}
+	\forall n: \num @ (n, 0) \notin \dom (\_ \div \_)
+\also
+	\forall n: \num @ (n, 0) \notin \dom (\_ \mod \_)
+\end{zed}
+
+Therefore, integer division and modulus are not total binary operations on $\num$.
+
+\begin{zed}
+
+\end{zed}
+
+\end{example}
+
 \subsection{Carriers}
 
-The underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
+The main underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
 When writing informal mathematics, 
 it is normally unnecessary to distinguish between a structure and its carrier
 since the intended meaning is usually clear from context.
@@ -71,79 +154,12 @@ When introducing variables to refer to structures and their carriers,
 we'll use some typographical convention such as bold font to relate the two.
 For example, the structure $\strucA$ has carrier $A$.
 
-\subsection{Genericity}
-
-In general, the definition of a structure does not depend on the concrete type
-of its carrier.
-Instead, the definition of a structure is usually given in terms of one or more \textit{generic} parameter
-that stand for arbitrary sets.
-We symbols like $\genT, \genU,$  and $\genV$ to stand for arbitrary sets. 
-
-Let $\genT$ be a set and let $A$ be a subset of it.
-We say that a structure $\strucA$ with carrier $A$ is a \textit{structure in} $\genT$.
-If $A$ coincides with $\genT$ we say that $\strucA$ is a \textit{structure on} $\genT$
-or a \textit{structure over} $\genT$.
-Note that a structure on or over $\genT$ is also a structure in $\genT$.
-
-\section{Binary Operations}
-
-\subsection{Partial Binary Operations}
-
-A \textit{partial binary operation} on a set $\genT$ maps some subset of pairs of elements to other elements.
-
-Define $pbin\_op[\genT]$ to be the set of all partial binary operations in $\genT$.
-
-\begin{zed}
-	pbin\_op[\genT] == \genT \cross \genT \pfun \genT
-\end{zed}
-
-\begin{example}[Integer Division and Modulus]
-
-Integer division and modulus are partial binary operations on $\num$ since division or modulus by $0$ is
-undefined.
-
-\begin{zed}
-	(\_ \div \_) \in pbin\_op[\num]
-\also
-	(\_ \mod \_) \in pbin\_op[\num]
-\end{zed}
-
-\end{example}
-
-\subsection{Total Binary Operations}
-
-A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
-every pair of elements.
-
-Define $bin\_op[\genT]$ to be the set of all binary operations on $\genT$.
-
-\begin{zed}
-	bin\_op[\genT] == \genT \cross \genT \fun \genT
-\end{zed}
-
-\begin{remark} Every binary operation is a partial binary operation.
-
-\begin{zed}
-	bin\_op[\setT] \subseteq pbin\_op[\setT]
-\end{zed}
-
-\end{remark}
-
-\begin{example}[Integer Addition, Subtraction, and Multiplication]
-
-Integer addition, subtraction, and multiplication are binary operations on $\num$.
-
-\begin{zed}
-	(\_ + \_) \in bin\_op[\num]
-\also
-	(\_ - \_) \in bin\_op[\num]
-\also
-	(\_ * \_) \in bin\_op[\num]
-\end{zed}
-
-\end{example}
-
 \section{Magmas}
+
+Let $A$ be a subset of $\genT$.
+We say that a structure $\strucA$ with carrier $A$ is a \textit{structure in} $\genT$.
+If $A$ coincides with $\genT$ we say that $\strucA$ is a \textit{structure on} $\genT$.
+Note that a structure on $\genT$ is also a structure in $\genT$.
 
 \subsection{Magmas}
 
@@ -154,10 +170,10 @@ Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \opG \_: pbin\_op[\genT] \\
-	\strucA: \power \genT \cross pbin\_op[\genT]
+	\_ \opG \_: pbinop[\genT] \\
+	\strucA: \power \genT \cross pbinop[\genT]
 \where
-	(\_ \opG \_) \in bin\_op[A]
+	(\_ \opG \_) \in binop[A]
 \also
 	\strucA = (A, (\_ \opG \_))
 \end{schema}
@@ -433,8 +449,8 @@ itself be a magma depending on whether or not $S$ is closed under the product.
 \begin{schema}{Magma\_Subset}[\genT]
 	Magma[\genT] \\
 	S: \power \genT \\
-	\_ \opS \_: pbin\_op[\genT] \\
-	\strucS: \power \genT \cross pbin\_op[\genT]
+	\_ \opS \_: pbinop[\genT] \\
+	\strucS: \power \genT \cross pbinop[\genT]
 \where
 	S \subseteq A
 \also
