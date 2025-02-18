@@ -165,13 +165,13 @@ For example, consider the set of topological spaces.
 In this case we can define the morphisms to be either the set of continuous maps or the set of homotopy classes
 of continuous maps.
 
-Here is a recommended checklist of items to define with a suggested order and naming scheme.
+Here is a recommended checklist of items to define together with a suggested order and naming scheme.
 This is illustrated using the example of groups.
 
 \begin{enumerate}
 	\item Define a schema for an object, e.g. $Group[\genT]$. 
-	Note that we give somewhat arbitrary names to schema components in order to
-	simplify reference to them and make constraints on them easy to express and understand.
+	Note that we give descriptive, but somewhat arbitrary, names to schema components 
+	so that we can easily reference them in the predicate portion of the schema.
 	In general, the defined object may depend on one or more generic parameters. 
 	For example, a structure may have one or more sets of elements so we need to provide
 	generic parameters from which to draw these sets.
@@ -181,18 +181,18 @@ This is illustrated using the example of groups.
 	The elements of this set are usually tuples, e.g. $(G, (\_ \cdot \_))$. 
 	By mapping the schema to a tuple we have erased the component names and 
 	instead now must refer to components by their position in the tuple.
-	\item Define a function that maps sets to objects on that set. For example, $groups\_on(G)$
+	\item Define a function that maps sets to objects on that set. For example, $group\_on(G)$
 	is the set of all groups on $G$.
 	\item Define a schema for a morphism, e.g. $Group\_Hom$.
 	Morphisms must include their source and target objects.
 	\item Define the set of all morphisms, e.g. $group\_Hom$.
 	\item Define the function that maps a pair of objects to the set of morphisms between them,
 	e.g. $group\_hom$
+	\item Define a schema for an identity morphism, e.g. $Group\_Id$.
+	\item Define the function that maps an object to its identity morphism, e.g. $group\_id$.
 	\item Define a schema for the composition of two morphisms, e.g. $Group\_Composition$.
 	\item Remark that the composition of morphisms is a morphism.
 	\item Remark that composition is associative.
-	\item Define a schema for an identity morphism, e.g. $Group\_Id$.
-	\item Define the function that maps an object to its identity morphism, e.g. $group\_id$.
 	\item Remark that the identity morphism is a left and right identity element with respect to
 	composition.
 	\item Define a schema for what it means to be a subobject, e.g. $Group\_Subgroup$. 

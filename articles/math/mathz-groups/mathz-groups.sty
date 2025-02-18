@@ -3,35 +3,40 @@
 
 \RequirePackage{amsmath}
 
-% variables used for mathematical structures - maybe complete this list and move to the core
-\newcommand{\strucA}{\mathbf{A}}
-\newcommand{\strucB}{\mathbf{B}}
-\newcommand{\strucC}{\mathbf{C}}
-\newcommand{\strucS}{\mathbf{S}}
-
-
 % group identity elements
 \newcommand{\oneG}{1}
 \newcommand{\zeroG}{0}
 
 % infix generic group-like product operator
-%%inop \opG \opS 4
 \newcommand{\opG}{\mathbin{\cdot}}
 \newcommand{\opS}{\mathbin{\centerdot}}
+%%inop \opG \opS 4
 
 % infix multiplicative group product operators
-%%inop \mulG \timesG \circG 4
 \newcommand{\mulG}{\mathbin{*}}
 \newcommand{\timesG}{\mathbin{\times}}
 \newcommand{\circG}{\mathbin{\circ}}
+%%inop \mulG \timesG \circG 4
+
+% infix composition operations for group-like structures
+\newcommand{\compMagma}{\mathbin{\circ}}
+\newcommand{\compSemigroup}{\mathbin{\circ}}
+\newcommand{\compMonoid}{\mathbin{\circ}}
+\newcommand{\compGroup}{\mathbin{\circ}}
+\newcommand{\compAbgroup}{\mathbin{\circ}}
+%%inop \compMagma \compSemigroup \compMonoid \compGroup \compAbgroup 4
+
+% infix intersection operation from subsets of group-like structures
+\newcommand{\capMagma}{\mathbin{\cap}}
+%%inop \capMagma 4
 
 % infix additive group product operator
-%%inop \addG 3
 \newcommand{\addG}{\mathbin{+}}
+%%inop \addG 3
 
 % prefix additive group inverse operator
 \DeclareMathOperator{\negG}{-}
 
 % infix additive group subtraction operator
-%%inop \subG 3
 \newcommand{\subG}{\mathbin{-}}
+%%inop \subG 3

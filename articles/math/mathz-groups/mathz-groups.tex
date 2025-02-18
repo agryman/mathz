@@ -57,20 +57,25 @@ We use symbols like $\setT, \setU,$ and $\setV$ as arbitrary sets in proposition
 A \textit{partial binary operation} on a set of elements $\genT$ 
 is a partial function from pairs of elements to elements.
 
-Define $pbinop[\genT]$ to be the set of all partial binary operations on $\genT$.
+Define $PBINOP[\genT]$ to be the set of all partial binary operations on $\genT$.
 
 \begin{zed}
-	pbinop[\genT] == \genT \cross \genT \pfun \genT
+	PBINOP[\genT] == \genT \cross \genT \pfun \genT
 \end{zed}
+
+%%type PBINOP
+
+Here I am using the convention of defining names consisting of all uppercase letters for sets that are 
+declared as \textit{type abbreviations} to the \fuzz\ type checker.
 
 \begin{example}[Integer Division and Modulus]
 
 Integer division and modulus are partial binary operations on $\num$.
 
 \begin{zed}
-	(\_ \div \_) \in pbinop[\num]
+	(\_ \div \_) \in PBINOP[\num]
 \also
-	(\_ \mod \_) \in pbinop[\num]
+	(\_ \mod \_) \in PBINOP[\num]
 \end{zed}
 
 \end{example}
@@ -89,7 +94,7 @@ Define $binop[\genT]$ to be the set of all binary operations on $\genT$.
 \begin{remark} Every binary operation is a partial binary operation.
 
 \begin{zed}
-	binop[\setT] \subseteq pbinop[\setT]
+	binop[\setT] \subseteq PBINOP[\setT]
 \end{zed}
 
 \end{remark}
@@ -121,7 +126,9 @@ Integer division and modulus by $0$ is undefined.
 Therefore, integer division and modulus are not total binary operations on $\num$.
 
 \begin{zed}
-
+	(\_ \div \_) \notin binop[\num]
+\also
+	(\_ \mod \_) \notin binop[\num]
 \end{zed}
 
 \end{example}
@@ -154,12 +161,12 @@ When introducing variables to refer to structures and their carriers,
 we'll use some typographical convention such as bold font to relate the two.
 For example, the structure $\strucA$ has carrier $A$.
 
-\section{Magmas}
-
 Let $A$ be a subset of $\genT$.
 We say that a structure $\strucA$ with carrier $A$ is a \textit{structure in} $\genT$.
 If $A$ coincides with $\genT$ we say that $\strucA$ is a \textit{structure on} $\genT$.
 Note that a structure on $\genT$ is also a structure in $\genT$.
+
+\section{Magmas}
 
 \subsection{Magmas}
 
@@ -168,10 +175,18 @@ generically referred to as a \textit{product}.
 Let $x \opG y$ denote the product of $x$ and $y$.
 Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
+Define $MAGMA[\genT]$ to be the type abbreviation for a magma structure.
+
+\begin{zed}
+	MAGMA[\genT] == \power \genT \cross PBINOP[\genT]
+\end{zed}
+
+%%type MAGMA
+
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
-	\_ \opG \_: pbinop[\genT] \\
-	\strucA: \power \genT \cross pbinop[\genT]
+	\_ \opG \_: PBINOP[\genT] \\
+	\strucA: MAGMA[\genT]
 \where
 	(\_ \opG \_) \in binop[A]
 \also
@@ -188,6 +203,15 @@ Define $magma[\genT]$ to be the set of all magmas in $\genT$.
 \begin{zed}
 	magma[\genT] == \{~ Magma[\genT] @ \strucA ~\}
 \end{zed}
+
+\begin{remark}
+Every magma in $\genT$ has type $MAGMA[\genT]$.
+
+\begin{zed}
+	magma[\setT] \subseteq MAGMA[\setT]
+\end{zed}
+
+\end{remark}
 
 Define $magma\_on(A)$ to be the set of all magmas on $A$.
 
@@ -257,29 +281,33 @@ Integer multiplication is a magma on $\num$.
 
 \end{example}
 
-\subsection{Magma Homomorphisms}
+\subsection{Maps and Homomorphisms}
 
-Let $A$ and $A'$ be a magmas and let $f$ be a map from $A$ to $A'$.
+A \textit{magma map} from $\strucA$ to $\strucA'$ is a map of their carriers.
 We refer to $A$ as the \textit{domain} of the map and $A'$ as its \textit{codomain}.
 Alternatively, we refer to $A$ as the \textit{source} of the map and $A'$ its \textit{target}.
 
 Just as magmas are structures, so also are magma maps.
-A \textit{magma map} is a pair of magmas $(\strucA, \strucA')$
-and a map $f$ between their carriers.
-
 Recall that we may informally use the same name, say $A$, to refer to both a magma and its carrier.
-Similarly, we may informally use the same name, say $f$, to refer to both a magma map structure and its
-underlying map of the carriers.
-When we need to distinguish between the map structure and its underlying map,
+Similarly, we may informally use the same name, say $f$, to refer to both a magma map
+structure and its underlying map of the carriers.
+When we need to distinguish between the structure and its underlying map,
 we'll use some typographic convention to relate the two.
 For example, we may use $F$ for the structure and $f$ for its underlying map.
 That being said, the formal text will always use distinct names in any given context.
+
+Define $MAGMA\_MAP[\genT, \genU]$ to be the type abbreviation for the set of
+all maps from magmas in $\genT$ to magmas in $\genU$.
+
+\begin{zed}
+	MAGMA\_MAP[\genT, \genU] == (MAGMA[\genT] \cross MAGMA[\genU]) \cross (\genT \pfun \genU)
+\end{zed}
 
 \begin{schema}{Magma\_Map}[\genT, \genU]
 	Magma[\genT] \\
 	Magma'[\genU] \\
 	f: \genT \pfun \genU \\
-	F: (magma[\genT] \cross magma[\genU]) \cross (\genT \pfun \genU)
+	F: MAGMA\_MAP[\genT, \genU]
 \where
 	f \in A \fun A'
 \also
@@ -288,34 +316,35 @@ That being said, the formal text will always use distinct names in any given con
 
 \begin{itemize}
 	\item $f$ maps $A$ to $A'$
-	\item A magma map structure consists of a pair of magmas and a map between their carriers.
+	\item A magma map structure $F$ consists of a pair of magmas and a map $f$ between their carriers.
 \end{itemize}
 
 Define $magma\_Map[\genT, \genU]$ to be the set of all magma maps
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
-	magma\_Map[\genT, \genU] == \{~ Magma\_Map[\genT, \genU] @ F ~\}
+	magma\_Map[\genT, \genU] == \{~Magma\_Map[\genT, \genU] @ F ~\}
 \end{zed}
 
-Define $magma\_map(\strucA, \strucA')$ to be the subset of all magma maps from $\strucA$ to $\strucA'$.
+Define $magma\_map(\strucA, \strucA')$ to be the subset of magma maps 
+from $\strucA$ to $\strucA'$.
 
 \begin{zed}
 	magma\_map[\genT, \genU] == \\
 	\t1	(\lambda \strucA: magma[\genT]; \strucA': magma[\genU] @ \\
-	\t2		\{~ (\strucA, \strucA') ~\} \dres magma\_Map[\genT, \genU])
+	\t2		\{(\strucA, \strucA') \} \dres magma\_Map[\genT, \genU])
 \end{zed}
 
-\begin{remark}
-$magma\_map(\strucA, \strucA')$ is a subset of $magma\_Map[\genT, \genU]$.
+\begin{remark} $magma\_map(\strucA, \strucA')$ is a subset of $magma\_Map[\genT, \genU]$.
 
 \begin{zed}
-	\forall Magma[\setT]; Magma'[\setU] @ \\
+	\forall \strucA: magma[\setT]; \strucA': magma[\setU] @ \\
 	\t1	magma\_map(\strucA, \strucA') \subseteq magma\_Map[\setT, \setU]
 \end{zed}
+
 \end{remark}
 
-A magma map $f$ is a \textit{magma homomorphism} if it preserves products.
+A \textit{magma homomorphism} is magma map that preserves products.
 
 \begin{schema}{Magma\_Hom}[\genT, \genU]
 	Magma\_Map[\genT, \genU]
@@ -352,37 +381,9 @@ from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
-Consider the identity map from the carrier of a magma to itself.
-
-\begin{schema}{Magma\_Id}[\genT]
-	Magma\_Map[\genT, \genT]
-\where
-	\strucA' = \strucA
-\also
-	f = \id A
-\end{schema}
-
-Define $magma\_id(\strucA)$ to be the magma identity map of $\strucA$.
-
-\begin{zed}
-	magma\_id[\genT] == \{~ Magma\_Id[\genT] @ \strucA \mapsto F ~\} 
-\end{zed}
-
-
-\begin{remark}
-
-The identity map is a homomorphism.
-
-\begin{zed}
-	\forall \strucA: magma[\setT] @ \\
-	\t1	magma\_id(\strucA) \in magma\_hom(\strucA, \strucA)
-\end{zed}
-
-\end{remark}
-
 \begin{example}[Multiplication by a Fixed Integer]
 
-Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves addition.
+Consider multiplication by a fixed integer $c$.
 
 \begin{schema}{MulConst}
 	Magma\_Map[\num, \num] \\
@@ -393,11 +394,18 @@ Multiplication by a fixed integer $c$ maps $\num$ to $\num$ and preserves additi
 	f = (\lambda x: \num @ c * x)
 \end{schema}
 
-Therefore this map is a homomorphism.
+Define $mul\_const(c)$ to be the corresponding magma map.
 
 \begin{zed}
-	\forall MulConst @ \\
-	\t1	Magma\_Hom[\num, \num]
+	mul\_const == \{~ MulConst @ c \mapsto F ~\}
+\end{zed}
+
+The magma map $mul\_const(c)$ sends $\num$ to $\num$ and preserves addition.
+Therefore this map is a magma homomorphism.
+
+\begin{zed}
+	\forall c: \num @ \\
+	\t1	mul\_const(c) \in magma\_hom(int\_add, int\_add)
 \end{zed}
 
 \begin{proof}
@@ -411,7 +419,7 @@ Therefore this map is a homomorphism.
 
 \begin{example}[Exponentiation by a Fixed Natural Number]
 
-Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves multiplication.
+Consider exponentiation by a fixed natural number $n$.
 
 \begin{schema}{ExpConst}
 	Magma\_Map[\num, \num] \\
@@ -422,11 +430,18 @@ Exponentiation by a fixed natural number $n$ maps $\num$ to $\num$ and preserves
 	f = (\lambda x: \num @ x \expN n)
 \end{schema}
 
-Therefore this map is a homomorphism.
+Define $exp\_const(n)$ to be the corresponding magma map.
+
+\begin{zed}
+	exp\_const == \{~ ExpConst @ n \mapsto F ~\}
+\end{zed}
+
+The magma map $exp\_const(n)$ sends $\num$ to $\num$ and preserves multiplication.
+Therefore this map is a magma homomorphism.
 
 \begin{zed}
 	\forall ExpConst @ \\
-	\t1	Magma\_Hom[\num, \num]
+	\t1	exp\_const(n) \in magma\_hom(int\_mul, int\_mul)
 \end{zed}
 
 \begin{proof}
@@ -438,71 +453,46 @@ Therefore this map is a homomorphism.
 
 \end{example}
 
-\subsection{Subsets}
+\subsection{Identity Maps}
 
-Given a subset $S$ of the elements of a magma $A$ we can
-restrict the product $x \opG y$ to pairs in $S$.
-Let $x \opS y$ denote the restriction of the product to $S$.
-We get a new structure $\strucS = (S, (\_ \opS \_))$ which may or may not
-itself be a magma depending on whether or not $S$ is closed under the product.
+Consider the identity map from the carrier of a magma to itself.
 
-\begin{schema}{Magma\_Subset}[\genT]
-	Magma[\genT] \\
-	S: \power \genT \\
-	\_ \opS \_: pbinop[\genT] \\
-	\strucS: \power \genT \cross pbinop[\genT]
+\begin{schema}{Magma\_Id}[\genT]
+	Magma\_Map[\genT, \genT]
 \where
-	S \subseteq A
+	\strucA = \strucA'
 \also
-	(\_ \opS \_) = (S \cross S) \dres (\_ \opG \_)
-\also
-	\strucS = (S, (\_ \opS \_))
+	f = \id A
 \end{schema}
 
-\subsection{Submagmas}
+\begin{itemize}
+	\item the identity magma map sends a magma to itself
+	\item the underlying map of carriers is the identity map
+\end{itemize}
 
-A subset $S$ of a magma is a \textit{submagma} if the product of any pair of elements of $S$ 
-is an element of $S$.
 
-\begin{schema}{Submagma}[\genT]
-	Magma\_Subset[\genT]
-\where
-	\forall x, y: S @ x \opS y \in S
-\end{schema}
+Define $magma\_id(\strucA)$ to be the magma identity map of $\strucA$.
 
-\subsection{Images}
-
-The \textit{image} of a magma homomorphism consists of the image of the map
-and the product restricted to those elements.
-
-\begin{schema}{Magma\_Image}[\genT, \genU]
-	Magma\_Hom[\genT, \genU] \\
-	Magma\_Subset'[\genU]
-\where
-	S' = f \limg A \rimg
-\end{schema}
+\begin{zed}
+	magma\_id[\genT] == \{~ Magma\_Id[\genT] @ \strucA \mapsto F  ~\} 
+\end{zed}
 
 \begin{remark}
-The image of a magma homomorphism is a submagma of its target.
-
 \begin{zed}
-	\forall Magma\_Image[\setT, \setU] @ Submagma'[\setU]
+magma\_id[\setT] \in MAGMA[\setT] \pfun MAGMA\_MAP[\setT, \setT]
 \end{zed}
-
-\begin{proof}
-It suffices to show that the product of any two elements $x', y'$ in the image $S'$ is 
-also in $S'$. By definition of the image, there exists elements $x$ and $y$ in $A$
-such that $x' = f(x)$ and $y' = f(y)$.
-Therefore $x' \opS' y' = f(x) \opS' f(y) = f(x \opG y)$ which is clearly in the image of $f$. 
-\end{proof}
-
 \end{remark}
 
-Let $magma\_im$ be the function that maps a magma homomorphism to its image.
+\begin{remark}
+
+The identity map is a homomorphism.
 
 \begin{zed}
-	magma\_im[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	magma\_id(\strucA) \in magma\_hom(\strucA, \strucA)
 \end{zed}
+
+\end{remark}
 
 \subsection{Composition}
 
@@ -530,10 +520,241 @@ The composition of two magma homomorphisms is a magma homomorphism.
 
 \end{remark}
 
-Let $G = F' \circG F$ denote the composition of magma homomorphisms.
+Let $G = F' \compMagma F$ denote the composition of magma homomorphisms.
 
 \begin{zed}
-	(\_ \circG \_)[\genT, \genU, \genV] == \{~ Magma\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
+	(\_ \compMagma \_)[\genT, \genU, \genV] == \{~ Magma\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
+\end{zed}
+
+\begin{remark}
+The identity map is a left and right identity element with respect to composition.
+
+\begin{zed}
+	\forall Magma\_Hom[\setT, \setU] @ \\
+	\t1 magma\_id(\strucA') \compMagma F = F = F \compMagma magma\_id(\strucA)
+\end{zed}
+
+\end{remark}
+
+\subsection{Subsets and Submagmas}
+
+\subsubsection{Subsets}
+
+Consider a subset $S$ of the elements $A$ of magma $\strucA$.
+Let $\strucS$ be the structure that consists of the pair $(\strucA, S)$.
+
+Define $MAGMA\_SUBSET[\genT]$ to be the type abbreviation for magma subset 
+structures in $\genT$.
+
+\begin{zed}
+	MAGMA\_SUBSET[\genT] = MAGMA[\genT] \cross \power \genT
+\end{zed}
+
+\begin{schema}{Magma\_Subset}[\genT]
+	Magma[\genT] \\
+	S: \power \genT \\
+	\strucS: MAGMA\_SUBSET[\genT]
+\where
+	S \subseteq A
+\also
+	\strucS = (\strucA, S)
+\end{schema}
+
+Define $magma\_Subset[\genT]$ to be the set of all subset structures in $\genT$.
+
+\begin{zed}
+	magma\_Subset[\genT] == \{~ Magma\_Subset[\genT] @ \strucS ~\}
+\end{zed}
+
+Define $magma\_subset(\strucA)$ to be the set of all subset structures of $\strucA$.
+
+\begin{zed}
+	magma\_subset[\genT] == (\lambda \strucA: magma[\genT] @ \{~ \strucA ~\} \dres magma\_Subset[\genT])
+\end{zed}
+
+\begin{example}
+The natural numbers are a subset of the integers.
+
+\begin{zed}
+	\nat \subset \num
+\also
+	(int\_add, \nat) \in magma\_subset(int\_add)
+\also
+	(int\_mul, \nat) \in magma\_subset(int\_mul)
+\end{zed}
+
+\end{example}
+
+\subsubsection{Intersection}
+
+Given two subsets $S_1, S_2$ of magma $\strucA$, their intersection $S$ is a subset
+of $A$. The intersection of two subset structures is therefore another subset structure.
+
+\begin{schema}{Magma\_Intersection}[\genT]
+	Magma\_Subset_1[\genT] \\
+	Magma\_Subset_2[\genT] \\
+	Magma\_Subset[\genT]
+\where
+	\strucA_1 = \strucA_2 = \strucA
+\also
+	S = S_1 \cap S_2
+\end{schema}
+
+Intersection is therefore a partial binary operation on the set of subsets of magmas.
+Let $\strucS = \strucS_1 \capMagma \strucS_2$ denote the intersection of magma subsets.
+
+\begin{zed}
+	(\_ \capMagma \_)[\genT] == \{~ Magma\_Intersection[\genT] @ (\strucS_1, \strucS_2) \mapsto \strucS ~\}
+\end{zed}
+
+\begin{remark}
+The intersection of subsets of $\strucA$ is a subset of $\strucA$.
+
+\begin{zed}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	\forall \strucS_1, \strucS_2: magma\_subset(\strucA) @ \\
+	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_subset(\strucA)
+\end{zed}
+
+\end{remark}
+
+\subsubsection{Submagma}
+
+A \textit{submagma} is a subset that is closed under products.
+
+\begin{schema}{Magma\_Submagma}[\genT]
+	Magma\_Subset[\genT]
+\where
+	\forall x, y: S @ x \opG y \in S
+\end{schema}
+
+Define $magma\_Submagma[\genT]$ to be the set of all submagma structures in $\genT$.
+
+\begin{zed}
+	magma\_Submagma[\genT] == \{~ Magma\_Submagma[\genT] @ \strucS ~\}
+\end{zed}
+
+\begin{remark}
+Every submagma structure is a subset structure.
+
+\begin{zed}
+	magma\_Submagma[\setT] \subseteq magma\_Subset[\setT]
+\end{zed}
+
+\end{remark}
+
+Define $magma\_submagma(\strucA)$ to be the set of all submagmas of $\strucA$.
+
+\begin{zed}
+	magma\_submagma[\genT] == (\lambda \strucA: magma[\genT] @ \{~ \strucA ~\} \dres magma\_Submagma[\genT])
+\end{zed}
+
+\begin{example}
+Natural numbers are closed under the operations of addition and multiplication.
+
+\begin{zed}
+	(int\_add, \nat) \in magma\_submagma(int\_add)
+\also
+	(int\_mul, \nat) \in magma\_submagma(int\_mul)
+\end{zed}
+
+\end{example}
+
+\begin{remark}
+The intersection of submagmas of $\strucA$ is a submagma of $\strucA$.
+
+\begin{zed}
+ 	\forall Magma\_Intersection[\setT] @ \strucS \in magma\_submagma(\strucA)
+\end{zed}
+
+\end{remark}
+
+\subsubsection{Restriction}
+
+A submagma $S$ of $\strucA$ defines a magma $\strucA'$ by restricting the
+product to $S$.
+
+\begin{schema}{Magma\_Restriction}[\genT]
+	Magma\_Submagma[\genT] \\
+	Magma'[\genT]
+\where
+	A' = S
+\also
+	\forall x, y: A' @ x \opG' y = x \opG y
+\end{schema}
+
+Define $magma\_Restriction[\genT]$ to be the set of all restrictions of submagmas in $\genT$.
+
+\begin{zed}
+	magma\_Restriction[\genT] == \{~ Magma\_Restriction[\genT] @ \strucS \mapsto \strucA' ~\}
+\end{zed}
+
+Define $magma\_restriction(\strucA)$ to be the set of all restrictions of submagmas of $\strucA$
+
+\begin{zed}
+	magma\_restriction[\genT] == (\lambda \strucA: magma[\genT] @ \\
+	\t1	magma\_submagma(\strucA) \dres magma\_Restriction[\genT] )
+\end{zed}
+
+\begin{remark}
+Restriction is a function from submagmas of $\strucA$ to magmas.
+
+\begin{zed}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	magma\_restriction(\strucA) \in magma\_submagma(\strucA) \fun magma[\setT]
+\end{zed}
+
+\end{remark}
+
+\subsection{Images}
+
+The \textit{image} of a magma map is the subset of the target magma that consists of
+the image under the map of the elements in the source magma.
+
+\begin{schema}{Magma\_Image}[\genT, \genU]
+	Magma\_Map[\genT, \genU] \\
+	Magma\_Subset'[\genU]
+\where
+	S' = f \limg A \rimg
+\end{schema}
+
+\begin{remark}
+The image of a magma homomorphism is a submagma of its target.
+
+\begin{zed}
+	\forall Magma\_Image[\setT, \setU] | \\
+	\t1	Magma\_Hom[\setT, \setU] @ \\
+	\t2		Magma\_Submagma'[\setU]
+\end{zed}
+
+\begin{proof}
+It suffices to show that the product of any two elements $x', y'$ in the image $S'$ is 
+also in $S'$. By definition of the image, there exists elements $x$ and $y$ in $A$
+such that $x' = f(x)$ and $y' = f(y)$.
+Therefore $x' \opS' y' = f(x) \opS' f(y) = f(x \opG y)$ which is clearly in the image of $f$. 
+\end{proof}
+
+\end{remark}
+
+Define $magma\_image$ to be the function that sends a magma map to its image.
+
+\begin{zed}
+	magma\_image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
+\end{zed}
+
+Consider the restriction of the image of a magma homomorphism.
+
+\begin{schema}{Magma\_Im}[\genT, \genU]
+	Magma\_Image[\genT, \genU] \\
+	Magma\_Hom[\genT, \genU] \\
+	Magma\_Restriction'[\genU]
+\end{schema}
+
+Define $magma\_im$ to be the function that sends a magma homomorphism to the
+restriction of its image.
+
+\begin{zed}
+	magma\_im[\genT, \genU] == \{~ Magma\_Im[\genT, \genU] @ F \mapsto \strucA'' ~\}
 \end{zed}
 
 \section{Semigroups}
