@@ -6,6 +6,7 @@
 \usepackage{mathz-groups}
 
 \usepackage{mathz-preamble}
+\setcounter{tocdepth}{3}
 
 \addbibresource{mathz-references.bib}
 
@@ -32,7 +33,7 @@ This article formalizes groups and related group-like algebraic structures using
 \ZN\cite{spivey-zrm}.
 It has been type checked by \fuzz\cite{spivey-fm}.
 
-\section{Group-Like Algebraic Structures}
+\section{Group-like Algebraic Structures}
 
 In general, an \textit{algebraic structure} consists of one or mores sets of elements 
 equipped with one or more objects, such as operations, defined on them.
@@ -283,6 +284,8 @@ Integer multiplication is a magma on $\num$.
 
 \subsection{Maps and Homomorphisms}
 
+\subsubsection{Maps}
+
 A \textit{magma map} from $\strucA$ to $\strucA'$ is a map of their carriers.
 We refer to $A$ as the \textit{domain} of the map and $A'$ as its \textit{codomain}.
 Alternatively, we refer to $A$ as the \textit{source} of the map and $A'$ its \textit{target}.
@@ -344,6 +347,8 @@ from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
+\subsubsection{Homomorphisms}
+
 A \textit{magma homomorphism} is magma map that preserves products.
 
 \begin{schema}{Magma\_Hom}[\genT, \genU]
@@ -381,9 +386,9 @@ from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
-\begin{example}[Multiplication by a Fixed Integer]
+\begin{example}[Multiplication by a Constant]
 
-Consider multiplication by a fixed integer $c$.
+Consider multiplication by a given integer $c$.
 
 \begin{schema}{MulConst}
 	Magma\_Map[\num, \num] \\
@@ -417,9 +422,9 @@ Therefore this map is a magma homomorphism.
 
 \end{example}
 
-\begin{example}[Exponentiation by a Fixed Natural Number]
+\begin{example}[Exponentiation by a Constant]
 
-Consider exponentiation by a fixed natural number $n$.
+Consider exponentiation by a given natural number $n$.
 
 \begin{schema}{ExpConst}
 	Magma\_Map[\num, \num] \\
@@ -496,12 +501,12 @@ The identity map is a homomorphism.
 
 \subsection{Composition}
 
-Let $f$ be a homomorphism from $A$ to $A'$ and let $f'$ be a homomorphism from $A'$ to $A''$.
-The function composition $g = f' \circ f$ is a map from $A$ to $A''$.
+Let $f$ be a magma map from $A$ to $A'$ and let $f'$ be a magma map from $A'$ to $A''$.
+The function composition $g = f' \circ f$ is a magma map from $A$ to $A''$.
 
 \begin{schema}{Magma\_Composition}[\genT, \genU, \genV]
-	Magma\_Hom[\genT, \genU] \\
-	Magma\_Hom'[\genU, \genV] \\
+	Magma\_Map[\genT, \genU] \\
+	Magma\_Map'[\genU, \genV] \\
 	g: \genT \pfun \genV  \\
 	G: magma\_Map[\genT, \genV]
 \where
@@ -511,16 +516,16 @@ The function composition $g = f' \circ f$ is a map from $A$ to $A''$.
 \end{schema}
 
 \begin{remark}
-The composition of two magma homomorphisms is a magma homomorphism.
+The composition of two magma maps is a magma map.
 
 \begin{zed}
 	\forall Magma\_Composition[\setT, \setU, \setV] @ \\
-	\t1	G \in magma\_hom(\strucA, \strucA'')
+	\t1	G \in magma\_map(\strucA, \strucA'')
 \end{zed}
 
 \end{remark}
 
-Let $G = F' \compMagma F$ denote the composition of magma homomorphisms.
+Let $G = F' \compMagma F$ denote the composition of magma maps.
 
 \begin{zed}
 	(\_ \compMagma \_)[\genT, \genU, \genV] == \{~ Magma\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
@@ -530,8 +535,22 @@ Let $G = F' \compMagma F$ denote the composition of magma homomorphisms.
 The identity map is a left and right identity element with respect to composition.
 
 \begin{zed}
-	\forall Magma\_Hom[\setT, \setU] @ \\
+	\forall Magma\_Map[\setT, \setU] @ \\
 	\t1 magma\_id(\strucA') \compMagma F = F = F \compMagma magma\_id(\strucA)
+\end{zed}
+
+\end{remark}
+
+Although we have defined the composition of magma maps we are, of course, more interested
+the composition of magma homomorphism.
+
+\begin{remark}
+The composition of magma homomorphisms is a magma homomorphism.
+
+\begin{zed}
+	\forall Magma\_Composition[\setT, \setU, \setV] | \\
+	\t1	F \in magma\_hom(\strucA, \strucA') \land F' \in magma\_hom(\strucA', \strucA'') @ \\
+	\t2		G \in magma\_hom(\strucA, \strucA'')
 \end{zed}
 
 \end{remark}
@@ -547,7 +566,7 @@ Define $MAGMA\_SUBSET[\genT]$ to be the type abbreviation for magma subset
 structures in $\genT$.
 
 \begin{zed}
-	MAGMA\_SUBSET[\genT] = MAGMA[\genT] \cross \power \genT
+	MAGMA\_SUBSET[\genT] == MAGMA[\genT] \cross \power \genT
 \end{zed}
 
 \begin{schema}{Magma\_Subset}[\genT]
@@ -560,13 +579,13 @@ structures in $\genT$.
 	\strucS = (\strucA, S)
 \end{schema}
 
-Define $magma\_Subset[\genT]$ to be the set of all subset structures in $\genT$.
+Define $magma\_Subset[\genT]$ to be the set of all magma subset structures in $\genT$.
 
 \begin{zed}
 	magma\_Subset[\genT] == \{~ Magma\_Subset[\genT] @ \strucS ~\}
 \end{zed}
 
-Define $magma\_subset(\strucA)$ to be the set of all subset structures of $\strucA$.
+Define $magma\_subset(\strucA)$ to be the set of all magma subset structures of $\strucA$.
 
 \begin{zed}
 	magma\_subset[\genT] == (\lambda \strucA: magma[\genT] @ \{~ \strucA ~\} \dres magma\_Subset[\genT])
@@ -574,18 +593,68 @@ Define $magma\_subset(\strucA)$ to be the set of all subset structures of $\stru
 
 \begin{example}
 The natural numbers are a subset of the integers.
+They are therefore magma subsets of the integers under addition, subtraction, and multiplication
 
 \begin{zed}
 	\nat \subset \num
 \also
 	(int\_add, \nat) \in magma\_subset(int\_add)
 \also
+	(int\_sub, \nat) \in magma\_subset(int\_sub)
+\also
 	(int\_mul, \nat) \in magma\_subset(int\_mul)
 \end{zed}
 
 \end{example}
 
-\subsubsection{Intersection}
+\subsubsection{Submagmas}
+
+A \textit{submagma} is a magma subset that is closed under products.
+
+\begin{schema}{Magma\_Submagma}[\genT]
+	Magma\_Subset[\genT]
+\where
+	\forall x, y: S @ x \opG y \in S
+\end{schema}
+
+Define $magma\_Submagma[\genT]$ to be the set of all submagma structures in $\genT$.
+
+\begin{zed}
+	magma\_Submagma[\genT] == \{~ Magma\_Submagma[\genT] @ \strucS ~\}
+\end{zed}
+
+\begin{remark}
+Every submagma structure is a subset structure.
+
+\begin{zed}
+	magma\_Submagma[\setT] \subseteq magma\_Subset[\setT]
+\end{zed}
+
+\end{remark}
+
+Define $magma\_submagma(\strucA)$ to be the set of all submagmas of $\strucA$.
+
+\begin{zed}
+	magma\_submagma[\genT] == (\lambda \strucA: magma[\genT] @ \{~ \strucA ~\} \dres magma\_Submagma[\genT])
+\end{zed}
+
+\begin{example}
+Natural numbers are closed under the operations of addition and multiplication.
+Therefore, they are submagmas of the integers under addition and multiplication.
+However, natural numbers are not closed under subtraction and so are not
+a submagma in this case.
+
+\begin{zed}
+	(int\_add, \nat) \in magma\_submagma(int\_add)
+\also
+	(int\_mul, \nat) \in magma\_submagma(int\_mul)
+\also
+	(int\_sub, \nat) \notin magma\_submagma(int\_sub)
+\end{zed}
+
+\end{example}
+
+\subsection{Intersection}
 
 Given two subsets $S_1, S_2$ of magma $\strucA$, their intersection $S$ is a subset
 of $A$. The intersection of two subset structures is therefore another subset structure.
@@ -618,58 +687,18 @@ The intersection of subsets of $\strucA$ is a subset of $\strucA$.
 
 \end{remark}
 
-\subsubsection{Submagma}
-
-A \textit{submagma} is a subset that is closed under products.
-
-\begin{schema}{Magma\_Submagma}[\genT]
-	Magma\_Subset[\genT]
-\where
-	\forall x, y: S @ x \opG y \in S
-\end{schema}
-
-Define $magma\_Submagma[\genT]$ to be the set of all submagma structures in $\genT$.
-
-\begin{zed}
-	magma\_Submagma[\genT] == \{~ Magma\_Submagma[\genT] @ \strucS ~\}
-\end{zed}
-
-\begin{remark}
-Every submagma structure is a subset structure.
-
-\begin{zed}
-	magma\_Submagma[\setT] \subseteq magma\_Subset[\setT]
-\end{zed}
-
-\end{remark}
-
-Define $magma\_submagma(\strucA)$ to be the set of all submagmas of $\strucA$.
-
-\begin{zed}
-	magma\_submagma[\genT] == (\lambda \strucA: magma[\genT] @ \{~ \strucA ~\} \dres magma\_Submagma[\genT])
-\end{zed}
-
-\begin{example}
-Natural numbers are closed under the operations of addition and multiplication.
-
-\begin{zed}
-	(int\_add, \nat) \in magma\_submagma(int\_add)
-\also
-	(int\_mul, \nat) \in magma\_submagma(int\_mul)
-\end{zed}
-
-\end{example}
-
 \begin{remark}
 The intersection of submagmas of $\strucA$ is a submagma of $\strucA$.
 
 \begin{zed}
- 	\forall Magma\_Intersection[\setT] @ \strucS \in magma\_submagma(\strucA)
+	\forall \strucA: magma[\setT] @ \\
+	\t1	\forall \strucS_1, \strucS_2: magma\_submagma(\strucA) @ \\
+	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_submagma(\strucA)
 \end{zed}
 
 \end{remark}
 
-\subsubsection{Restriction}
+\subsection{Restriction}
 
 A submagma $S$ of $\strucA$ defines a magma $\strucA'$ by restricting the
 product to $S$.
@@ -759,24 +788,17 @@ restriction of its image.
 
 \section{Semigroups}
 
-\subsection{Associativity}
+\subsection{Semigroups}
 
 A magma is said to be \textit{associative} if the result of applying its operation to any three elements
 is independent of the order in which it is applied pairwise.
+An associative magma is called a \textit{semigroup}.
 
-\begin{schema}{Associative}[\genT]
+\begin{schema}{Semigroup}[\genT]
 	Magma[\genT]
 \where
 	\forall x, y, z: A @ \\
 	\t1	x \opG y \opG z = x \opG (y \opG z)
-\end{schema}
-
-\subsection{Semigroups}
-
-An associative magma is called a \textit{semigroup}.
-
-\begin{schema}{Semigroup}[\genT]
-	Associative[\genT]
 \end{schema}
 
 Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
@@ -794,19 +816,28 @@ Let $semigroup[\genT]$ denote the set of all semigroups in $\genT$.
 \end{remark}
 
 \begin{example}[Sequence Concatenation]
-Finite sequences in $\genT$ with the operation of concatenation form a semigroup
+Let $X$ be a subset of $\genT$.
+Finite sequences in $X$ with the operation of concatenation form a semigroup
 since concatenation is associative.
 
 \begin{schema}{SequenceConcat}[\genT]
-	Magma[\seq \genT]
+	Magma[\seq \genT] \\
+	X: \power \genT
 \where
-	A = \seq \genT
+	A = \seq X
 \also
 	\forall x, y: A @ x \opG y = x \cat y
 \end{schema}
 
+Define $seq\_concat(X)$ to be the set of all magmas that consists of finite sequences in some subset
+$X$ of $\genT$ under concatenation.
+
 \begin{zed}
-	\forall SequenceConcat[\setT] @ \strucA \in semigroup[\seq \setT]
+	seq\_concat[\genT] == \{~ SequenceConcat[\genT] @ X \mapsto \strucA ~\}
+\end{zed}
+
+\begin{zed}
+	\forall X: \power \setT @ seq\_concat(X) \in semigroup[\seq X]
 \end{zed}
 
 \end{example}

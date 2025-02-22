@@ -292,29 +292,22 @@ continue cleaning up groups article
 
 continue cleaning up groups article
 
+## 2025-02-21
+
+continue cleaning up groups article
+
 magma checklist:
-* [x] Magma
-* [x] magma
-* [x] magma_on
-* [x] Magma_Map
-* [x] magma_Map
-* [x] magma_map
-* [x] Magma_Hom
-* [x] magma_Hom
-* [x] magma_hom
-* [x] Magma_Id
-* [x] magma_id
-* [x] Magma_Composition
-* [x] \compMagma
-* [ ] Magma_Subset
-* [ ] Magma\_Submagma
-* [ ] submagma
+* [x] Magma, magma, magma_on
+* [x] Magma_Map, magma_Map, magma_map
+* [x] Magma_Hom, magma_Hom, magma_hom
+* [x] Magma_Id, magma_id
+* [x] Magma_Composition, \compMagma
+* [x] Magma_Subset, magma_Subset, magma_subset
+* [x] Magma\_Submagma, magma_Submagma, magma_submagma
+* [x] Magma_Intersection, \capMagma
 * [ ] Magma\_Restriction
 * [ ] Magma_Inclusion
-* [ ] Magma_Image
-* [ ] Magma_Im
-* [ ] Magma_Intersection
-* [ ] \capMagma
+* [ ] Magma_Image, Magma_Im
 * [ ] Magma\_Containment
 * [ ] Magma_Generation
 
