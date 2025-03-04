@@ -566,12 +566,12 @@ Define $MAGMA\_SUBSET[\genT]$ to be the type abbreviation for magma subset
 structures in $\genT$.
 
 \begin{zed}
-	MAGMA\_SUBSET[\genT] == MAGMA[\genT] \cross \power \genT
+	MAGMA\_SUBSET[\genT] == MAGMA[\genT] \cross \power \genT 
 \end{zed}
 
 \begin{schema}{Magma\_Subset}[\genT]
-	Magma[\genT] \\
 	S: \power \genT \\
+	Magma[\genT] \\
 	\strucS: MAGMA\_SUBSET[\genT]
 \where
 	S \subseteq A
@@ -593,16 +593,29 @@ Define $magma\_subset(\strucA)$ to be the set of all magma subset structures of 
 
 \begin{example}
 The natural numbers are a subset of the integers.
-They are therefore magma subsets of the integers under addition, subtraction, and multiplication
 
 \begin{zed}
 	\nat \subset \num
+\end{zed}
+
+Define the corresponding subset structures for the integers under addition, subtraction, and multiplication.
+
+\begin{zed}
+	nat\_add == (int\_add, \nat)
 \also
-	(int\_add, \nat) \in magma\_subset(int\_add)
+	nat\_sub == (int\_sub, \nat)
 \also
-	(int\_sub, \nat) \in magma\_subset(int\_sub)
+	nat\_mul == (int\_mul, \nat)
+\end{zed}
+
+They are therefore magma subsets of the corresponding magmas.
+
+\begin{zed}
+	nat\_add \in magma\_subset(int\_add)
 \also
-	(int\_mul, \nat) \in magma\_subset(int\_mul)
+	nat\_sub \in magma\_subset(int\_sub)
+\also
+	nat\_mul \in magma\_subset(int\_mul)
 \end{zed}
 
 \end{example}
@@ -641,62 +654,21 @@ Define $magma\_submagma(\strucA)$ to be the set of all submagmas of $\strucA$.
 \begin{example}
 Natural numbers are closed under the operations of addition and multiplication.
 Therefore, they are submagmas of the integers under addition and multiplication.
+
+\begin{zed}
+	nat\_add \in magma\_submagma(int\_add)
+\also
+	nat\_mul \in magma\_submagma(int\_mul)
+\end{zed}
+
 However, natural numbers are not closed under subtraction and so are not
 a submagma in this case.
 
 \begin{zed}
-	(int\_add, \nat) \in magma\_submagma(int\_add)
-\also
-	(int\_mul, \nat) \in magma\_submagma(int\_mul)
-\also
-	(int\_sub, \nat) \notin magma\_submagma(int\_sub)
+	nat\_sub \notin magma\_submagma(int\_sub)
 \end{zed}
 
 \end{example}
-
-\subsection{Intersection}
-
-Given two subsets $S_1, S_2$ of magma $\strucA$, their intersection $S$ is a subset
-of $A$. The intersection of two subset structures is therefore another subset structure.
-
-\begin{schema}{Magma\_Intersection}[\genT]
-	Magma\_Subset_1[\genT] \\
-	Magma\_Subset_2[\genT] \\
-	Magma\_Subset[\genT]
-\where
-	\strucA_1 = \strucA_2 = \strucA
-\also
-	S = S_1 \cap S_2
-\end{schema}
-
-Intersection is therefore a partial binary operation on the set of subsets of magmas.
-Let $\strucS = \strucS_1 \capMagma \strucS_2$ denote the intersection of magma subsets.
-
-\begin{zed}
-	(\_ \capMagma \_)[\genT] == \{~ Magma\_Intersection[\genT] @ (\strucS_1, \strucS_2) \mapsto \strucS ~\}
-\end{zed}
-
-\begin{remark}
-The intersection of subsets of $\strucA$ is a subset of $\strucA$.
-
-\begin{zed}
-	\forall \strucA: magma[\setT] @ \\
-	\t1	\forall \strucS_1, \strucS_2: magma\_subset(\strucA) @ \\
-	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_subset(\strucA)
-\end{zed}
-
-\end{remark}
-
-\begin{remark}
-The intersection of submagmas of $\strucA$ is a submagma of $\strucA$.
-
-\begin{zed}
-	\forall \strucA: magma[\setT] @ \\
-	\t1	\forall \strucS_1, \strucS_2: magma\_submagma(\strucA) @ \\
-	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_submagma(\strucA)
-\end{zed}
-
-\end{remark}
 
 \subsection{Restriction}
 
@@ -734,6 +706,17 @@ Restriction is a function from submagmas of $\strucA$ to magmas.
 \end{zed}
 
 \end{remark}
+
+\subsection{Inclusion}
+
+There is a natural magma homomorphism from the restriction of a submagma to its
+enclosing magma.
+
+\begin{schema}{Magma\_Inclusion}[\genT]
+	Magma\_Restriction[\genT] \\
+	Magma\_Map[\genT, \genT]
+
+\end{schema}
 
 \subsection{Images}
 
@@ -785,6 +768,54 @@ restriction of its image.
 \begin{zed}
 	magma\_im[\genT, \genU] == \{~ Magma\_Im[\genT, \genU] @ F \mapsto \strucA'' ~\}
 \end{zed}
+
+\subsection{Containment}
+
+\subsection{Intersection}
+
+Given two subsets $S_1, S_2$ of magma $\strucA$, their intersection $S$ is a subset
+of $A$. The intersection of two subset structures is therefore another subset structure.
+
+\begin{schema}{Magma\_Intersection}[\genT]
+	Magma\_Subset_1[\genT] \\
+	Magma\_Subset_2[\genT] \\
+	Magma\_Subset[\genT]
+\where
+	\strucA_1 = \strucA_2 = \strucA
+\also
+	S = S_1 \cap S_2
+\end{schema}
+
+Intersection is therefore a partial binary operation on the set of subsets of magmas.
+Let $\strucS = \strucS_1 \capMagma \strucS_2$ denote the intersection of magma subsets.
+
+\begin{zed}
+	(\_ \capMagma \_)[\genT] == \{~ Magma\_Intersection[\genT] @ (\strucS_1, \strucS_2) \mapsto \strucS ~\}
+\end{zed}
+
+\begin{remark}
+The intersection of subsets of $\strucA$ is a subset of $\strucA$.
+
+\begin{zed}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	\forall \strucS_1, \strucS_2: magma\_subset(\strucA) @ \\
+	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_subset(\strucA)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The intersection of submagmas of $\strucA$ is a submagma of $\strucA$.
+
+\begin{zed}
+	\forall \strucA: magma[\setT] @ \\
+	\t1	\forall \strucS_1, \strucS_2: magma\_submagma(\strucA) @ \\
+	\t2		\strucS_1 \capMagma \strucS_2 \in magma\_submagma(\strucA)
+\end{zed}
+
+\end{remark}
+
+\subsection{Generation}
 
 \section{Semigroups}
 
