@@ -672,22 +672,22 @@ a submagma in this case.
 
 \subsection{Restriction}
 
-A submagma $S$ of $\strucA$ defines a magma $\strucA'$ by restricting the
-product to $S$.
+The \textit{restriction} of a submagma $S'$ of $\strucA'$ is the magma $\strucA$ 
+whose elements are $S'$ and whose product is the restriction of the product of $\strucA'$ to $S'$.
 
 \begin{schema}{Magma\_Restriction}[\genT]
-	Magma\_Submagma[\genT] \\
-	Magma'[\genT]
+	Magma[\genT] \\
+	Magma\_Submagma'[\genT]
 \where
-	A' = S
+	A = S'
 \also
-	\forall x, y: A' @ x \opG' y = x \opG y
+	\forall x, y: A @ x \opG y = x \opG' y
 \end{schema}
 
 Define $magma\_Restriction[\genT]$ to be the set of all restrictions of submagmas in $\genT$.
 
 \begin{zed}
-	magma\_Restriction[\genT] == \{~ Magma\_Restriction[\genT] @ \strucS \mapsto \strucA' ~\}
+	magma\_Restriction[\genT] == \{~ Magma\_Restriction[\genT] @ \strucS' \mapsto \strucA ~\}
 \end{zed}
 
 Define $magma\_restriction(\strucA)$ to be the set of all restrictions of submagmas of $\strucA$
@@ -709,19 +709,46 @@ Restriction is a function from submagmas of $\strucA$ to magmas.
 
 \subsection{Inclusion}
 
-There is a natural magma homomorphism from the restriction of a submagma to its
+The identity map is a magma map from the restriction of a submagma to its
 enclosing magma.
 
 \begin{schema}{Magma\_Inclusion}[\genT]
 	Magma\_Restriction[\genT] \\
 	Magma\_Map[\genT, \genT]
-
+\where
+	f = \id A
 \end{schema}
+
+Define $magma\_Inclusion$ to be the set of all magma inclusions.
+
+\begin{zed}
+	magma\_Inclusion[\genT] == \{~ Magma\_Inclusion[\genT] @ F ~\}
+\end{zed}
+
+Define $magma\_inclusion(\strucA, \strucA')$ to be the set of all magma inclusions of 
+$\strucA$ as a submagma of $\strucA'$.
+
+\begin{zed}
+	magma\_inclusion[\genT] == \\
+	\t1	(\lambda \strucA, \strucA': magma[\genT] @ \\
+	\t2		\{~ (\strucA, \strucA') ~\} \dres magma\_Inclusion[\genT])
+\end{zed}
+
+\begin{remark}
+Inclusion maps are magma homomorphisms.
+
+\begin{zed}
+	\forall \strucA, \strucA': magma[\setT] @ \\
+	\t1	magma\_inclusion(\strucA, \strucA') \subseteq magma\_hom(\strucA, \strucA')
+\end{zed}
+
+\end{remark}
 
 \subsection{Images}
 
-The \textit{image} of a magma map is the subset of the target magma that consists of
-the image under the map of the elements in the source magma.
+The \textit{image} of a magma map $f$ from $A$ to $A'$
+is the subset $S'$ of $A'$ that consists of
+the image under the map of the elements in $A$.
 
 \begin{schema}{Magma\_Image}[\genT, \genU]
 	Magma\_Map[\genT, \genU] \\
@@ -730,13 +757,28 @@ the image under the map of the elements in the source magma.
 	S' = f \limg A \rimg
 \end{schema}
 
+Define $magma\_Image$ to be the function that associates any magma map $F$ with its image $\strucS'$.
+
+\begin{zed}
+	magma\_Image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
+\end{zed}
+
+Define $magma\_image(\strucA, \strucA')$ to be the function that associates any magma map $F$
+from $\strucA$ to $\strucA'$ with its image $\strucS'$ in $\strucA'$.
+
+\begin{zed}
+	magma\_image[\genT, \genU] == \\
+	\t1	(\lambda \strucA: magma[\genT]; \strucA': magma[\genU] @ \\
+	\t2		magma\_map(\strucA, \strucA') \dres magma\_Image[\genT, \genU])
+\end{zed} 
+
 \begin{remark}
 The image of a magma homomorphism is a submagma of its target.
 
 \begin{zed}
-	\forall Magma\_Image[\setT, \setU] | \\
-	\t1	Magma\_Hom[\setT, \setU] @ \\
-	\t2		Magma\_Submagma'[\setU]
+	\forall \strucA: magma[\setT]; \strucA': magma[\setU] @ \\
+	\t1	\forall F: magma\_hom(\strucA, \strucA') @ \\
+	\t2		magma\_image(\strucA, \strucA')~F \in magma\_submagma(\strucA')
 \end{zed}
 
 \begin{proof}
@@ -748,11 +790,7 @@ Therefore $x' \opS' y' = f(x) \opS' f(y) = f(x \opG y)$ which is clearly in the 
 
 \end{remark}
 
-Define $magma\_image$ to be the function that sends a magma map to its image.
-
-\begin{zed}
-	magma\_image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
-\end{zed}
+STOPPED HERE
 
 Consider the restriction of the image of a magma homomorphism.
 

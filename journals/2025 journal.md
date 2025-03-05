@@ -304,6 +304,10 @@ continue cleaning up groups article
 
 continue cleaning up groups article
 
+## 2025-03-04
+
+continue cleaning up groups article
+
 magma checklist:
 * [x] Magma, magma, magma_on
 * [x] Magma_Map, magma_Map, magma_map
@@ -313,7 +317,7 @@ magma checklist:
 * [x] Magma_Subset, magma_Subset, magma_subset
 * [x] Magma\_Submagma, magma_Submagma, magma_submagma
 * [x] Magma\_Restriction
-* [ ] Magma_Inclusion
+* [x] Magma_Inclusion
 * [ ] Magma_Image, Magma_Im
 * [ ] Magma\_Containment
 * [x] Magma_Intersection, \capMagma
