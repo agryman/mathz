@@ -66,8 +66,8 @@ Define $PBINOP[\genT]$ to be the set of all partial binary operations on $\genT$
 
 %%type PBINOP
 
-Here I am using the convention of defining names consisting of all uppercase letters for sets that are 
-declared as \textit{type abbreviations} to the \fuzz\ type checker.
+Here we are using the convention that uppercase names denote 
+\textit{type abbreviations} declared for use by the \fuzz\ type checker.
 
 \begin{example}[Integer Division and Modulus]
 
@@ -83,8 +83,8 @@ Integer division and modulus are partial binary operations on $\num$.
 
 \subsection{Total Binary Operations}
 
-A \textit{total binary operation}, or simply a \textit{binary operation}, is a partial binary operation defined on
-every pair of elements.
+A \textit{total binary operation}, or simply a \textit{binary operation}, 
+is a partial binary operation that is defined for every pair of elements.
 
 Define $binop[\genT]$ to be the set of all binary operations on $\genT$.
 
@@ -114,7 +114,7 @@ Integer addition, subtraction, and multiplication are binary operations on $\num
 
 \end{example}
 
-\begin{example}[Integer Division and Modulus]
+\begin{counterexample}[Integer Division and Modulus]
 
 Integer division and modulus by $0$ is undefined.
 
@@ -132,11 +132,11 @@ Therefore, integer division and modulus are not total binary operations on $\num
 	(\_ \mod \_) \notin binop[\num]
 \end{zed}
 
-\end{example}
+\end{counterexample}
 
 \subsection{Carriers}
 
-The main underlying set of an algebraic structure is sometimes referred to as its \textit{carrier}.
+The main underlying set of elements in an algebraic structure is sometimes referred to as its \textit{carrier}.
 When writing informal mathematics, 
 it is normally unnecessary to distinguish between a structure and its carrier
 since the intended meaning is usually clear from context.
@@ -144,23 +144,23 @@ For example, consider the following statement:
 \begin{quote}
 	Let $G$ be a group and let $g$ be an element of $G$.
 \end{quote}
-Here the first instance of $G$ stands for the structure while the second stands for its carrier.
+Here the first instance of $G$ stands for the group structure while the second stands for its carrier.
 
-However, a set of elements may have more than one structure in a given context.
+However, a given set of elements may participate in more than one structure in some contexts.
 For example, the set of integers has both additive and multiplicative structures.
 In such cases it may be ambiguous if only the carrier is specified.
 Furthermore, if the mathematics is expressed using a formal language such as \ZN, 
 distinct mathematical objects
 must be referred to using distinct names or expressions.
 
-In order to distinguish between structures and their carriers, 
+In order to differentiate between structures and their carriers, 
 this article adopts the common mathematical practice of defining structures as \textit{tuples}
 consisting of a carrier together with one or more additional objects such as operations or
 distinguished elements.
 
 When introducing variables to refer to structures and their carriers,
 we'll use some typographical convention such as bold font to relate the two.
-For example, the structure $\strucA$ has carrier $A$.
+For example, we'll use $\strucA$ to refer to the structure that has carrier $A$.
 
 Let $A$ be a subset of $\genT$.
 We say that a structure $\strucA$ with carrier $A$ is a \textit{structure in} $\genT$.
@@ -176,6 +176,23 @@ generically referred to as a \textit{product}.
 Let $x \opG y$ denote the product of $x$ and $y$.
 Regarded as a structure $\strucA$, a magma is a pair $(A, (\_ \opG \_))$.
 
+\begin{example}[Integer Arithmetic]
+
+Define $int\_add$, $int\_sub$, and $int\_mul$ to be the integers equipped with addition,
+subtraction, and multiplication. 
+These are magmas on the set of integers because the operations are total
+binary operations on the set of integers.
+
+\begin{zed}
+	int\_add == (\num, (\_ + \_))
+\also
+	int\_sub == (\num, (\_ - \_))
+\also
+	int\_mul == (\num, (\_ * \_))
+\end{zed}
+
+\end{example}
+
 Define $MAGMA[\genT]$ to be the type abbreviation for a magma structure.
 
 \begin{zed}
@@ -183,6 +200,19 @@ Define $MAGMA[\genT]$ to be the type abbreviation for a magma structure.
 \end{zed}
 
 %%type MAGMA
+
+\begin{example}[Integer Arithmetic]
+Integer addition, subtraction, and multiplication belong to the type of integer magma structures.
+
+\begin{zed}
+	int\_add \in MAGMA[\num]
+\also
+	int\_sub \in MAGMA[\num]
+\also
+	int\_mul \in MAGMA[\num]
+\end{zed}
+
+\end{example}
 
 \begin{schema}{Magma}[\genT]
 	A: \power \genT \\
@@ -195,9 +225,25 @@ Define $MAGMA[\genT]$ to be the type abbreviation for a magma structure.
 \end{schema}
 
 \begin{itemize}
-	\item The product is a binary operation on $A$.
+	\item The product is a total binary operation on $A$.
 	\item The structure is the pair consisting of the carrier and the binary operation.
 \end{itemize}
+
+\begin{example}[Integer Arithmetic]
+Integer addition, subtraction, and multiplication are integer magmas.
+
+\begin{zed}
+	(\LET A == \num; (\_ \opG \_) == (\_ + \_); \strucA == int\_add @ Magma[\num])
+\also
+	(\LET A == \num; (\_ \opG \_) == (\_ - \_); \strucA == int\_sub @ Magma[\num])
+\also
+	(\LET A == \num; (\_ \opG \_) == (\_ * \_); \strucA == int\_mul @ Magma[\num])
+\end{zed}
+
+\end{example}
+
+Observe that giving examples in terms of schema components can become somewhat verbose.
+We'll therefore define simpler, related sets in terms of previously defined schemas.
 
 Define $magma[\genT]$ to be the set of all magmas in $\genT$.
 
@@ -213,6 +259,19 @@ Every magma in $\genT$ has type $MAGMA[\genT]$.
 \end{zed}
 
 \end{remark}
+
+\begin{example}[Integer Arthmetic]
+Integer addition, subtraction, and multiplication are magmas in the set of integers.
+
+\begin{zed}
+	int\_add \in magma[\num]
+\also
+	int\_sub \in magma[\num]
+\also
+	int\_mul \in magma[\num]
+\end{zed}
+
+\end{example}
 
 Define $magma\_on(A)$ to be the set of all magmas on $A$.
 
@@ -237,46 +296,15 @@ Every magma is a magma on its carrier.
 
 \end{remark}
 
-\begin{example}[Integer Addition]
+\begin{example}[Integer Arithmetic]
 
-Define $int\_add$ to be the set of integers equipped with addition.
-\begin{zed}
-	int\_add == (\num, (\_ + \_))
-\end{zed}
+Integer addition, subtraction, and multiplication are magmas on $\num$.
 
-Integer addition is a magma on $\num$.
 \begin{zed}
 	int\_add \in magma\_on(\num)
-\end{zed}
-\end{example}
-
-\begin{example}[Integer Subtraction]
-
-Define $int\_sub$ to be the set of integers equipped with subtraction.
-
-\begin{zed}
-	int\_sub == (\num, (\_ - \_))
-\end{zed}
-
-Integer subtraction is a magma on $\num$.
-
-\begin{zed}
+\also
 	int\_sub \in magma\_on(\num)
-\end{zed}
-
-\end{example}
-
-\begin{example}[Integer Multiplication]
-
-Define $int\_mul$ to be the set of integers equipped with multiplication.
-
-\begin{zed}
-	int\_mul == (\num, (\_ * \_))
-\end{zed}
-
-Integer multiplication is a magma on $\num$.
-
-\begin{zed}
+\also
 	int\_mul \in magma\_on(\num)
 \end{zed}
 
@@ -306,6 +334,40 @@ all maps from magmas in $\genT$ to magmas in $\genU$.
 	MAGMA\_MAP[\genT, \genU] == (MAGMA[\genT] \cross MAGMA[\genU]) \cross (\genT \pfun \genU)
 \end{zed}
 
+\begin{example}[Identity Maps]
+The identity map on the set of integers extends to a magma map structure from any magma on the integers
+to itself. Define these structures for integer addition, subtraction, and multiplication.
+
+\begin{zed}
+	int\_add\_id == (int\_add, int\_add) \mapsto \id \num
+\also
+	int\_sub\_id == (int\_sub, int\_sub) \mapsto \id \num
+\also
+	int\_mul\_id == (int\_mul, int\_mul) \mapsto \id \num
+\end{zed}
+
+These structures all have type $MAGMA\_MAP[\num, \num]$.
+
+\begin{zed}
+	int\_add\_id \in MAGMA\_MAP[\num, \num]
+\also
+	int\_sub\_id \in MAGMA\_MAP[\num, \num]
+\also
+	int\_mul\_id \in MAGMA\_MAP[\num, \num]
+\end{zed}
+
+\end{example}
+
+TODO: This is too repetitive. It would be better to move the section on identity maps here
+and use it to construct identity map structures. Then prove that they are magma maps and homomorphisms.
+Alternatively, move the $MulConst$ and $ExpConst$ examples here and defer the discussion of 
+identity maps. For example, define standalone integer partial and total functions, then use them to construct
+$MAGMA\_MAP$ objects. One should fail to be a total function, hence not a map.
+One should be a map but fail to be a homomorphism. One should be a homomorphism.
+
+We further require the underlying map $f$ of a magma map structure $F$
+from $\strucA$ to $\strucA'$ to be a function from $A$ to $A'$.
+
 \begin{schema}{Magma\_Map}[\genT, \genU]
 	Magma[\genT] \\
 	Magma'[\genU] \\
@@ -322,12 +384,34 @@ all maps from magmas in $\genT$ to magmas in $\genU$.
 	\item A magma map structure $F$ consists of a pair of magmas and a map $f$ between their carriers.
 \end{itemize}
 
+\begin{remark}
+The identity map on the carrier of a magma is a function from the carrier to itself.
+
+\begin{zed}
+	\forall Magma[\setT] @ \id A \in A \fun A
+\end{zed}
+
+\end{remark}
+
 Define $magma\_Map[\genT, \genU]$ to be the set of all magma maps
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
 	magma\_Map[\genT, \genU] == \{~Magma\_Map[\genT, \genU] @ F ~\}
 \end{zed}
+
+\begin{example}
+The previously defined identity map structures are magma maps.
+
+\begin{zed}
+	int\_add\_id \in magma\_Map[\num, \num]
+\also
+	int\_sub\_id \in magma\_Map[\num, \num]
+\also
+	int\_mul\_id \in magma\_Map[\num, \num]
+\end{zed}
+
+\end{example}
 
 Define $magma\_map(\strucA, \strucA')$ to be the subset of magma maps 
 from $\strucA$ to $\strucA'$.
@@ -347,6 +431,19 @@ from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
+\begin{example}
+The previously defined identity map structures are magma maps from each magma to itself.
+
+\begin{zed}
+	int\_add\_id \in magma\_map(int\_add, int\_add)
+\also
+	int\_sub\_id \in magma\_map(int\_sub, int\_sub)
+\also
+	int\_mul\_id \in magma\_map(int\_mul, int\_mul)
+\end{zed}
+
+\end{example}
+
 \subsubsection{Homomorphisms}
 
 A \textit{magma homomorphism} is magma map that preserves products.
@@ -361,12 +458,35 @@ A \textit{magma homomorphism} is magma map that preserves products.
 	\item $f$ preserves the product operation
 \end{itemize}
 
+\begin{remark}
+The identity map preserves products.
+
+\begin{zed}
+	\forall Magma[\setT] @ \\
+	\t1	\forall x, y: A @ (\id A)(x \opG y) = x \opG y = ((\id A)x) \opG ((\id A) y)
+\end{zed}
+
+\end{remark}
+
 Define $magma\_Hom[\genT, \genU]$ to be the set of all magma homomorphisms
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
 	magma\_Hom[\genT, \genU] == \{~Magma\_Hom[\genT, \genU] @ F ~\}
 \end{zed}
+
+\begin{example}
+The previously defined identity map structures are magma homomorphisms.
+
+\begin{zed}
+	int\_add\_id \in magma\_Hom[\num, \num]
+\also
+	int\_sub\_id \in magma\_Hom[\num, \num]
+\also
+	int\_mul\_id \in magma\_Hom[\num, \num]
+\end{zed}
+
+\end{example}
 
 Define $magma\_hom(\strucA, \strucA')$ to be the subset of magma homomorphisms 
 from $\strucA$ to $\strucA'$.
@@ -385,6 +505,19 @@ from $\strucA$ to $\strucA'$.
 \end{zed}
 
 \end{remark}
+
+\begin{example}
+The previously defined identity map structures are magma homomorphisms from each magma to itself.
+
+\begin{zed}
+	int\_add\_id \in magma\_hom(int\_add, int\_add)
+\also
+	int\_sub\_id \in magma\_hom(int\_sub, int\_sub)
+\also
+	int\_mul\_id \in magma\_hom(int\_mul, int\_mul)
+\end{zed}
+
+\end{example}
 
 \begin{example}[Multiplication by a Constant]
 
@@ -661,14 +794,17 @@ Therefore, they are submagmas of the integers under addition and multiplication.
 	nat\_mul \in magma\_submagma(int\_mul)
 \end{zed}
 
-However, natural numbers are not closed under subtraction and so are not
-a submagma in this case.
+\end{example}
+
+\begin{counterexample}
+The natural numbers are not closed under subtraction and so are not
+a submagma of the integers under subtraction.
 
 \begin{zed}
 	nat\_sub \notin magma\_submagma(int\_sub)
 \end{zed}
 
-\end{example}
+\end{counterexample}
 
 \subsection{Restriction}
 
@@ -689,6 +825,17 @@ Define $magma\_Restriction[\genT]$ to be the set of all restrictions of submagma
 \begin{zed}
 	magma\_Restriction[\genT] == \{~ Magma\_Restriction[\genT] @ \strucS' \mapsto \strucA ~\}
 \end{zed}
+
+\begin{remark}
+Magma restriction maps submagmas to magmas.
+
+\begin{zed}
+
+magma\_Restriction[\setT] \in magma\_Submagma[\setT] \fun magma[\setT]
+
+\end{zed}
+
+\end{remark}
 
 Define $magma\_restriction(\strucA)$ to be the set of all restrictions of submagmas of $\strucA$
 
