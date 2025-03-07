@@ -308,6 +308,11 @@ continue cleaning up groups article
 
 continue cleaning up groups article
 
+## 2025-03-06
+
+continue cleaning up groups article
+* include examples after definitions to make the article more intuitive
+
 magma checklist:
 * [x] Magma, magma, magma_on
 * [x] Magma_Map, magma_Map, magma_map

@@ -18,8 +18,9 @@
 \date{\today}
 
 \begin{abstract}
-	This article formalizes groups and related group-like algebraic structures using 
-	\ZN\ and has been type checked by \fuzz.
+	This article formalizes group-like algebraic structures,
+	namely  magmas, semigroups, monoids, groups, and abelian groups,
+	using \ZN. It has been type checked by \fuzz.
 \end{abstract}
 
 \maketitle
@@ -334,39 +335,27 @@ all maps from magmas in $\genT$ to magmas in $\genU$.
 	MAGMA\_MAP[\genT, \genU] == (MAGMA[\genT] \cross MAGMA[\genU]) \cross (\genT \pfun \genU)
 \end{zed}
 
-\begin{example}[Identity Maps]
-The identity map on the set of integers extends to a magma map structure from any magma on the integers
-to itself. Define these structures for integer addition, subtraction, and multiplication.
-
+\begin{example}
+Define $nat\_id$ to be the identity map on the set of natural numbers.
 \begin{zed}
-	int\_add\_id == (int\_add, int\_add) \mapsto \id \num
-\also
-	int\_sub\_id == (int\_sub, int\_sub) \mapsto \id \num
-\also
-	int\_mul\_id == (int\_mul, int\_mul) \mapsto \id \num
+	nat\_id == \id \nat
 \end{zed}
 
-These structures all have type $MAGMA\_MAP[\num, \num]$.
-
+Define $int\_add\_nat\_id$ to be the following (not very useful) 
+candidate magma map structure.
 \begin{zed}
-	int\_add\_id \in MAGMA\_MAP[\num, \num]
-\also
-	int\_sub\_id \in MAGMA\_MAP[\num, \num]
-\also
-	int\_mul\_id \in MAGMA\_MAP[\num, \num]
+	int\_add\_nat\_id == (int\_add, int\_add) \mapsto nat\_id
+\end{zed}
+
+This structure has the required type.
+\begin{zed}
+	int\_add\_nat\_id \in MAGMA\_MAP[\num, \num]
 \end{zed}
 
 \end{example}
 
-TODO: This is too repetitive. It would be better to move the section on identity maps here
-and use it to construct identity map structures. Then prove that they are magma maps and homomorphisms.
-Alternatively, move the $MulConst$ and $ExpConst$ examples here and defer the discussion of 
-identity maps. For example, define standalone integer partial and total functions, then use them to construct
-$MAGMA\_MAP$ objects. One should fail to be a total function, hence not a map.
-One should be a map but fail to be a homomorphism. One should be a homomorphism.
-
-We further require the underlying map $f$ of a magma map structure $F$
-from $\strucA$ to $\strucA'$ to be a function from $A$ to $A'$.
+In order for a candidate magma map structure $F$ from $\strucA$ to $\strucA'$ to be useful,
+we further require the underlying map $f$ to be a function from $A$ to $A'$.
 
 \begin{schema}{Magma\_Map}[\genT, \genU]
 	Magma[\genT] \\
@@ -384,15 +373,6 @@ from $\strucA$ to $\strucA'$ to be a function from $A$ to $A'$.
 	\item A magma map structure $F$ consists of a pair of magmas and a map $f$ between their carriers.
 \end{itemize}
 
-\begin{remark}
-The identity map on the carrier of a magma is a function from the carrier to itself.
-
-\begin{zed}
-	\forall Magma[\setT] @ \id A \in A \fun A
-\end{zed}
-
-\end{remark}
-
 Define $magma\_Map[\genT, \genU]$ to be the set of all magma maps
 from magmas in $\genT$ to magmas in $\genU$.
 
@@ -400,18 +380,37 @@ from magmas in $\genT$ to magmas in $\genU$.
 	magma\_Map[\genT, \genU] == \{~Magma\_Map[\genT, \genU] @ F ~\}
 \end{zed}
 
-\begin{example}
-The previously defined identity map structures are magma maps.
+\begin{counterexample}
+The previously defined structure $int\_add\_nat\_id$ is not a magma map because the
+domain of its underlying function, namely $\id \nat$, is only the proper subset  $nat$ of $num$.
 
 \begin{zed}
-	int\_add\_id \in magma\_Map[\num, \num]
-\also
-	int\_sub\_id \in magma\_Map[\num, \num]
-\also
-	int\_mul\_id \in magma\_Map[\num, \num]
+	int\_add\_nat\_id \notin magma\_Map[\num, \num]
+\end{zed}
+
+\begin{example}
+Define $int\_square$ to be the function that maps an integer to its square.
+
+\begin{zed}
+	int\_square == (\lambda x: \num @ x * x)
+\end{zed}
+
+Define $int\_add\_square$ to be the following candidate magma map structure.
+
+\begin{zed}
+	int\_add\_square == (int\_add, int\_add) \mapsto int\_square
+\end{zed}
+
+This structure is in fact a magma map because its underlying map
+is defined on all elements of the source carrier.
+
+\begin{zed}
+	int\_add\_square \in magma\_Map[\num, \num]
 \end{zed}
 
 \end{example}
+
+\end{counterexample}
 
 Define $magma\_map(\strucA, \strucA')$ to be the subset of magma maps 
 from $\strucA$ to $\strucA'$.
@@ -432,14 +431,9 @@ from $\strucA$ to $\strucA'$.
 \end{remark}
 
 \begin{example}
-The previously defined identity map structures are magma maps from each magma to itself.
 
 \begin{zed}
-	int\_add\_id \in magma\_map(int\_add, int\_add)
-\also
-	int\_sub\_id \in magma\_map(int\_sub, int\_sub)
-\also
-	int\_mul\_id \in magma\_map(int\_mul, int\_mul)
+	int\_add\_square \in magma\_map(int\_add, int\_add)
 \end{zed}
 
 \end{example}
@@ -458,35 +452,12 @@ A \textit{magma homomorphism} is magma map that preserves products.
 	\item $f$ preserves the product operation
 \end{itemize}
 
-\begin{remark}
-The identity map preserves products.
-
-\begin{zed}
-	\forall Magma[\setT] @ \\
-	\t1	\forall x, y: A @ (\id A)(x \opG y) = x \opG y = ((\id A)x) \opG ((\id A) y)
-\end{zed}
-
-\end{remark}
-
 Define $magma\_Hom[\genT, \genU]$ to be the set of all magma homomorphisms
 from magmas in $\genT$ to magmas in $\genU$.
 
 \begin{zed}
 	magma\_Hom[\genT, \genU] == \{~Magma\_Hom[\genT, \genU] @ F ~\}
 \end{zed}
-
-\begin{example}
-The previously defined identity map structures are magma homomorphisms.
-
-\begin{zed}
-	int\_add\_id \in magma\_Hom[\num, \num]
-\also
-	int\_sub\_id \in magma\_Hom[\num, \num]
-\also
-	int\_mul\_id \in magma\_Hom[\num, \num]
-\end{zed}
-
-\end{example}
 
 Define $magma\_hom(\strucA, \strucA')$ to be the subset of magma homomorphisms 
 from $\strucA$ to $\strucA'$.
@@ -506,22 +477,46 @@ from $\strucA$ to $\strucA'$.
 
 \end{remark}
 
-\begin{example}
-The previously defined identity map structures are magma homomorphisms from each magma to itself.
+\begin{counterexample}
+$int\_add\_square$ is not a magma homomorphism because, in general, the sum of squares
+is not the square of the sum.
 
 \begin{zed}
-	int\_add\_id \in magma\_hom(int\_add, int\_add)
-\also
-	int\_sub\_id \in magma\_hom(int\_sub, int\_sub)
-\also
-	int\_mul\_id \in magma\_hom(int\_mul, int\_mul)
+	int\_add\_square \notin magma\_hom(int\_add, int\_add)
 \end{zed}
 
-\end{example}
+It suffices to show that
+
+\begin{zed}
+	int\_square(1+1) \neq int\_square(1) + int\_square(1)
+\end{zed}
+
+\begin{proof}
+
+\begin{zed}
+	int\_square(1+1) \\
+	\t1	= int\_square(2) \\
+	\t1	= 4 \\
+	\t1	\neq 2 \\
+	\t1	= 1 + 1 \\
+	\t1	= int\_square(1) + int\_square(1) 
+\end{zed}
+
+\end{proof}
+
+\end{counterexample}
 
 \begin{example}[Multiplication by a Constant]
 
-Consider multiplication by a given integer $c$.
+Define $mul\_const(c)$ to be the function that multiplies integers by a given integer $c$.
+
+\begin{zed}
+	mul\_const == \\
+	\t1	(\lambda c: \num @ \\
+	\t2		(\lambda x: \num @ c * x))
+\end{zed}
+
+Consider this function acting on the integers under addition.
 
 \begin{schema}{MulConst}
 	Magma\_Map[\num, \num] \\
@@ -529,21 +524,21 @@ Consider multiplication by a given integer $c$.
 \where
 	\strucA = \strucA' = int\_add
 \also
-	f = (\lambda x: \num @ c * x)
+	f = mul\_const(c)
 \end{schema}
 
-Define $mul\_const(c)$ to be the corresponding magma map.
+Define $int\_add\_mul\_const(c)$ to be the corresponding magma map.
 
 \begin{zed}
-	mul\_const == \{~ MulConst @ c \mapsto F ~\}
+	int\_add\_mul\_const == \{~ MulConst @ c \mapsto F ~\}
 \end{zed}
 
-The magma map $mul\_const(c)$ sends $\num$ to $\num$ and preserves addition.
-Therefore this map is a magma homomorphism.
+The magma map $int\_add\_mul\_const(c)$ sends $\num$ to $\num$ and preserves addition.
+Therefore this map is a magma homomorphism from $int\_add$ to itself.
 
 \begin{zed}
 	\forall c: \num @ \\
-	\t1	mul\_const(c) \in magma\_hom(int\_add, int\_add)
+	\t1	int\_add\_mul\_const(c) \in magma\_hom(int\_add, int\_add)
 \end{zed}
 
 \begin{proof}
@@ -557,7 +552,16 @@ Therefore this map is a magma homomorphism.
 
 \begin{example}[Exponentiation by a Constant]
 
-Consider exponentiation by a given natural number $n$.
+Define $exp\_const(n)$ to be the function that exponentiates integers to
+a given natural number $n$.
+
+\begin{zed}
+	exp\_const == \\
+	\t1	(\lambda n: \nat @ \\
+	\t2		(\lambda x: \num @ x \expN n))
+\end{zed}
+
+Consider this function acting on the integers under multiplication.
 
 \begin{schema}{ExpConst}
 	Magma\_Map[\num, \num] \\
@@ -565,21 +569,21 @@ Consider exponentiation by a given natural number $n$.
 \where
 	\strucA = \strucA' = int\_mul
 \also
-	f = (\lambda x: \num @ x \expN n)
+	f = exp\_const(n)
 \end{schema}
 
-Define $exp\_const(n)$ to be the corresponding magma map.
+Define $int\_mul\_exp\_const(n)$ to be the corresponding magma map.
 
 \begin{zed}
-	exp\_const == \{~ ExpConst @ n \mapsto F ~\}
+	int\_mul\_exp\_const == \{~ ExpConst @ n \mapsto F ~\}
 \end{zed}
 
-The magma map $exp\_const(n)$ sends $\num$ to $\num$ and preserves multiplication.
+The magma map $int\_mul\_exp\_const(n)$ sends $\num$ to $\num$ and preserves multiplication.
 Therefore this map is a magma homomorphism.
 
 \begin{zed}
-	\forall ExpConst @ \\
-	\t1	exp\_const(n) \in magma\_hom(int\_mul, int\_mul)
+	\forall n: \nat @ \\
+	\t1	int\_mul\_exp\_const(n) \in magma\_hom(int\_mul, int\_mul)
 \end{zed}
 
 \begin{proof}
@@ -593,7 +597,16 @@ Therefore this map is a magma homomorphism.
 
 \subsection{Identity Maps}
 
-Consider the identity map from the carrier of a magma to itself.
+\begin{remark}
+The identity map on the carrier $A$ of a magma $\strucA$ is a function from the carrier to itself.
+
+\begin{zed}
+	\forall Magma[\setT] @ \id A \in A \fun A
+\end{zed}
+
+\end{remark}
+
+The identity map therefore defines a magma map from any magma to itself.
 
 \begin{schema}{Magma\_Id}[\genT]
 	Magma\_Map[\genT, \genT]
@@ -608,7 +621,6 @@ Consider the identity map from the carrier of a magma to itself.
 	\item the underlying map of carriers is the identity map
 \end{itemize}
 
-
 Define $magma\_id(\strucA)$ to be the magma identity map of $\strucA$.
 
 \begin{zed}
@@ -616,14 +628,25 @@ Define $magma\_id(\strucA)$ to be the magma identity map of $\strucA$.
 \end{zed}
 
 \begin{remark}
+$magma\_id$ maps magmas to magma maps.
 \begin{zed}
-magma\_id[\setT] \in MAGMA[\setT] \pfun MAGMA\_MAP[\setT, \setT]
+	magma\_id[\setT] \in MAGMA[\setT] \pfun MAGMA\_MAP[\setT, \setT]
 \end{zed}
+
 \end{remark}
 
 \begin{remark}
+The identity map preserves products.
 
-The identity map is a homomorphism.
+\begin{zed}
+	\forall Magma[\setT] @ \\
+	\t1	\forall x, y: A @ (\id A)(x \opG y) = x \opG y = ((\id A)x) \opG ((\id A) y)
+\end{zed}
+
+\end{remark}
+
+\begin{remark}
+The identity map is therefore a magma homomorphism.
 
 \begin{zed}
 	\forall \strucA: magma[\setT] @ \\
@@ -631,6 +654,19 @@ The identity map is a homomorphism.
 \end{zed}
 
 \end{remark}
+
+\begin{example}[Identity Maps]
+Define the identity magma homomorphisms for integer addition, subtraction, and multiplication.
+
+\begin{zed}
+	int\_add\_id == magma\_id(int\_add)
+\also
+	int\_sub\_id == magma\_id(int\_sub)
+\also
+	int\_mul\_id == magma\_id(int\_mul)
+\end{zed}
+
+\end{example}
 
 \subsection{Composition}
 
@@ -675,7 +711,7 @@ The identity map is a left and right identity element with respect to compositio
 \end{remark}
 
 Although we have defined the composition of magma maps we are, of course, more interested
-the composition of magma homomorphism.
+the composition of magma homomorphisms.
 
 \begin{remark}
 The composition of magma homomorphisms is a magma homomorphism.
@@ -687,6 +723,26 @@ The composition of magma homomorphisms is a magma homomorphism.
 \end{zed}
 
 \end{remark}
+
+\begin{example}[Multiplication by a Constant]
+The composition of multiplication by constants is multiplication by the product of the constants.
+
+\begin{zed}
+	\forall a, b: \num @ \\
+	\t1	int\_add\_mul\_const(a) \compMagma int\_add\_mul\_const(b) = int\_add\_mul\_const(a * b)
+\end{zed}
+
+\end{example}
+
+\begin{example}[Exponentiation by a Constant]
+The composition of exponentiation by constants is exponentiation by the product of the constants.
+
+\begin{zed}
+	\forall m, n: \nat @ \\
+	\t1	int\_mul\_exp\_const(m) \compMagma int\_mul\_exp\_const(n) = int\_mul\_exp\_const(m * n)
+\end{zed}
+
+\end{example}
 
 \subsection{Subsets and Submagmas}
 
@@ -734,21 +790,21 @@ The natural numbers are a subset of the integers.
 Define the corresponding subset structures for the integers under addition, subtraction, and multiplication.
 
 \begin{zed}
-	nat\_add == (int\_add, \nat)
+	int\_add\_nat == (int\_add, \nat)
 \also
-	nat\_sub == (int\_sub, \nat)
+	int\_sub\_nat == (int\_sub, \nat)
 \also
-	nat\_mul == (int\_mul, \nat)
+	int\_mul\_nat == (int\_mul, \nat)
 \end{zed}
 
 They are therefore magma subsets of the corresponding magmas.
 
 \begin{zed}
-	nat\_add \in magma\_subset(int\_add)
+	int\_add\_nat \in magma\_subset(int\_add)
 \also
-	nat\_sub \in magma\_subset(int\_sub)
+	int\_sub\_nat \in magma\_subset(int\_sub)
 \also
-	nat\_mul \in magma\_subset(int\_mul)
+	int\_mul\_nat \in magma\_subset(int\_mul)
 \end{zed}
 
 \end{example}
@@ -789,9 +845,9 @@ Natural numbers are closed under the operations of addition and multiplication.
 Therefore, they are submagmas of the integers under addition and multiplication.
 
 \begin{zed}
-	nat\_add \in magma\_submagma(int\_add)
+	int\_add\_nat \in magma\_submagma(int\_add)
 \also
-	nat\_mul \in magma\_submagma(int\_mul)
+	int\_mul\_nat \in magma\_submagma(int\_mul)
 \end{zed}
 
 \end{example}
@@ -801,7 +857,7 @@ The natural numbers are not closed under subtraction and so are not
 a submagma of the integers under subtraction.
 
 \begin{zed}
-	nat\_sub \notin magma\_submagma(int\_sub)
+	int\_sub\_nat \notin magma\_submagma(int\_sub)
 \end{zed}
 
 \end{counterexample}
@@ -835,9 +891,20 @@ magma\_Restriction[\setT] \in magma\_Submagma[\setT] \fun magma[\setT]
 
 \end{zed}
 
+\begin{example}[Natural Number Arithmetic]
+Define the restrictions of integer addition and multiplication to the natural numbers.
+
+\begin{zed}
+	nat\_add == magma\_Restriction(int\_add\_nat)
+\also
+	nat\_mul == magma\_Restriction(int\_mul\_nat)
+\end{zed}
+
+\end{example}
+
 \end{remark}
 
-Define $magma\_restriction(\strucA)$ to be the set of all restrictions of submagmas of $\strucA$
+Define $magma\_restriction(\strucA)$ to be the set of all restrictions of submagmas of $\strucA$.
 
 \begin{zed}
 	magma\_restriction[\genT] == (\lambda \strucA: magma[\genT] @ \\
@@ -853,6 +920,16 @@ Restriction is a function from submagmas of $\strucA$ to magmas.
 \end{zed}
 
 \end{remark}
+
+\begin{example}[Natural Number Arithmetic]
+
+\begin{zed}
+	nat\_add = magma\_restriction(int\_add) int\_add\_nat
+\also
+	nat\_mul = magma\_restriction(int\_mul) int\_mul\_nat
+\end{zed}
+
+\end{example}
 
 \subsection{Inclusion}
 
@@ -872,6 +949,25 @@ Define $magma\_Inclusion$ to be the set of all magma inclusions.
 	magma\_Inclusion[\genT] == \{~ Magma\_Inclusion[\genT] @ F ~\}
 \end{zed}
 
+\begin{example}[Natural Number Arithmetic]
+Define magma maps from natural number arithmetic to integer arithmetic.
+
+\begin{zed}
+	nat\_int\_add == (nat\_add, int\_add) \mapsto \id \nat
+\also
+	nat\_int\_mul == (nat\_mul, int\_mul) \mapsto \id \nat
+\end{zed}
+
+These maps are inclusions.
+
+\begin{zed}
+	nat\_int\_add \in magma\_Inclusion[\num]
+\also
+	nat\_int\_mul \in magma\_Inclusion[\num]
+\end{zed}
+
+\end{example}
+
 Define $magma\_inclusion(\strucA, \strucA')$ to be the set of all magma inclusions of 
 $\strucA$ as a submagma of $\strucA'$.
 
@@ -880,6 +976,18 @@ $\strucA$ as a submagma of $\strucA'$.
 	\t1	(\lambda \strucA, \strucA': magma[\genT] @ \\
 	\t2		\{~ (\strucA, \strucA') ~\} \dres magma\_Inclusion[\genT])
 \end{zed}
+
+\begin{example}[Natural Number Arithmetic]
+The previously defined inclusions are inclusions from $nat\_add$ to $int\_add$
+and from $nat\_mul$ to $int\_mul$.
+
+\begin{zed}
+	nat\_int\_add \in magma\_inclusion(nat\_add, int\_add)
+\also
+	nat\_int\_mul \in magma\_inclusion(nat\_mul, int\_mul)
+\end{zed}
+
+\end{example}
 
 \begin{remark}
 Inclusion maps are magma homomorphisms.
@@ -894,14 +1002,14 @@ Inclusion maps are magma homomorphisms.
 \subsection{Images}
 
 The \textit{image} of a magma map $f$ from $A$ to $A'$
-is the subset $S'$ of $A'$ that consists of
-the image under the map of the elements in $A$.
+is the magma subset $\strucS'$ of $A'$ that consists of
+the images of the elements of $A$ under $f$.
 
 \begin{schema}{Magma\_Image}[\genT, \genU]
 	Magma\_Map[\genT, \genU] \\
 	Magma\_Subset'[\genU]
 \where
-	S' = f \limg A \rimg
+	S' = \ran f
 \end{schema}
 
 Define $magma\_Image$ to be the function that associates any magma map $F$ with its image $\strucS'$.
@@ -909,6 +1017,14 @@ Define $magma\_Image$ to be the function that associates any magma map $F$ with 
 \begin{zed}
 	magma\_Image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
 \end{zed}
+
+\begin{example}[Image of $int\_add\_square$]
+
+\begin{zed}
+	magma\_Image(int\_add\_square) = (int\_add, \ran int\_square)
+\end{zed}
+
+\end{example}
 
 Define $magma\_image(\strucA, \strucA')$ to be the function that associates any magma map $F$
 from $\strucA$ to $\strucA'$ with its image $\strucS'$ in $\strucA'$.
