@@ -6,6 +6,8 @@
 \usepackage{mathz-groups}
 
 \usepackage{mathz-preamble}
+\usepackage{tikz-cd}
+
 \setcounter{tocdepth}{3}
 
 \addbibresource{mathz-references.bib}
@@ -381,12 +383,15 @@ from magmas in $\genT$ to magmas in $\genU$.
 \end{zed}
 
 \begin{counterexample}
-The previously defined structure $int\_add\_nat\_id$ is not a magma map because the
-domain of its underlying function, namely $\id \nat$, is only the proper subset  $nat$ of $num$.
+The structure $int\_add\_nat\_id$ is not a magma map because the
+domain of its underlying function $\id \nat$ is $\nat$ which is a proper subset of $\num$
+which is the carrier of $int\_add$.
 
 \begin{zed}
 	int\_add\_nat\_id \notin magma\_Map[\num, \num]
 \end{zed}
+
+\end{counterexample}
 
 \begin{example}
 Define $int\_square$ to be the function that maps an integer to its square.
@@ -395,22 +400,30 @@ Define $int\_square$ to be the function that maps an integer to its square.
 	int\_square == (\lambda x: \num @ x * x)
 \end{zed}
 
-Define $int\_add\_square$ to be the following candidate magma map structure.
+Define $int\_squares$ to be the set of all integers that are squares.
+
+\begin{zed}
+	int\_squares == \ran int\_square
+\end{zed}
+
+Define the following candidate magma map structures.
 
 \begin{zed}
 	int\_add\_square == (int\_add, int\_add) \mapsto int\_square
+\also
+	int\_mul\_square == (int\_mul, int\_mul) \mapsto int\_square
 \end{zed}
 
-This structure is in fact a magma map because its underlying map
-is defined on all elements of the source carrier.
+These structures are in fact magma maps because the domain of underlying map $int\_square$
+is equal to the source carrier $\num$.
 
 \begin{zed}
 	int\_add\_square \in magma\_Map[\num, \num]
+\also
+	int\_mul\_square \in magma\_Map[\num, \num]
 \end{zed}
 
 \end{example}
-
-\end{counterexample}
 
 Define $magma\_map(\strucA, \strucA')$ to be the subset of magma maps 
 from $\strucA$ to $\strucA'$.
@@ -434,6 +447,8 @@ from $\strucA$ to $\strucA'$.
 
 \begin{zed}
 	int\_add\_square \in magma\_map(int\_add, int\_add)
+\also
+	int\_mul\_square \in magma\_map(int\_mul, int\_mul)
 \end{zed}
 
 \end{example}
@@ -478,7 +493,7 @@ from $\strucA$ to $\strucA'$.
 \end{remark}
 
 \begin{counterexample}
-$int\_add\_square$ is not a magma homomorphism because, in general, the sum of squares
+The magma map $int\_add\_square$ is not a magma homomorphism because, in general, the sum of squares
 is not the square of the sum.
 
 \begin{zed}
@@ -505,6 +520,35 @@ It suffices to show that
 \end{proof}
 
 \end{counterexample}
+
+\begin{example}
+The magma map $int\_mul\_square$ is a magma homomorphism because, in general, the product of squares
+is the square of the product.
+
+\begin{zed}
+	int\_mul\_square \in magma\_hom(int\_mul, int\_mul)
+\end{zed}
+
+It suffices to show that
+
+\begin{zed}
+	\forall x, y: \num @ int\_square(x*y) = int\_square(x) * int\_square(y)
+\end{zed}
+
+\begin{proof}
+
+\begin{zed}
+	\forall x, y: \num @ \\
+	\t1	int\_square(x*y) \\
+	\t2		= (x*y)*(x*y) \\
+	\t2		= x*x*y*y \\
+	\t2		= (x*x)*(y*y) \\
+	\t2		= int\_square(x)*int\_square(y)
+\end{zed}
+
+\end{proof}
+
+\end{example}
 
 \begin{example}[Multiplication by a Constant]
 
@@ -672,6 +716,17 @@ Define the identity magma homomorphisms for integer addition, subtraction, and m
 
 Let $f$ be a magma map from $A$ to $A'$ and let $f'$ be a magma map from $A'$ to $A''$.
 The function composition $g = f' \circ f$ is a magma map from $A$ to $A''$.
+The composition is read as ``$f'$ after $f$''.
+Composition of the underlying maps is illustrated in Figure~\ref{fig:map-composition-diagram}.
+
+\begin{figure}[h]
+    \begin{tikzcd}
+        A \arrow[r, "f"] \arrow[rd, "g"'] & A' \arrow[d, "f'"] \\
+        & A''
+    \end{tikzcd}
+    \caption{Commutative diagram for the composition $g$ of $f'$ after $f$.}
+    \label{fig:map-composition-diagram}
+\end{figure}
 
 \begin{schema}{Magma\_Composition}[\genT, \genU, \genV]
 	Magma\_Map[\genT, \genU] \\
@@ -699,6 +754,17 @@ Let $G = F' \compMagma F$ denote the composition of magma maps.
 \begin{zed}
 	(\_ \compMagma \_)[\genT, \genU, \genV] == \{~ Magma\_Composition[\genT, \genU, \genV] @ (F', F) \mapsto G ~\}
 \end{zed}
+
+Composition of magma map structures is illustrated in Figure~\ref{fig:magma-map-composition-diagram}.
+
+\begin{figure}[h]
+    \begin{tikzcd}
+        \strucA \arrow[r, "F"] \arrow[rd, "G"'] & \strucA' \arrow[d, "F'"] \\
+        & \strucA''
+    \end{tikzcd}
+    \caption{Commutative diagram for the composition $G$ of $F'$ after $F$.}
+    \label{fig:magma-map-composition-diagram}
+\end{figure}
 
 \begin{remark}
 The identity map is a left and right identity element with respect to composition.
@@ -1001,76 +1067,171 @@ Inclusion maps are magma homomorphisms.
 
 \subsection{Images}
 
-The \textit{image} of a magma map $f$ from $A$ to $A'$
-is the magma subset $\strucS'$ of $A'$ that consists of
+The \textit{subimage} of a magma map $f$ from $A$ to $A'$
+is the magma subset $\strucS'$ of $\strucA'$ that consists of
 the images of the elements of $A$ under $f$.
 
-\begin{schema}{Magma\_Image}[\genT, \genU]
+\begin{schema}{Magma\_Subimage}[\genT, \genU]
 	Magma\_Map[\genT, \genU] \\
 	Magma\_Subset'[\genU]
 \where
 	S' = \ran f
 \end{schema}
 
-Define $magma\_Image$ to be the function that associates any magma map $F$ with its image $\strucS'$.
+Define $magma\_Subimage$ to be the function that associates any magma map $F$ with its subimage $\strucS'$.
 
 \begin{zed}
-	magma\_Image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucS' ~\}
+	magma\_Subimage[\genT, \genU] == \{~ Magma\_Subimage[\genT, \genU] @ F \mapsto \strucS' ~\}
 \end{zed}
 
-\begin{example}[Image of $int\_add\_square$]
+\begin{example}[Subimage of $int\_add\_square$]
 
 \begin{zed}
-	magma\_Image(int\_add\_square) = (int\_add, \ran int\_square)
+	magma\_Subimage(int\_add\_square) = (int\_add, int\_squares)
 \end{zed}
 
 \end{example}
 
-Define $magma\_image(\strucA, \strucA')$ to be the function that associates any magma map $F$
-from $\strucA$ to $\strucA'$ with its image $\strucS'$ in $\strucA'$.
+Define $magma\_subimage(\strucA, \strucA')$ to be the function that associates any magma map $F$
+from $\strucA$ to $\strucA'$ with its subimage $\strucS'$ in $\strucA'$.
 
 \begin{zed}
-	magma\_image[\genT, \genU] == \\
+	magma\_subimage[\genT, \genU] == \\
 	\t1	(\lambda \strucA: magma[\genT]; \strucA': magma[\genU] @ \\
-	\t2		magma\_map(\strucA, \strucA') \dres magma\_Image[\genT, \genU])
+	\t2		magma\_map(\strucA, \strucA') \dres magma\_Subimage[\genT, \genU])
 \end{zed} 
 
 \begin{remark}
-The image of a magma homomorphism is a submagma of its target.
+The subimage of a magma homomorphism is a submagma of its target.
 
 \begin{zed}
 	\forall \strucA: magma[\setT]; \strucA': magma[\setU] @ \\
 	\t1	\forall F: magma\_hom(\strucA, \strucA') @ \\
-	\t2		magma\_image(\strucA, \strucA')~F \in magma\_submagma(\strucA')
+	\t2		magma\_subimage(\strucA, \strucA')~F \in magma\_submagma(\strucA')
 \end{zed}
 
 \begin{proof}
-It suffices to show that the product of any two elements $x', y'$ in the image $S'$ is 
+It suffices to show that the product of any two elements $x', y'$ in the subimage $S'$ is 
 also in $S'$. By definition of the image, there exists elements $x$ and $y$ in $A$
 such that $x' = f(x)$ and $y' = f(y)$.
 Therefore $x' \opS' y' = f(x) \opS' f(y) = f(x \opG y)$ which is clearly in the image of $f$. 
 \end{proof}
 
+Here is a second, more formal, proof of the remark.
+It is set out in a way that lends itself to translation into a formal proof
+language such as Lean 4.
+
+\begin{proof}
+\begin{argue}
+	\strucA: magma[\setT]						& hypothesis \\
+	\strucA': magma[\setU]						& hypothesis \\
+	F: magma\_hom(\strucA, \strucA')				& hypothesis \\
+	(A, (\_ \opG \_)) == \strucA					& definition of $magma$ \\
+	(A', (\_ \opG' \_)) == \strucA'					& definition of $magma$ \\
+	(\strucA, \strucA') \mapsto f == F				& definition of $magma\_hom$ \\
+	\strucS' == magma\_subimage(\strucA, \strucA') F 	\\ 
+	(\strucA', S') == \strucS'						& definition of $magma\_subimage$ \\
+	S' = \ran f									& definition of $magma\_subimage$ \\
+	\t1	x', y': S'								& introduce assumption $[h]$ \\
+	\t1	f~x == x'								& $x' \in \ran f$ \\
+	\t1	f~y == y'								& $y' \in \ran f$ \\
+	\t1	x' \opG' y' = (f~x) \opG' (f~y)				\\
+	\t2		= f(x \opG y)						& $f$ is a homomorphism \\
+	\t2		\in \ran f							\\
+	\t2		= S'								\\
+	\forall x', y':  S' @ x' \opG' y' \in S'				& eliminate assumption $[h]$ \\
+	\strucS' \in magma\_submagma(\strucA')			& definition of $magma\_submagma$
+\end{argue}
+\end{proof}
+
 \end{remark}
 
-STOPPED HERE
+Given a magma homomorphism $F = (\strucA, \strucA) \mapsto f$, its subimage $(\strucA', \ran f)$
+is a submagma of $\strucA'$. 
+The restriction of this submagma is therefore a magma on $\ran f$.
+We refer to this magma as the \textit{image} of $F$.
 
-Consider the restriction of the image of a magma homomorphism.
-
-\begin{schema}{Magma\_Im}[\genT, \genU]
-	Magma\_Image[\genT, \genU] \\
+\begin{schema}{Magma\_Image}[\genT, \genU]
 	Magma\_Hom[\genT, \genU] \\
+	Magma\_Subimage[\genT, \genU] \\
 	Magma\_Restriction'[\genU]
 \end{schema}
 
-Define $magma\_im$ to be the function that sends a magma homomorphism to the
-restriction of its image.
+Define $magma\_image$ to be the function that sends a magma homomorphism to the
+restriction of its subimage.
 
 \begin{zed}
-	magma\_im[\genT, \genU] == \{~ Magma\_Im[\genT, \genU] @ F \mapsto \strucA'' ~\}
+	magma\_image[\genT, \genU] == \{~ Magma\_Image[\genT, \genU] @ F \mapsto \strucA'' ~\}
 \end{zed}
 
+\begin{example}
+The image of $int\_mul\_square$.
+
+Define $int\_squares\_mul$ to be the magma on $int\_squares$ under multiplication.
+
+\begin{zed}
+	int\_squares\_mul == magma\_image(int\_mul\_square)
+\end{zed}
+
+\end{example}
+
 \subsection{Containment}
+
+Let $\strucS_1 = (\strucA, S_1)$ and $\strucS_2 = (\strucA, S_2)$ be magma subsets of $\strucA$.
+Define \textit{containment} of $\strucS_1$ in $\strucS_2$ to mean that $S_1$ is contained is $S_2$.
+
+\begin{schema}{Magma\_Containment}[\genT]
+	Magma\_Subset_1[\genT] \\
+	Magma\_Subset_2[\genT] \\
+	Magma[\genT]
+\where
+	\strucA_1 = \strucA_2 = \strucA
+\also
+	S_1 \subseteq S_2
+\end{schema}
+
+Define $magma\_Containment$ to be the set of all pairs of magma subsets that are
+related by containment.
+
+\begin{zed}
+	magma\_Containment[\genT] == \{~ Magma\_Containment[\genT] @ \strucS_1 \mapsto \strucS_2 ~\}
+\end{zed}
+
+\begin{remark}
+Containment is a binary relation on the set of all magma subsets.
+
+\begin{zed}
+	magma\_Containment[\setT] \in magma\_Subset[\setT] \rel magma\_Subset[\setT]
+\end{zed}
+
+\end{remark}
+
+Let $\strucS_1 \subseteqMagma \strucS_2$ denote containment of magma subsets.
+
+\begin{zed}
+	(\_ \subseteqMagma \_)[\genT] == magma\_Containment[\genT]
+\end{zed}
+
+\begin{example}
+The empty and full subsets.
+\begin{zed}
+	\forall Magma[\setT] @ (\strucA, \emptyset) \subseteqMagma (\strucA, \emptyset)
+\also
+	\forall Magma[\setT] @ (\strucA, \emptyset) \subseteqMagma (\strucA, A)
+\also
+	\forall Magma[\setT] @ (\strucA, A) \subseteqMagma (\strucA, A)	
+\end{zed}
+
+\end{example}
+
+Define $magma\_containment(\strucA)$ to be the set of all pairs of magma subsets of $\strucA$
+that are related by containment.
+
+\begin{zed}
+	magma\_containment[\genT] == \\
+	\t1	(\lambda \strucA: magma[\genT] @ \\
+	\t2		magma\_subset(\strucA) \dres magma\_Containment[\genT])
+\end{zed}
 
 \subsection{Intersection}
 
@@ -1087,11 +1248,26 @@ of $A$. The intersection of two subset structures is therefore another subset st
 	S = S_1 \cap S_2
 \end{schema}
 
-Intersection is therefore a partial binary operation on the set of subsets of magmas.
+Define $magma\_Intersection$ to be the relation between compatible pairs of magma subsets
+and their intersection.
+
+\begin{zed}
+	magma\_Intersection[\genT] == \{~ Magma\_Intersection[\genT] @ (\strucS_1, \strucS_2) \mapsto \strucS ~\}
+\end{zed}
+
+\begin{remark}
+Intersection is a partial binary operation on the set of subsets of magmas.
+
+\begin{zed}
+	magma\_Intersection[\setT] \in PBINOP[magma\_Subset[\setT]]
+\end{zed}
+
+\end{remark}
+
 Let $\strucS = \strucS_1 \capMagma \strucS_2$ denote the intersection of magma subsets.
 
 \begin{zed}
-	(\_ \capMagma \_)[\genT] == \{~ Magma\_Intersection[\genT] @ (\strucS_1, \strucS_2) \mapsto \strucS ~\}
+	(\_ \capMagma \_)[\genT] == magma\_Intersection[\genT]
 \end{zed}
 
 \begin{remark}
@@ -1117,6 +1293,10 @@ The intersection of submagmas of $\strucA$ is a submagma of $\strucA$.
 \end{remark}
 
 \subsection{Generation}
+
+TODO: define the submagma generated by a subset to be the smallest submagma that
+contains the subset. The submagmas are ordered by containment.
+The smallest submagma is the intersection of the family of all submagmas that contain the subset.
 
 \section{Semigroups}
 
@@ -1234,7 +1414,7 @@ then the image of $F$ is a semigroup.
 
 \begin{zed}
 	\forall Magma\_Hom[\setT, \setU] @ \\
-	\t1	\strucA \in semigroup[\setT] \implies magma\_im(F) \in semigroup[\setU]
+	\t1	\strucA \in semigroup[\setT] \implies magma\_image(F) \in semigroup[\setU]
 \end{zed}
 
 \end{remark}
@@ -1770,6 +1950,8 @@ from $\strucA$ to $\strucA'$.
 	\t1	(\lambda \strucA: abgroup[\genT]; \strucA': abgroup[\genU] @ \\
 	\t2		\{~ (\strucA, \strucA') ~\} \dres abgroup\_Hom[\genT, \genU])
 \end{zed}
+
+STOPPED HERE
 
 \printbibliography
 

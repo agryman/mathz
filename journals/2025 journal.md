@@ -311,9 +311,49 @@ continue cleaning up groups article
 ## 2025-03-06
 
 continue cleaning up groups article
-* include examples after definitions to make the article more intuitive
+* included examples after definitions to make the article more intuitive
 
-magma checklist:
+## 2025-03-14
+
+continue cleaning up groups article
+* added a semiformal proof
+* added a commutative diagram
+* my thinking has evolved as follows:
+  * the readability of the article is greatly improved by the addition of examples and counterexamples
+  * my confidence in the correctness of the article is reduced because the examples, remarks, 
+and theorems have not been formally proof-checked
+  * I am beginning to think that I should switch to Lean 4
+  * my previous feeling that creating formal definitions
+and statements of theorems would be useful without proofs
+is less valid because without proof the correctness of the article
+is in doubt
+  * I can still create independent definitions that may duplicate parts
+of mathlib, but I can do so in my personal namespaces
+  * I can leverage mathlib by using it as a starting point
+for topics not covered in mathlib
+  * I think it would be useful to suspend work on mathz
+and spend time learning Lean 4
+  * in parallel, keep doing textbook exercises and try to use
+Lean 4 for checking proofs and examples
+
+## 2025-03-18
+
+* I started to read some Lean 4 proofs and my reaction is that they are not very readable
+* I therefore think that Z and Lean 4 are not mutually exclusive
+* I think there is value striving to write readable Z specifications
+* any formally stated assertion in a Z document should then be formally checked by Lean 4
+* my plan was to automatically translate Z into Lean 4
+* for bonus marks, it may be possible to use any informal proofs included in the Z 
+as hints for generating a formal Lean 4 proof, perhaps using Generative AI
+* make an effort to complete the groups article before spending time on Lean 4
+  * this is an acid-test
+  * my conjecture is that Z is easier-to-write then Lean 4
+
+* completed magma containment
+* improved magma intersection
+
+## Magma Checklist
+
 * [x] Magma, magma, magma_on
 * [x] Magma_Map, magma_Map, magma_map
 * [x] Magma_Hom, magma_Hom, magma_hom
@@ -323,8 +363,8 @@ magma checklist:
 * [x] Magma\_Submagma, magma_Submagma, magma_submagma
 * [x] Magma\_Restriction
 * [x] Magma_Inclusion
-* [ ] Magma_Image, Magma_Im
-* [ ] Magma\_Containment
+* [x] Magma_Subimage, Magma_Image
+* [x] Magma\_Containment, \subseteqMagma
 * [x] Magma_Intersection, \capMagma
 * [ ] Magma_Generation
 

@@ -1188,9 +1188,13 @@ We introduce the usual infix notation $x \addSeqZ y = add\_int\_seq(x, y)$.
 \newcommand{\compAbgroup}{\mathbin{\circ}}
 %%inop \compMagma \compSemigroup \compMonoid \compGroup \compAbgroup 4
 
-% infix intersection operation from subsets of group-like structures
+% infix intersection operation for subsets of group-like structures
 \newcommand{\capMagma}{\mathbin{\cap}}
 %%inop \capMagma 4
+
+% infix containment relation for subsets of group-like structures
+\newcommand{\subseteqMagma}{\mathbin{\subseteq}}
+%%inrel \subseteqMagma
 
 % infix additive group product operator
 \newcommand{\addG}{\mathbin{+}}
