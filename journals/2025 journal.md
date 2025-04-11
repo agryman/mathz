@@ -347,10 +347,14 @@ Lean 4 for checking proofs and examples
 as hints for generating a formal Lean 4 proof, perhaps using Generative AI
 * make an effort to complete the groups article before spending time on Lean 4
   * this is an acid-test
-  * my conjecture is that Z is easier-to-write then Lean 4
+  * my strawman is that Z is easier-to-write then Lean 4
 
 * completed magma containment
 * improved magma intersection
+
+## 2025-04-09
+
+* magma generation
 
 ## Magma Checklist
 
